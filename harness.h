@@ -1,34 +1,27 @@
 #ifndef HARNESS_H
 #define HARNESS_H
 
-#include <cstring>
+#include <string.h>
 
 #define EMULATE
 
 #ifdef EMULATE
 #define MEMORY_SIZE 65536000
+#define BLOCK_SIZE 65535
+#define NUM_BLOCKS MEMORY_SIZE / BLOCK_SIZE
+char MEMORY_START[MEMORY_SIZE];
 #else
 #endif
 
-static const size_t BLOCK_SIZE = 65535;
 
-struct layout {
-    #ifdef EMULATE
-    char memory[MEMORY_SIZE];
-    const size_t size = MEMORY_SIZE;
-    #else
-    #endif
-} memory_layout;
+typedef struct structBlock {
+    char *start, *end;
+    struct structBlock *next;
+} block;
 
-struct block {
-    size_t pid;
-    bool owned;
-    void *ptr;
-};
-
-struct memoryTable {
-    size_t blocks;
-    block *table;
-};
+typedef struct structMemoryTable {
+    char bitVector[NUM_BLOCKS / 8];
+    block *block;
+} memoryTable;
 
 #endif
