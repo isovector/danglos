@@ -87,7 +87,7 @@ int s_release_memory_block(void* memory_block) {
     return 0;
 }
 
-void init() {
+void initMemory(void) {
     size_t requiredBytes;
     size_t requiredBlocks;
     size_t i;
@@ -113,25 +113,4 @@ void init() {
     startBlock->start = (char*)startBlock;
     startBlock->end = MEMORY_START + MEMORY_SIZE;
     startBlock->next = NULL;
-}
-
-void unitTest() {
-    void *a, *b;
-    
-    if ((a = s_request_memory_block()) && (b = s_request_memory_block())) {
-        unitTest();
-        s_release_memory_block(a);
-    }
-    
-    a = s_request_memory_block();
-    if (b) {
-        s_release_memory_block(b);
-        s_release_memory_block(a);
-    }
-}
-
-int main() {
-    init();
-    
-    unitTest();
 }

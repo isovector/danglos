@@ -1,0 +1,27 @@
+*** Creating Trace Output File '.\FLASH\ContexSW.tra' Ok.
+### Preparing for ADS-LD.
+### Creating ADS-LD Command Line
+### List of Objects: adding '".\flash\startup_lpc17xx.o"'
+### List of Objects: adding '".\flash\uart_polling.o"'
+### List of Objects: adding '".\flash\retarget.o"'
+### List of Objects: adding '".\flash\system_lpc17xx.o"'
+### List of Objects: adding '".\flash\main_svc.o"'
+### List of Objects: adding '".\flash\process.o"'
+### List of Objects: adding '".\flash\hal.o"'
+### List of Objects: adding '".\flash\usr_proc.o"'
+### ADS-LD Command completed:
+--cpu Cortex-M3 ".\flash\startup_lpc17xx.o" ".\flash\uart_polling.o" ".\flash\retarget.o" ".\flash\system_lpc17xx.o" ".\flash\main_svc.o" ".\flash\process.o" ".\flash\hal.o" ".\flash\usr_proc.o" 
+--strict --scatter ".\FLASH\ContexSW.sct" 
+--summary_stderr --info summarysizes --map --xref --callgraph --symbols 
+--info sizes --info totals --info unused --info veneers 
+ --list ".\FLASH\lst\ContexSW.map" -o .\FLASH\ContexSW.axf### Preparing Environment (PrepEnvAds)
+### ADS-LD Output File: '.\FLASH\ContexSW.axf'
+### ADS-LD Command File: '.\FLASH\ContexSW.lnp'
+### Checking for dirty Components...
+### Creating CmdFile '.\FLASH\ContexSW.lnp', Handle=0x00000348
+### Writing '.lnp' file
+### ADS-LD Command file '.\FLASH\ContexSW.lnp' is ready.
+### ADS-LD: About to start ADS-LD Thread.
+### ADS-LD: executed with 0 errors
+### Updating obj list
+### LDADS_file() completed.

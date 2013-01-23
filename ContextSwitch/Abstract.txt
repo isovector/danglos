@@ -1,0 +1,24 @@
+Sample context switching implementation for SE350 P1
+There are two user processes.
+Process p1 prints upper case letters continuously.
+Process p2 prints lower case letters continuously.
+You will see p1 prints five upper case letters. 
+Then p2 starts to print the lower case letters.
+Then p1 continues to print another 5 letters and
+p2 continue to prints the lower case 5 letters. 
+The program never terminates.
+
+The output is through UART0. 
+The SIM target has DEBUG_0 compilation flag turned on to show
+extra debugging messages. This flag should be turned off
+during the demostration since it involves printf function calls.
+
+WARNING:
+
+The example code shows one way of context switching implmentation.
+The code only has minimal sanity check. There is no stack overflow check.
+The implementation assumes only two simple user processes, NO external interrupts. 
+The purpose is to show how context switch could be done under stated assumptions. 
+These assumptions are not true in the required RTX Project!!!
+If you decide to use this piece of code, you need to understand the assumptions and
+the limitations. Some part of the code is not written in the most efficient way.
