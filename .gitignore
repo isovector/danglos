@@ -1,2 +1,5 @@
 a.out
-
+.svn
+*.o
+*.d
+*.bak

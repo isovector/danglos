@@ -1,9 +1,0 @@
-.\RAM\main_svc.o: src\main_svc.c
-.\RAM\main_svc.o: C:\Software\Keil\ARM\Inc\NXP\LPC17xx\LPC17xx.h
-.\RAM\main_svc.o: C:\Software\Keil\ARM\CMSIS\Include\core_cm3.h
-.\RAM\main_svc.o: C:\Software\Keil\ARM\ARMCC\bin\..\include\stdint.h
-.\RAM\main_svc.o: C:\Software\Keil\ARM\CMSIS\Include\core_cmInstr.h
-.\RAM\main_svc.o: C:\Software\Keil\ARM\CMSIS\Include\core_cmFunc.h
-.\RAM\main_svc.o: C:\Software\Keil\ARM\Inc\NXP\LPC17xx\system_LPC17xx.h
-.\RAM\main_svc.o: src\uart_polling.h
-.\RAM\main_svc.o: src\rtx.h
