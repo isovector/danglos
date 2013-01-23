@@ -41,6 +41,10 @@ void* s_request_memory_block() {
     {
         allocMem = table.block->start;
         table.block->start += BLOCK_SIZE;
+        
+        if (table.block->start >= table.block->end) {
+            table.block = NULL;
+        }
     }
     
     set_bit(table.bitVector, getBitFromAddress(allocMem), 1);
@@ -75,6 +79,8 @@ int s_release_memory_block(void* memory_block) {
     
     b = (block*)MEMORY_START + index;
     
+    b->start = mem;
+    b->end = mem + BLOCK_SIZE;
     b->next = table.block;
     table.block = b;
     
@@ -109,21 +115,23 @@ void init() {
     startBlock->next = NULL;
 }
 
-int main() {
-    void *a, *b, *c;
-    init();
+void unitTest() {
+    void *a, *b;
+    
+    if ((a = s_request_memory_block()) && (b = s_request_memory_block())) {
+        unitTest();
+        s_release_memory_block(a);
+    }
     
     a = s_request_memory_block();
-    b = s_request_memory_block();
-    c = s_request_memory_block();
+    if (b) {
+        s_release_memory_block(b);
+        s_release_memory_block(a);
+    }
+}
+
+int main() {
+    init();
     
-    printf("%x\n", a);
-    printf("%x\n", b);
-    printf("%x\n", c);
-    printf("%d\n", s_release_memory_block(a));
-    printf("%d\n", s_release_memory_block(a));
-    printf("%d\n", s_release_memory_block((char*)b + 1));
-    printf("%d\n", s_release_memory_block(NULL));
-    
-    printf("%x\n", s_request_memory_block());
+    unitTest();
 }
