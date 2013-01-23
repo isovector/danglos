@@ -437,9 +437,9 @@
               <FilePath>.\src\HAL.c</FilePath>
             </File>
             <File>
-              <FileName>harness.h</FileName>
+              <FileName>mmu.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\src\harness.h</FilePath>
+              <FilePath>.\src\mmu.h</FilePath>
             </File>
             <File>
               <FileName>mmu.c</FileName>
@@ -901,9 +901,9 @@
               <FilePath>.\src\HAL.c</FilePath>
             </File>
             <File>
-              <FileName>harness.h</FileName>
+              <FileName>mmu.h</FileName>
               <FileType>5</FileType>
-              <FilePath>.\src\harness.h</FilePath>
+              <FilePath>.\src\mmu.h</FilePath>
             </File>
             <File>
               <FileName>mmu.c</FileName>

@@ -1,9 +1,9 @@
-#include "harness.h"
+#include "mmu.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
-memoryTable table;
+mmu_memtable_t table;
 
 
 void set_bit(char *bitVector, size_t bit, int on) {
@@ -19,14 +19,14 @@ char get_bit(char *bitVector, size_t bit) {
 
 size_t getBitFromAddress(void *address) {
     size_t index;
-    index = (char*)address - MEMORY_START;
+    index = (char*)address - MMU_MEMORY_START;
     
-    return index / BLOCK_SIZE;
+    return index / MMU_BLOCK_SIZE;
 }
 
 void* s_request_memory_block() {
     void *allocMem;
-    block *b;
+    mmu_blockdesc_t *b;
     
     if (!table.block) {
         return NULL;
@@ -40,7 +40,7 @@ void* s_request_memory_block() {
     else
     {
         allocMem = table.block->start;
-        table.block->start += BLOCK_SIZE;
+        table.block->start += MMU_BLOCK_SIZE;
         
         if (table.block->start >= table.block->end) {
             table.block = NULL;
@@ -55,17 +55,17 @@ void* s_request_memory_block() {
 int s_release_memory_block(void* memory_block) {
     size_t index;
     char *mem;
-    block *b;
+    mmu_blockdesc_t *b;
     
     mem = (char*)memory_block;
     
-    if (mem < (char*)MEMORY_START) {
+    if (mem < (char*)MMU_MEMORY_START) {
         return 1;
     }
     
-    index = mem - MEMORY_START;
+    index = mem - MMU_MEMORY_START;
     
-    if (index % BLOCK_SIZE != 0) {
+    if (index % MMU_BLOCK_SIZE != 0) {
         return 2;
     }
     
@@ -77,10 +77,10 @@ int s_release_memory_block(void* memory_block) {
     
     set_bit(table.bitVector, index, 0);
     
-    b = (block*)MEMORY_START + index;
+    b = (mmu_blockdesc_t*)MMU_MEMORY_START + index;
     
     b->start = mem;
-    b->end = mem + BLOCK_SIZE;
+    b->end = mem + MMU_BLOCK_SIZE;
     b->next = table.block;
     table.block = b;
     
@@ -91,19 +91,19 @@ void initMemory(void) {
     size_t requiredBytes;
     size_t requiredBlocks;
     size_t i;
-    block *startBlock;
+    mmu_blockdesc_t *startBlock;
 
     requiredBlocks = 1;
-    requiredBytes = sizeof(table) + NUM_BLOCKS * sizeof(block);
+    requiredBytes = sizeof(table) + MMU_NUM_BLOCKS * sizeof(mmu_blockdesc_t);
     
-    while (requiredBytes > BLOCK_SIZE) {
+    while (requiredBytes > MMU_BLOCK_SIZE) {
         ++requiredBlocks;
-        requiredBytes -= BLOCK_SIZE;
+        requiredBytes -= MMU_BLOCK_SIZE;
     }
     
-    table.block = (block*)(MEMORY_START + requiredBlocks * BLOCK_SIZE);
+    table.block = (mmu_blockdesc_t*)(MMU_MEMORY_START + requiredBlocks * MMU_BLOCK_SIZE);
     
-    for (i = 0; i < NUM_BLOCKS / 8; ++i)
+    for (i = 0; i < MMU_NUM_BLOCKS / 8; ++i)
         table.bitVector[i] = 0;
     
     for (i = 0; i < requiredBlocks; ++i)
@@ -111,6 +111,6 @@ void initMemory(void) {
     
     startBlock = table.block;
     startBlock->start = (char*)startBlock;
-    startBlock->end = MEMORY_START + MEMORY_SIZE;
+    startBlock->end = MMU_MEMORY_START + MMU_MEMORY_SIZE;
     startBlock->next = NULL;
 }

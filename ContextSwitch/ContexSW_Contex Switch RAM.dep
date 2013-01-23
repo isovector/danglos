@@ -38,12 +38,12 @@ I (C:\Software\Keil\ARM\CMSIS\Include\core_cmFunc.h)(0x4FDB2F0C)
 I (C:\Software\Keil\ARM\Inc\NXP\LPC17xx\system_LPC17xx.h)(0x4F58E032)
 I (src\uart_polling.h)(0x50F58948)
 I (src\process.h)(0x51000400)
-I (src\harness.h)(0x50FFFA97)
+I (src\mmu.h)(0x50FFFA97)
 I (C:\Software\Keil\ARM\ARMCC\bin\..\include\string.h)(0x4EB16D36)
 F (.\src\HAL.c)(0x50F6CB04)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I C:\Software\Keil\ARM\RV31\INC -I C:\Software\Keil\ARM\CMSIS\Include -I C:\Software\Keil\ARM\Inc\NXP\LPC17xx -o ".\RAM\hal.o" --omf_browse ".\RAM\hal.crf" --depend ".\RAM\hal.d")
-F (.\src\harness.h)(0x50FFFA97)()
+F (.\src\mmu.h)(0x50FFFA97)()
 F (.\src\mmu.c)(0x50FFF7A5)(-c --cpu Cortex-M3 -g -O0 --apcs=interwork -I C:\Software\Keil\ARM\RV31\INC -I C:\Software\Keil\ARM\CMSIS\Include -I C:\Software\Keil\ARM\Inc\NXP\LPC17xx -o ".\RAM\mmu.o" --omf_browse ".\RAM\mmu.crf" --depend ".\RAM\mmu.d")
-I (src\harness.h)(0x50FFFA97)
+I (src\mmu.h)(0x50FFFA97)
 I (C:\Software\Keil\ARM\ARMCC\bin\..\include\string.h)(0x4EB16D36)
 I (C:\Software\Keil\ARM\ARMCC\bin\..\include\stdio.h)(0x4EB16D36)
 I (C:\Software\Keil\ARM\ARMCC\bin\..\include\stdlib.h)(0x4EB16D34)
