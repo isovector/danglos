@@ -1,8 +1,7 @@
 #include <LPC17xx.h>
 #include "uart_polling.h"
 #include "process.h"
-
-
+#include "p_queue.h"
  
 #ifdef DEBUG_0
 #include <stdio.h>
@@ -10,17 +9,22 @@
 
 #include "mmu.h"
 
-void process_init(pcb_t * pcb, voidfunc func) 
+void process_init(pcb_t * pcb, voidfunc func, priority p) 
 {
 	static int x = 0;
   volatile int i;
 	uint32_t * sp;
+	
+	if (pcb == NULL) {
+		return;
+	}
 
 	/* initialize the first process	exception stack frame */
 	pcb->m_pid = x++;
 	pcb->m_state = NEW;
+	pcb->p = p;
 
-	sp  = (void*)((char *)s_request_memory_block() + BLOCK_SIZE);
+	sp  = (void*)((char *)s_request_memory_block() + MMU_BLOCK_SIZE);
     
 	/* 8 bytes alignement adjustment to exception stack frame */
 	if (!(((uint32_t)sp) & 0x04)) {
@@ -46,21 +50,10 @@ void process_init(pcb_t * pcb, voidfunc func)
  */
 int scheduler(void)
 {
-  volatile int pid;
-
-	if (gp_current_process == NULL) {
-	  gp_current_process = &(rg_all_processes[0]);
-	  return 1;
-	}
-
-	for (int i = 0; i < NUM_PRIORITIES; i++) {
-		pcb_t* next_in_queue = next(&all_queues[i]);
-		if (next_in_queue != NULL) {
-			gp_current_process = next_in_queue;
-			return next_in_queue->pid;
-		}
-	}
-	return -1;
+	int next_process = pq_front(&priority_queue);
+	pq_dequeue(&priority_queue);
+  return next_process;
+	
 }
 /**
  * @brief release_processor(). 
@@ -77,17 +70,13 @@ int k_release_processor(void)
 	 if (gp_current_process == NULL) {
 	   return -1;  
 	 }
-
+	
+	 /* Move the old proc into a temp and move the new process into the current proccess pointer */
 	 p_pcb_old = gp_current_process;
+	 gp_current_process = &(rg_all_processes[pid]);
 
-
-	 if (pid == 1) {
-	   gp_current_process = &pcb1;
-	 } else if (pid ==2){
-	   gp_current_process = &pcb2;
-	 } else {
-	   return -1;
-	 }					 
+	/* Make sure to add the old process to the back of the pq */
+	pq_enqueue(&priority_queue, p_pcb_old->m_pid, p_pcb_old->p);	 
 
 	 state = gp_current_process->m_state;
 
@@ -115,9 +104,23 @@ int k_release_processor(void)
 void initProcesses(void)
 {
 	volatile int x = 0;
-	process_init(rg_all_processes, null_proc);
-	for(x = 1; x < NUM_PROCESSES; ++x)
+	pq_init(&priority_queue);
+	
+	
+	/* Initialize the null process with the lowest priority */
+	process_init(&rg_all_processes[x], null_proc, LOWEST);
+	pq_enqueue(&priority_queue, x, rg_all_processes[x].p);
+	gp_current_process = &rg_all_processes[x];
+	
+	process_init(&rg_all_processes[++x], proc1, MED);
+	pq_enqueue(&priority_queue, x, rg_all_processes[x].p);
+	
+	process_init(&rg_all_processes[++x], proc2, MED);
+	pq_enqueue(&priority_queue, x, rg_all_processes[x].p);
+	
+	for(x = 3; x < NUM_PROCESSES; ++x)
 	{
-		process_init(rg_all_processes + x, procMemory);
+		process_init(&rg_all_processes[x], procMemory, MED);
+		pq_enqueue(&priority_queue, x, rg_all_processes[x].p);
 	}
 }

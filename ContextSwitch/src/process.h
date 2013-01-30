@@ -14,6 +14,7 @@
 #define INITIAL_xPSR 0x01000000    /* user process initial xPSR value */
 
 #include <stdint.h>
+#include "p_queue.h"
 
 /* process states, note we only assume three states in this example */
 typedef enum {NEW = 0, RDY, RUN} proc_state_t;  
@@ -27,30 +28,30 @@ typedef struct pcb {
   //struct pcb *mp_next;     /* next pcb, not used in this example, RTX project most likely will need it, keep here for reference */  
   uint32_t *mp_sp;         /* stack pointer of the process */
   uint32_t m_pid;          /* process id */
-  proc_state_t m_state;    /* state of the process */      
+  proc_state_t m_state;    /* state of the process */     
+	priority p;
 } pcb_t;
 
 typedef void (*voidfunc)(void);
 
 /*
-  NOTE: The example code uses compile time memory for pcb storage.
-        If the system supports dynamica process creation/deletion,
-        then pcb data structure should use dynamically allocated memory.
+An array of pointers to all of the processses
 */
-pcb_t pcb1;
-pcb_t pcb2;
-
 pcb_t  *gp_current_process = NULL; /* always point to the current process */
 
-pcb_t rg_all_processes[NUM_PROCESSES];
+pcb_t rg_all_processes[NUM_PROCESSES]; /* Array of all processes */
 
-extern void process_init(pcb_t *, voidfunc);    /* initialize all procs in the system */
-extern void initProcesses(void);
+p_queue priority_queue;	/* Priority Queue for scheduling processes */
+
+extern void process_init(pcb_t *, voidfunc, priority p);  /* Initialize the a given process */  
+extern void initProcesses(void);		/* initialize all procs in the system */
 int scheduler(void);               /* pick the pid of the next to run process */
+
 int k_release_process(void);       /* kernel release_process function */
 
 extern void proc1(void);           /* user process 1 */
 extern void proc2(void);           /* user process 2 */
+extern void null_proc(void);
 extern void procMemory(void);
 extern void __rte(void);           /* pop exception stack frame */
 
