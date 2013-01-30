@@ -30,24 +30,7 @@ typedef struct pcb {
   proc_state_t m_state;    /* state of the process */      
 } pcb_t;
 
-typedef struct _queue
-{
-	pcb_t* procs[NUM_PROCESSES];
-	int start;
-	int end;
-	int curIndex;
-} queue_t;
-
-queue_t all_queues[NUM_PRIORITIES];
-
-extern void enqueue(queue_t *, pcb_t *);
-extern void dequeue(pcb_t *);
-extern pcb_t * front(queue_t *);
-
-
 typedef void (*voidfunc)(void);
-
-
 
 /*
   NOTE: The example code uses compile time memory for pcb storage.

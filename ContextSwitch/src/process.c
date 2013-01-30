@@ -8,11 +8,7 @@
 #include <stdio.h>
 #endif  /* DEBUG_0 */
 
-
-
 #include "mmu.h"
-
-
 
 void process_init(pcb_t * pcb, voidfunc func) 
 {
@@ -39,7 +35,6 @@ void process_init(pcb_t * pcb, voidfunc func)
 	}
 	
 	pcb->mp_sp = sp;
-
 
 }
 
@@ -125,24 +120,4 @@ void initProcesses(void)
 	{
 		process_init(rg_all_processes + x, procMemory);
 	}
-}
-
-void enqueue(queue_t * queue, pcb_t * ppcb)
-{
-	if((queue->end - queue->start) % NUM_PROCESSES == NUM_PROCESSES - 1)
-	{
-		//queue is full?
-		return;
-	}
-	
-	queue->end = (queue->end + 1) % NUM_PROCESSES;
-	queue->procs[queue->end] = ppcb;
-}
-
-pcb_t * next(queue_t * queue)
-{
-	if (queue->end == queue->start) return NULL;
-	int oldIndex = queue->curIndex;
-	queue->curIndex = (queue->curIndex + 1) % (queue->end - queue->start) + queue->start;
-	return queue->procs[oldIndex];
 }
