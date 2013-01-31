@@ -24,11 +24,15 @@ size_t getBitFromAddress(void *address) {
     return index / MMU_BLOCK_SIZE;
 }
 
+int mmu_can_alloc_mem() {
+    return table.block != NULL;
+}
+
 void* s_request_memory_block() {
     void *allocMem;
     mmu_blockdesc_t *b;
     
-    if (!table.block) {
+    if (!mmu_can_alloc_mem()) {
         return NULL;
     }
     else if (table.block->next) {
