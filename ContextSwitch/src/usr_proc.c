@@ -58,23 +58,22 @@ void proc2(void)
   }
 }
 
-int getNextNumber(void)
-{
-	static int num = 0;
-	return num++;
-}
 void procMemory(void)
 {
-	int x = getNextNumber();
-	static volatile int ret_val = 20;
-	ret_val += 10;
-	while(1)
-	{
-		void * mem = s_request_memory_block();
-		release_processor();
-		//s_release_memory_block(mem);
-		
-		uart0_put_char('a');
-		uart0_put_string("\n\r");
-	}
+    static int depth = 0;
+    void *ptr = NULL;
+    while (depth == 0)
+    {
+        if (mmu_can_alloc_mem()) {
+            ptr = s_request_memory_block();
+            procMemory();
+            ++depth;
+            s_release_memory_block();
+            --depth;
+            release_processor();
+        } else {
+            uart0_put_string("Allocated all memory\r\n");
+            uart0_put_string("Releasing it now\r\n");
+        }
+    }
 }
