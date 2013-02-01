@@ -446,6 +446,11 @@
               <FileType>1</FileType>
               <FilePath>.\src\mmu.c</FilePath>
             </File>
+            <File>
+              <FileName>p_queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\p_queue\p_queue.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -909,6 +914,11 @@
               <FileName>mmu.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\mmu.c</FilePath>
+            </File>
+            <File>
+              <FileName>p_queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\p_queue\p_queue.c</FilePath>
             </File>
           </Files>
         </Group>

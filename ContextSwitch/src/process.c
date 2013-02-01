@@ -2,6 +2,7 @@
 #include "uart_polling.h"
 #include "process.h"
 #include "p_queue/p_queue.h"
+#define MEMORY_BLOCKS_TEST
  
 #ifdef DEBUG_0
 #include <stdio.h>
@@ -123,13 +124,9 @@ int k_block_and_release_processor(void)
 	return k_release_processor();
 }
 
-void initProcesses(void)
-{
+void doTest(void){
+	
 	volatile int i = 0;
-	pq_init(&priority_queue);
-	pq_init(&blocked_queue);
-	
-	
 	/* Initialize the null process with the lowest priority */
 	process_init(&rg_all_processes[i], null_proc, LOWEST);
 	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
@@ -145,6 +142,41 @@ void initProcesses(void)
 		pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
 	}
 }
+
+void doMemoryTest(void){
+		volatile int i = 0;
+	/* Initialize the null process with the lowest priority */
+	process_init(&rg_all_processes[i], null_proc, LOWEST);
+	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
+	gp_current_process = &rg_all_processes[i++];
+	
+	process_init(&rg_all_processes[i], proc_alloc1, HIGH);
+	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
+	gp_current_process = &rg_all_processes[i++];
+	
+	process_init(&rg_all_processes[i], proc_allocAll, MED);
+	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
+	
+	for(i; i < NUM_PROCESSES; ++i)
+	{
+		process_init(&rg_all_processes[i], proc_print, LOWEST);
+		pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
+	}
+}
+
+void initProcesses(void)
+{
+	pq_init(&priority_queue);
+	pq_init(&blocked_queue);
+#ifndef MEMORY_BLOCKS_TEST
+	doTest();
+#else
+	doMemoryTest();
+#endif
+	
+}
+
+
 
 int k_set_priority(int p) {
 	pq_move(&priority_queue, gp_current_process->m_pid, gp_current_process->p, p);

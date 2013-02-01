@@ -44,10 +44,26 @@ void proc_priority(void)
 	}
 }
 
-void procMemory(void)
+void proc_allocAll(void){
+	volatile void * m;
+	volatile int i = 1;
+	uart0_put_string("ALLOCATE ALL, BITCH!");
+	while(i)
+	{
+		m = s_request_memory_block();
+	}
+}
+
+void proc_alloc1(void)
 {
-	while ( 1) {  
-		uart0_put_string("PROC-MEMORY\n\r");
+	volatile void*m = s_request_memory_block();
+	volatile int i = 1;
+	
+	set_priority(LOW);
+	release_processor();
+	uart0_put_string("Allocation test passed!\r\n");
+	while(i) {
 		release_processor();
 	}
+	s_release_memory_block(m);
 }

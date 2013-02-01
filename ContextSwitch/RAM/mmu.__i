@@ -1,5 +1,5 @@
 -c --cpu Cortex-M3 -g -O0 --apcs=interwork 
--I C:\Software\Keil\ARM\RV31\INC 
--I C:\Software\Keil\ARM\CMSIS\Include 
--I C:\Software\Keil\ARM\Inc\NXP\LPC17xx 
+-I C:\Keil\ARM\RV31\INC 
+-I C:\Keil\ARM\CMSIS\Include 
+-I C:\Keil\ARM\Inc\NXP\LPC17xx 
 -o ".\RAM\mmu.o" --omf_browse ".\RAM\mmu.crf" --depend ".\RAM\mmu.d" "src\mmu.c"

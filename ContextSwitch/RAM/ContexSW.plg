@@ -3,121 +3,10 @@
 <pre>
 <h1>µVision Build Log</h1>
 <h2>Project:</h2>
-N:\SE350\ContextSwitch\ContexSW.uvproj
-Project File Date:  01/23/2013
+C:\Users\Jacob\Documents\GitHub\danglos\ContextSwitch\ContexSW.uvproj
+Project File Date:  02/01/2013
 
 <h2>Output:</h2>
-Build target 'Contex Switch RAM'
-compiling process.c...
-src\process.c(15): warning:  #1295-D: Deprecated declaration s_request_memory_block - give arg types
-src\process.c(17): error:  #79: expected a type specifier
-src\process.c(17): error:  #147-D: declaration is incompatible with "void process_init(void)" (declared at line 42 of "src\process.h")
-src\process.c(17): error:  #141-D: unnamed prototyped parameters not allowed when body is present
-src\process.c(27): error:  #20: identifier "BLOCK_SIZE" is undefined
-src\process.c(35): error:  #20: identifier "func" is undefined
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-src\process.c(15): warning:  #1295-D: Deprecated declaration s_request_memory_block - give arg types
-src\process.c(17): error:  #79: expected a type specifier
-src\process.c(17): error:  #147-D: declaration is incompatible with "void process_init(void)" (declared at line 42 of "src\process.h")
-src\process.c(17): error:  #141-D: unnamed prototyped parameters not allowed when body is present
-src\process.c(27): error:  #852: expression must be a pointer to a complete object type
-src\process.c(35): error:  #20: identifier "func" is undefined
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-src\process.c(17): error:  #79: expected a type specifier
-src\process.c(17): error:  #147-D: declaration is incompatible with "void process_init(void)" (declared at line 42 of "src\process.h")
-src\process.c(17): error:  #141-D: unnamed prototyped parameters not allowed when body is present
-src\process.c(27): error:  #852: expression must be a pointer to a complete object type
-src\process.c(35): error:  #20: identifier "func" is undefined
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-src\process.c(17): error:  #79: expected a type specifier
-src\process.c(17): error:  #147-D: declaration is incompatible with "void process_init(void)" (declared at line 42 of "src\process.h")
-src\process.c(17): error:  #141-D: unnamed prototyped parameters not allowed when body is present
-src\process.c(27): error:  #852: expression must be a pointer to a complete object type
-src\process.c(35): error:  #20: identifier "func" is undefined
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-src\process.c(17): error:  #79: expected a type specifier
-src\process.c(17): error:  #147-D: declaration is incompatible with "void process_init(void)" (declared at line 42 of "src\process.h")
-src\process.c(17): error:  #141-D: unnamed prototyped parameters not allowed when body is present
-src\process.c(27): error:  #852: expression must be a pointer to a complete object type
-src\process.c(35): error:  #20: identifier "func" is undefined
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-src\process.h(42): error:  #79: expected a type specifier
-src\process.c(17): error:  #90: function returning function is not allowed
-src\process.c(17): error:  #130: expected a "{"
-src\process.c(27): error:  #852: expression must be a pointer to a complete object type
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-src\process.h(42): error:  #79: expected a type specifier
-src\process.c(17): error:  #79: expected a type specifier
-src\process.c(17): error:  #141-D: unnamed prototyped parameters not allowed when body is present
-src\process.c(27): error:  #852: expression must be a pointer to a complete object type
-src\process.c(35): error:  #20: identifier "func" is undefined
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-src\process.h(42): error:  #79: expected a type specifier
-src\process.c(17): error:  #79: expected a type specifier
-src\process.c(17): error:  #141-D: unnamed prototyped parameters not allowed when body is present
-src\process.c(27): error:  #852: expression must be a pointer to a complete object type
-src\process.c(35): error:  #20: identifier "func" is undefined
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-src\process.h(31): error:  #40: expected an identifier
-src\process.h(31): error:  #79: expected a type specifier
-src\process.h(31): error:  #90: function returning function is not allowed
-src\process.h(44): error:  #20: identifier "voidfunc" is undefined
-src\process.c(18): error:  #20: identifier "voidfunc" is undefined
-src\process.c(28): error:  #852: expression must be a pointer to a complete object type
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-src\process.c(28): error:  #852: expression must be a pointer to a complete object type
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-linking...
-.\RAM\ContexSW.axf: Error: L6218E: Undefined symbol s_request_memory_block (referred from process.o).
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-linking...
-.\RAM\ContexSW.axf: Error: L6218E: Undefined symbol s_request_memory_block (referred from process.o).
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-src\process.c(29): warning:  #223-D: function "s_request_memory_block" declared implicitly
-linking...
-.\RAM\ContexSW.axf: Error: L6406E: No space in execution regions with .ANY selector matching process.o(.bss).
-.\RAM\ContexSW.axf: Error: L6407E: Sections of aggregate size 0x8018 bytes could not fit into .ANY selector(s).
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-src\process.c(27): warning:  #223-D: function "s_request_memory_block" declared implicitly
-linking...
-.\RAM\ContexSW.axf: Error: L6406E: No space in execution regions with .ANY selector matching process.o(.bss).
-.\RAM\ContexSW.axf: Error: L6407E: Sections of aggregate size 0x8018 bytes could not fit into .ANY selector(s).
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-compiling mmu.c...
-linking...
-.\RAM\ContexSW.axf: Error: L6200E: Symbol MEMORY_START multiply defined (by mmu.o and process.o).
-Target not created
-Clean started: Project: 'ContexSW'
-   deleting intermediate output files for target 'Contex Switch SIM'
-   deleting intermediate output files for target 'Contex Switch RAM'
 Build target 'Contex Switch RAM'
 assembling startup_LPC17xx.s...
 compiling uart_polling.c...
@@ -125,130 +14,105 @@ compiling Retarget.c...
 compiling system_LPC17xx.c...
 compiling main_svc.c...
 compiling process.c...
-compiling HAL.c...
+src\process.c(150): warning:  #188-D: enumerated type mixed with another type
+src\process.c(151): warning:  #188-D: enumerated type mixed with another type
 compiling mmu.c...
+compiling p_queue.c...
 compiling usr_proc.c...
 linking...
-.\RAM\ContexSW.axf: Error: L6200E: Symbol MEMORY_START multiply defined (by mmu.o and process.o).
+Program Size: Code=2940 RO-data=236 RW-data=12 ZI-data=972  
+".\RAM\ContexSW.axf" - 0 Error(s), 2 Warning(s).
+Build target 'Contex Switch RAM'
+compiling process.c...
+src\process.c(156): warning:  #188-D: enumerated type mixed with another type
+src\process.c(157): warning:  #188-D: enumerated type mixed with another type
+linking...
+Program Size: Code=2944 RO-data=236 RW-data=12 ZI-data=972  
+".\RAM\ContexSW.axf" - 0 Error(s), 2 Warning(s).
+Build target 'Contex Switch RAM'
+compiling process.c...
+src\process.c(157): warning:  #188-D: enumerated type mixed with another type
+src\process.c(158): warning:  #188-D: enumerated type mixed with another type
+linking...
+Program Size: Code=2948 RO-data=236 RW-data=12 ZI-data=972  
+".\RAM\ContexSW.axf" - 0 Error(s), 2 Warning(s).
+Build target 'Contex Switch RAM'
+compiling process.c...
+src\process.c(152): error:  #20: identifier "proc_alloc1" is undefined
+src\process.c(156): error:  #20: identifier "proc_allocAll" is undefined
+src\process.c(181): warning:  #188-D: enumerated type mixed with another type
+src\process.c(182): warning:  #188-D: enumerated type mixed with another type
+compiling usr_proc.c...
+src\usr_proc.c(48): warning:  #550-D: variable "m" was set but never used
+src\usr_proc.c(60): error:  #167: argument of type "char *" is incompatible with parameter of type "int"
+src\usr_proc.c(60): error:  #165: too few arguments in function call
+src\usr_proc.c(61): error:  #268: declaration may not appear after executable statement in block
+src\usr_proc.c(62): error:  #65: expected a ";"
+src\usr_proc.c(65): warning:  #12-D: parsing restarts here after previous syntax error
 Target not created
 Build target 'Contex Switch RAM'
 compiling process.c...
-compiling mmu.c...
-src\mmu.c(22): error:  #20: identifier "Image$$RW_IRAM1$$ZI$$Limit" is undefined
-src\mmu.c(62): error:  #20: identifier "Image$$RW_IRAM1$$ZI$$Limit" is undefined
-src\mmu.c(104): error:  #20: identifier "Image$$RW_IRAM1$$ZI$$Limit" is undefined
+src\process.c(152): error:  #20: identifier "proc_alloc1" is undefined
+src\process.c(156): error:  #20: identifier "proc_allocAll" is undefined
+src\process.c(181): warning:  #188-D: enumerated type mixed with another type
+src\process.c(182): warning:  #188-D: enumerated type mixed with another type
+compiling usr_proc.c...
+src\usr_proc.c(48): warning:  #550-D: variable "m" was set but never used
+src\usr_proc.c(61): error:  #268: declaration may not appear after executable statement in block
+src\usr_proc.c(62): error:  #65: expected a ";"
+src\usr_proc.c(65): warning:  #12-D: parsing restarts here after previous syntax error
 Target not created
 Build target 'Contex Switch RAM'
 compiling process.c...
-compiling mmu.c...
-linking...
-Program Size: Code=1940 RO-data=236 RW-data=12 ZI-data=668  
-".\RAM\ContexSW.axf" - 0 Error(s), 0 Warning(s).
-Build target 'Contex Switch RAM'
-compiling main_svc.c...
-src\main_svc.c(30): warning:  #223-D: function "initMemory" declared implicitly
-linking...
-Program Size: Code=1944 RO-data=236 RW-data=12 ZI-data=668  
-".\RAM\ContexSW.axf" - 0 Error(s), 1 Warning(s).
-Build target 'Contex Switch RAM'
-compiling main_svc.c...
-linking...
-Program Size: Code=1944 RO-data=236 RW-data=12 ZI-data=668  
-".\RAM\ContexSW.axf" - 0 Error(s), 0 Warning(s).
-Build target 'Contex Switch RAM'
-compiling process.c...
-compiling mmu.c...
-linking...
-Program Size: Code=1952 RO-data=236 RW-data=12 ZI-data=644  
-".\RAM\ContexSW.axf" - 0 Error(s), 0 Warning(s).
-Build target 'Contex Switch RAM'
-compiling main_svc.c...
-compiling process.c...
-src\process.c(122): error:  #169: expected a declaration
+src\process.c(152): error:  #20: identifier "proc_alloc1" is undefined
+src\process.c(156): error:  #20: identifier "proc_allocAll" is undefined
+src\process.c(181): warning:  #188-D: enumerated type mixed with another type
+src\process.c(182): warning:  #188-D: enumerated type mixed with another type
+compiling usr_proc.c...
+src\usr_proc.c(53): warning:  #111-D: statement is unreachable
+src\usr_proc.c(53): warning:  #167-D: argument of type "volatile void *" is incompatible with parameter of type "void *"
+src\usr_proc.c(62): error:  #268: declaration may not appear after executable statement in block
+src\usr_proc.c(66): warning:  #167-D: argument of type "volatile void *" is incompatible with parameter of type "void *"
 Target not created
 Build target 'Contex Switch RAM'
 compiling process.c...
+src\process.c(152): error:  #20: identifier "proc_alloc1" is undefined
+src\process.c(156): error:  #20: identifier "proc_allocAll" is undefined
+src\process.c(181): warning:  #188-D: enumerated type mixed with another type
+src\process.c(182): warning:  #188-D: enumerated type mixed with another type
+compiling usr_proc.c...
+src\usr_proc.c(48): warning:  #550-D: variable "m" was set but never used
+src\usr_proc.c(61): error:  #268: declaration may not appear after executable statement in block
+src\usr_proc.c(65): warning:  #167-D: argument of type "volatile void *" is incompatible with parameter of type "void *"
+Target not created
+Build target 'Contex Switch RAM'
+compiling process.c...
+src\process.c(152): error:  #20: identifier "proc_alloc1" is undefined
+src\process.c(156): error:  #20: identifier "proc_allocAll" is undefined
+src\process.c(181): warning:  #188-D: enumerated type mixed with another type
+src\process.c(182): warning:  #188-D: enumerated type mixed with another type
+compiling usr_proc.c...
+src\usr_proc.c(48): warning:  #550-D: variable "m" was set but never used
+src\usr_proc.c(66): warning:  #167-D: argument of type "volatile void *" is incompatible with parameter of type "void *"
+Target not created
+Build target 'Contex Switch RAM'
+compiling process.c...
+src\process.c(181): warning:  #188-D: enumerated type mixed with another type
+src\process.c(182): warning:  #188-D: enumerated type mixed with another type
 linking...
-Program Size: Code=2216 RO-data=236 RW-data=20 ZI-data=732  
-".\RAM\ContexSW.axf" - 0 Error(s), 0 Warning(s).
+Program Size: Code=3212 RO-data=236 RW-data=12 ZI-data=972  
+".\RAM\ContexSW.axf" - 0 Error(s), 2 Warning(s).
 Build target 'Contex Switch RAM'
 compiling process.c...
-src\process.h(33): error:  #77-D: this declaration has no storage class or type specifier
-src\process.h(33): error:  #65: expected a ";"
-src\process.h(39): warning:  #12-D: parsing restarts here after previous syntax error
-src\process.h(41): error:  #20: identifier "queue_t" is undefined
-src\process.h(43): error:  #20: identifier "queue_t" is undefined
-src\process.h(45): error:  #20: identifier "queue_t" is undefined
-src\process.c(130): error:  #20: identifier "queue_t" is undefined
-src\process.c(132): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(132): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(138): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(138): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(139): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(139): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(142): error:  #20: identifier "queue_t" is undefined
-src\process.c(144): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(145): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(145): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(145): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(145): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(145): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(146): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(147): warning:  #1-D: last line of file ends without a newline
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-src\process.h(33): error:  #77-D: this declaration has no storage class or type specifier
-src\process.h(33): error:  #65: expected a ";"
-src\process.h(39): warning:  #12-D: parsing restarts here after previous syntax error
-src\process.h(41): error:  #20: identifier "queue_t" is undefined
-src\process.h(43): error:  #20: identifier "queue_t" is undefined
-src\process.h(45): error:  #20: identifier "queue_t" is undefined
-src\process.c(130): error:  #20: identifier "queue_t" is undefined
-src\process.c(132): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(132): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(138): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(138): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(139): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(139): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(142): error:  #20: identifier "queue_t" is undefined
-src\process.c(144): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(145): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(145): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(145): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(145): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(145): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(146): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(147): warning:  #1-D: last line of file ends without a newline
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-src\process.h(33): error:  #77-D: this declaration has no storage class or type specifier
-src\process.h(33): error:  #65: expected a ";"
-src\process.h(39): warning:  #12-D: parsing restarts here after previous syntax error
-src\process.h(41): error:  #20: identifier "queue_t" is undefined
-src\process.h(43): error:  #20: identifier "queue_t" is undefined
-src\process.h(45): error:  #20: identifier "queue_t" is undefined
-src\process.c(130): error:  #20: identifier "queue_t" is undefined
-src\process.c(132): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(132): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(138): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(138): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(139): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(139): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(142): error:  #20: identifier "queue_t" is undefined
-src\process.c(144): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(145): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(145): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(145): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(145): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(145): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(146): error:  #132: expression must have pointer-to-struct-or-union type
-src\process.c(147): warning:  #1-D: last line of file ends without a newline
-Target not created
-Build target 'Contex Switch RAM'
-compiling process.c...
-src\process.c(147): warning:  #1-D: last line of file ends without a newline
+src\process.c(182): warning:  #188-D: enumerated type mixed with another type
+src\process.c(183): warning:  #188-D: enumerated type mixed with another type
 linking...
-Program Size: Code=2304 RO-data=236 RW-data=20 ZI-data=892  
-".\RAM\ContexSW.axf" - 0 Error(s), 1 Warning(s).
+Program Size: Code=3212 RO-data=236 RW-data=12 ZI-data=972  
+".\RAM\ContexSW.axf" - 0 Error(s), 2 Warning(s).
+Build target 'Contex Switch RAM'
+compiling usr_proc.c...
+src\usr_proc.c(48): warning:  #550-D: variable "m" was set but never used
+src\usr_proc.c(68): warning:  #167-D: argument of type "volatile void *" is incompatible with parameter of type "void *"
+linking...
+Program Size: Code=3256 RO-data=236 RW-data=12 ZI-data=972  
+".\RAM\ContexSW.axf" - 0 Error(s), 2 Warning(s).
