@@ -19,4 +19,8 @@ extern int k_block_and_release_processor(void);
 #define block_and_release_processor() _block_and_release_processor((U32)k_block_and_release_processor)
 int __SVC_0 _block_and_release_processor(U32 p_func);
 
+extern int k_set_priority(int);
+#define change_process_priority(int) _set_priority((U32)k_set_priority)
+int __SVC_0 _change_process_priority(U32 p_func);
+
 #endif /* !_RTX_H_ */
