@@ -12,7 +12,7 @@
 void process_init(pcb_t * pcb, voidfunc func, priority p) 
 {
 	static int x = 0;
-  volatile int i;
+  	volatile int i;
 	uint32_t * sp;
 	
 	if (pcb == NULL) {
@@ -50,10 +50,20 @@ void process_init(pcb_t * pcb, voidfunc func, priority p)
  */
 int scheduler(void)
 {
-	int next_process = pq_front(&priority_queue);
+	int next_process;
+	int next_blocked;
+
+	/* Check to see if there is a blocked process that we can move to the ready state */
+	next_blocked = pq_front(&blocked_queue);
+	if ( next_blocked != PQ_NOT_FOUND && mmu_can_alloc_mem() ) 
+	{
+		pq_enqueue(&priority_queue, next_blocked, rg_all_processes[next_blocked].p);
+		pq_dequeue(&blocked_queue);
+	}
+
+	next_process = pq_front(&priority_queue);
 	pq_dequeue(&priority_queue);
-  return next_process;
-	
+  	return next_process;
 }
 /**
  * @brief release_processor(). 
@@ -105,6 +115,7 @@ void initProcesses(void)
 {
 	volatile int x = 0;
 	pq_init(&priority_queue);
+	pq_init(&blocked_queue);
 	
 	
 	/* Initialize the null process with the lowest priority */

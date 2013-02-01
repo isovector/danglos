@@ -29,7 +29,7 @@ typedef struct pcb {
   uint32_t *mp_sp;         /* stack pointer of the process */
   uint32_t m_pid;          /* process id */
   proc_state_t m_state;    /* state of the process */     
-	priority p;
+  priority p;
 } pcb_t;
 
 typedef void (*voidfunc)(void);
@@ -42,6 +42,7 @@ pcb_t  *gp_current_process = NULL; /* always point to the current process */
 pcb_t rg_all_processes[NUM_PROCESSES]; /* Array of all processes */
 
 p_queue priority_queue;	/* Priority Queue for scheduling processes */
+p_queue blocked_queue;
 
 extern void process_init(pcb_t *, voidfunc, priority p);  /* Initialize the a given process */  
 extern void initProcesses(void);		/* initialize all procs in the system */
