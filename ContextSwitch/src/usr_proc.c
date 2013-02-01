@@ -62,18 +62,18 @@ void procMemory(void)
 {
     static int depth = 0;
     void *ptr = NULL;
-    while (depth == 0)
+    do
     {
         if (mmu_can_alloc_mem()) {
             ptr = s_request_memory_block();
-            procMemory();
             ++depth;
-            s_release_memory_block(ptr);
+            procMemory();
             --depth;
+            s_release_memory_block(ptr);
             release_processor();
         } else {
-            uart0_put_string("Allocated all memory\r\n");
-            uart0_put_string("Releasing it now\r\n");
+            uart0_put_string("Allocated all memory\n\r");
+            uart0_put_string("Releasing it now\n\r");
         }
-    }
+    } while (depth == 0);
 }
