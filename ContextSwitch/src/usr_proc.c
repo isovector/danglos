@@ -68,7 +68,7 @@ void procMemory(void)
             ptr = s_request_memory_block();
             procMemory();
             ++depth;
-            s_release_memory_block();
+            s_release_memory_block(ptr);
             --depth;
             release_processor();
         } else {
