@@ -8,6 +8,7 @@
 #include "rtx.h"
 #include "uart_polling.h"
 #include "mmu.h"
+#include "p_queue/p_queue.h"
 
 #ifdef DEBUG_0
 #include <stdio.h>
@@ -21,59 +22,32 @@ void null_proc(void)
 	}
 }
 
-void proc1(void)
+void proc_print(void)
 {
-  volatile int i =0;
-  volatile int ret_val = 10;
-  while ( 1) {
-    if (i!=0 &&i%5 == 0 ) {
-      ret_val = release_processor();
-#ifdef DEBUG_0
-      printf("\n\rproc1: ret_val=%d. ", ret_val);
-#else
-      uart0_put_string("\n\r");
-#endif /* DEBUG_0 */
-    }
-    uart0_put_char('A' + i%26);
-    i++;
-  }
+  while ( 1 ) {
+    uart0_put_string("\t(1) ping\n\r");
+		release_processor();	
+	}
 
 }
 
-void proc2(void)
+void proc_priority(void)
 {
-  volatile int i =0;
-  volatile int ret_val = 20;
-  while ( 1) {
-    if (i!=0 &&i%5 == 0 ) {
-      ret_val = release_processor();
-#ifdef DEBUG_0
-      printf("\n\rproc2: ret_val=%d. ", ret_val);
-#else
-      uart0_put_string("\n\r");
-#endif  /* DEBUG_0 */
-    }
-    uart0_put_char('b');
-    i++;
-  }
+	while ( 1 ) {
+		uart0_put_string("(2) Step Priority Highest\n\r");
+		set_priority(0);
+		release_processor();
+		
+		uart0_put_string("(2) Step Priority Med\n\r");
+		set_priority(2);
+		release_processor();
+	}
 }
 
 void procMemory(void)
 {
-    static int depth = 0;
-    void *ptr = NULL;
-    do
-    {
-        if (mmu_can_alloc_mem()) {
-            ptr = s_request_memory_block();
-            ++depth;
-            procMemory();
-            --depth;
-            s_release_memory_block(ptr);
-            release_processor();
-        } else {
-            uart0_put_string("Allocated all memory\n\r");
-            uart0_put_string("Releasing it now\n\r");
-        }
-    } while (depth == 0);
+	while ( 1) {  
+		uart0_put_string("PROC-MEMORY\n\r");
+		release_processor();
+	}
 }

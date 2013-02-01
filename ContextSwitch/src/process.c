@@ -58,6 +58,7 @@ int scheduler(void)
 	if ( next_blocked != PQ_NOT_FOUND && mmu_can_alloc_mem() ) 
 	{
 		pq_enqueue(&priority_queue, next_blocked, rg_all_processes[next_blocked].p);
+		rg_all_processes[next_blocked].m_state = RDY;
 		pq_dequeue(&blocked_queue);
 	}
 
@@ -124,30 +125,29 @@ int k_block_and_release_processor(void)
 
 void initProcesses(void)
 {
-	volatile int x = 0;
+	volatile int i = 0;
 	pq_init(&priority_queue);
 	pq_init(&blocked_queue);
 	
 	
 	/* Initialize the null process with the lowest priority */
-	process_init(&rg_all_processes[x], null_proc, LOWEST);
-	pq_enqueue(&priority_queue, x, rg_all_processes[x].p);
-	gp_current_process = &rg_all_processes[x];
+	process_init(&rg_all_processes[i], null_proc, LOWEST);
+	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
+	gp_current_process = &rg_all_processes[i++];
 	
-	process_init(&rg_all_processes[++x], proc1, MED);
-	pq_enqueue(&priority_queue, x, rg_all_processes[x].p);
+	process_init(&rg_all_processes[i], proc_priority, MED);
+	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
+	gp_current_process = &rg_all_processes[i++];
 	
-	process_init(&rg_all_processes[++x], proc2, MED);
-	pq_enqueue(&priority_queue, x, rg_all_processes[x].p);
-	
-	for(x = 3; x < NUM_PROCESSES; ++x)
+	for(i; i < NUM_PROCESSES; ++i)
 	{
-		process_init(&rg_all_processes[x], procMemory, MED);
-		pq_enqueue(&priority_queue, x, rg_all_processes[x].p);
+		process_init(&rg_all_processes[i], proc_print, MED);
+		pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
 	}
 }
 
 int k_set_priority(int p) {
-	pq_move(&priority_queue, gp_current_process->p, gp_current_process->p, (priority)p);
-	gp_current_process->p = (priority)p;
+	pq_move(&priority_queue, gp_current_process->m_pid, gp_current_process->p, p);
+	gp_current_process->p = p;
+	return 0;
 }
