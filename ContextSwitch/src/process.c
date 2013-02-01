@@ -65,6 +65,7 @@ int scheduler(void)
 	pq_dequeue(&priority_queue);
   	return next_process;
 }
+
 /**
  * @brief release_processor(). 
  * @return -1 on error and zero on success
@@ -86,7 +87,11 @@ int k_release_processor(void)
 	 gp_current_process = &(rg_all_processes[pid]);
 
 	/* Make sure to add the old process to the back of the pq */
-	pq_enqueue(&priority_queue, p_pcb_old->m_pid, p_pcb_old->p);	 
+	 if (p_pcb_old->m_state == BLOCKED) {
+		 pq_enqueue(&blocked_queue, p_pcb_old->m_pid, p_pcb_old->p);
+	 } else {
+		pq_enqueue(&priority_queue, p_pcb_old->m_pid, p_pcb_old->p);
+	 }
 
 	 state = gp_current_process->m_state;
 
@@ -109,6 +114,12 @@ int k_release_processor(void)
 	     return -1;
 	 }	 	 
 	 return 0;
+}
+
+int k_block_and_release_processor(void) 
+{
+	gp_current_process->m_state = BLOCKED;
+	return k_release_processor();
 }
 
 void initProcesses(void)

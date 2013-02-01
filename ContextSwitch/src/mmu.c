@@ -1,4 +1,5 @@
 #include "mmu.h"
+#include "rtx.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -33,10 +34,9 @@ void* s_request_memory_block() {
     mmu_blockdesc_t *b;
     
     if (!mmu_can_alloc_mem()) {
-        // Probably release the proc here or something.
-        return NULL;
+        block_and_release_processor();
     }
-    else if (table.block->next) {
+    if (table.block->next) {
         allocMem = table.block->start;
         b = table.block;
         table.block = b->next;

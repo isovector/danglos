@@ -14,6 +14,9 @@ typedef unsigned int U32;
 extern int k_release_processor(void);
 #define release_processor() _release_processor((U32)k_release_processor)
 int __SVC_0 _release_processor(U32 p_func);
-//int _release_processor(U32 p_func) __SVC_0; // __SVC_0 can also be at the end
+
+extern int k_block_and_release_processor(void);
+#define block_and_release_processor() _block_and_release_processor((U32)k_block_and_release_processor)
+int __SVC_0 _block_and_release_processor(U32 p_func);
 
 #endif /* !_RTX_H_ */

@@ -29,7 +29,7 @@ typedef struct memory_table {
 
 extern void mmu_init(void);
 extern void *s_request_memory_block(void);
-extern int mmu_can_alloc_mem();
+extern int mmu_can_alloc_mem(void);
 extern int s_release_memory_block(void*);
 
 #endif

@@ -7,6 +7,7 @@
 
 #include "rtx.h"
 #include "uart_polling.h"
+#include "mmu.h"
 
 #ifdef DEBUG_0
 #include <stdio.h>
@@ -52,7 +53,7 @@ void proc2(void)
       uart0_put_string("\n\r");
 #endif  /* DEBUG_0 */
     }
-    uart0_put_char('a' + i%26);
+    uart0_put_char('b');
     i++;
   }
 }
@@ -69,12 +70,11 @@ void procMemory(void)
 	ret_val += 10;
 	while(1)
 	{
-/*		void * mem = request_memory_block();
+		void * mem = s_request_memory_block();
 		release_processor();
-		release_memory_block(mem);*/
+		//s_release_memory_block(mem);
 		
-		uart0_put_char('a' + x % 26 );
+		uart0_put_char('a');
 		uart0_put_string("\n\r");
-		ret_val = release_processor();
 	}
 }
