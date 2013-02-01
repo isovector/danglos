@@ -146,3 +146,8 @@ void initProcesses(void)
 		pq_enqueue(&priority_queue, x, rg_all_processes[x].p);
 	}
 }
+
+int k_set_priority(int p) {
+	pq_move(&priority_queue, gp_current_process->p, gp_current_process->p, (priority)p);
+	gp_current_process->p = (priority)p;
+}

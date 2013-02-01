@@ -49,6 +49,7 @@ extern void initProcesses(void);		/* initialize all procs in the system */
 int scheduler(void);               /* pick the pid of the next to run process */
 
 int k_release_process(void);       /* kernel release_process function */
+int k_set_priority(int);
 
 extern void proc1(void);           /* user process 1 */
 extern void proc2(void);           /* user process 2 */
