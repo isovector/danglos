@@ -95,11 +95,15 @@ void proc_priority_two (void)
 }
 
 void proc_allocAll(void){
+	void* mem[100];
+	volatile int i = 0;
+	
 	debugPrint("START");
 	debugPrint("total 2 tests");
+	
 	while(mmu_can_alloc_mem())
 	{
-		s_request_memory_block();
+		mem[i++] = s_request_memory_block();
 	}
 	s_request_memory_block();
 	TEST_MEM_BLOCK = 1;
@@ -107,6 +111,9 @@ void proc_allocAll(void){
 	num_successful_tests++;
 	set_my_priority(3);
 	set_priority(0, 3);
+	while ( i >= 0 ) {
+		s_release_memory_block(mem[--i]);
+	}
 	while ( 1 ) {
 		release_processor();
 	}

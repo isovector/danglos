@@ -3,11 +3,11 @@
 <title>Static Call Graph - [.\RAM\ContexSW.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\RAM\ContexSW.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5.02 [Build 28]: Last Updated: Fri Feb 01 19:56:35 2013
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5.02 [Build 28]: Last Updated: Sat Feb 02 15:39:20 2013
 <BR><P>
-<H3>Maximum Stack Usage =         88 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =        432 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
-k_set_my_priority &rArr; k_set_priority &rArr; pq_move &rArr; pq_enqueue &rArr; _pq_compute_offset
+proc_allocAll &rArr; s_release_memory_block &rArr; set_bit
 <P>
 <H3>
 Functions with no stack information
@@ -599,7 +599,8 @@ Global Symbols
 <LI><a href="#[65]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_bit
 <LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;set_bit
 </UL>
-<BR>[Called By]<UL><LI><a href="#[33]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;proc_alloc1
+<BR>[Called By]<UL><LI><a href="#[34]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;proc_allocAll
+<LI><a href="#[33]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;proc_alloc1
 </UL>
 
 <P><STRONG><a name="[54]"></a>initMemory</STRONG> (Thumb, 84 bytes, Stack size 20 bytes, mmu.o(.text))
@@ -675,10 +676,11 @@ Global Symbols
 <P><STRONG><a name="[36]"></a>proc_priority_two</STRONG> (Thumb, 76 bytes, Stack size 0 bytes, usr_proc.o(.text))
 <BR>[Address Reference Count : 1]<UL><LI> process.o(.text)
 </UL>
-<P><STRONG><a name="[34]"></a>proc_allocAll</STRONG> (Thumb, 80 bytes, Stack size 0 bytes, usr_proc.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 28<LI>Call Chain = proc_allocAll &rArr; s_request_memory_block &rArr; set_bit
+<P><STRONG><a name="[34]"></a>proc_allocAll</STRONG> (Thumb, 110 bytes, Stack size 400 bytes, usr_proc.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 432<LI>Call Chain = proc_allocAll &rArr; s_release_memory_block &rArr; set_bit
 </UL>
-<BR>[Calls]<UL><LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;s_request_memory_block
+<BR>[Calls]<UL><LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;s_release_memory_block
+<LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;s_request_memory_block
 <LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mmu_can_alloc_mem
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;debugPrint
 </UL>
