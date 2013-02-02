@@ -1,5 +1,0 @@
--c --cpu Cortex-M3 -g -O0 --apcs=interwork 
--I C:\Keil\ARM\RV31\INC 
--I C:\Keil\ARM\CMSIS\Include 
--I C:\Keil\ARM\Inc\NXP\LPC17xx 
--o ".\RAM\process.o" --omf_browse ".\RAM\process.crf" --depend ".\RAM\process.d" "src\process.c"

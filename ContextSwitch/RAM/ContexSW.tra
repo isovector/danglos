@@ -20,7 +20,7 @@
 ### ADS-LD Output File: '.\RAM\ContexSW.axf'
 ### ADS-LD Command File: '.\RAM\ContexSW.lnp'
 ### Checking for dirty Components...
-### Creating CmdFile '.\RAM\ContexSW.lnp', Handle=0x00000614
+### Creating CmdFile '.\RAM\ContexSW.lnp', Handle=0x00001878
 ### Writing '.lnp' file
 ### ADS-LD Command file '.\RAM\ContexSW.lnp' is ready.
 ### ADS-LD: About to start ADS-LD Thread.

@@ -19,8 +19,12 @@ extern int k_block_and_release_processor(void);
 #define block_and_release_processor() _block_and_release_processor((U32)k_block_and_release_processor)
 int __SVC_0 _block_and_release_processor(U32 p_func);
 
-extern int k_set_priority(int priority);
-#define set_priority(priority) _set_priority((U32)k_set_priority, priority)
-int __SVC_0 _set_priority(U32 p_func, int priority);
+extern int k_set_priority(int priority, int target);
+#define set_priority(priority, target) _set_priority((U32)k_set_priority, priority, target)
+int __SVC_0 _set_priority(U32 p_func, int priority, int target);
+
+extern int k_set_my_priority(int priority);
+#define set_my_priority(priority) _set_my_priority((U32)k_set_my_priority, priority)
+int __SVC_0 _set_my_priority(U32 p_func, int priority);
 
 #endif /* !_RTX_H_ */

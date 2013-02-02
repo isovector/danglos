@@ -14,6 +14,16 @@
 #include <stdio.h>
 #endif  /* DEBUG_0 */
 
+int TEST_MEM_BLOCK = 0;
+int TEST_PRIORITY_SWAP = 0;
+
+volatile int i = 0;
+volatile int j = 0;
+
+int num_successful_tests = 0;
+
+extern void debugPrint(unsigned char *);
+
 void null_proc(void)
 {
 	while(1)
@@ -31,39 +41,88 @@ void proc_print(void)
 
 }
 
-void proc_priority(void)
+/* Starts high */
+void proc_priority_one (void)
 {
-	while ( 1 ) {
-		uart0_put_string("(2) Step Priority Highest\n\r");
-		set_priority(0);
+	while ( i < 10 ) {
+		i++;
 		release_processor();
-		
-		uart0_put_string("(2) Step Priority Med\n\r");
-		set_priority(2);
+		if ( j > 0 ) {
+			set_my_priority(3);
+		}
+	}
+	set_my_priority(3);
+	set_priority(0, 4);
+	release_processor();
+	if ( i == 10 && j == 10 ) {
+		debugPrint("TEST 2 OK");
+		num_successful_tests++;
+	} else {
+		debugPrint("TEST 2 FAIL");
+	}
+	uart0_put_string("G019_test: ");
+	uart0_put_char(num_successful_tests + '0');
+	uart0_put_string("/2 tests OK\r\n");
+	
+	uart0_put_string("G019_test: ");
+	uart0_put_char((2 - num_successful_tests) + '0');
+	uart0_put_string("/2 tests FAIL\r\n");
+	
+	debugPrint("END");
+	while ( 1 ) {
 		release_processor();
 	}
 }
 
+/* Starts low */
+void proc_priority_two (void)
+{
+	while ( j < 10 ) {
+		j++;
+		release_processor();
+		if ( i != 10 ) {
+			set_my_priority(3);
+		}
+	}
+	set_my_priority(3);
+	set_priority(0, 3);
+	release_processor();
+	
+	while ( 1 ) {
+		release_processor();
+	}
+
+}
+
 void proc_allocAll(void){
-	volatile void * m;
-	volatile int i = 1;
-	uart0_put_string("ALLOCATE ALL, BITCH!");
-	while(i)
+	debugPrint("START");
+	debugPrint("total 2 tests");
+	while(mmu_can_alloc_mem())
 	{
-		m = s_request_memory_block();
+		s_request_memory_block();
+	}
+	s_request_memory_block();
+	TEST_MEM_BLOCK = 1;
+	debugPrint("TEST 1 OK");
+	num_successful_tests++;
+	set_my_priority(3);
+	set_priority(0, 3);
+	while ( 1 ) {
+		release_processor();
 	}
 }
 
 void proc_alloc1(void)
 {
-	volatile void*m = s_request_memory_block();
+	
+	void*m = s_request_memory_block();
 	volatile int i = 1;
 	
-	set_priority(LOW);
+	set_my_priority(2);
 	release_processor();
-	uart0_put_string("Allocation test passed!\r\n");
+	s_release_memory_block(m);
+	set_my_priority(3);
 	while(i) {
 		release_processor();
 	}
-	s_release_memory_block(m);
 }

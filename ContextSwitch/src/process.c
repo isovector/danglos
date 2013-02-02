@@ -9,6 +9,9 @@
 #endif  /* DEBUG_0 */
 
 #include "mmu.h"
+#include "debug_print.h"
+
+
 
 void process_init(pcb_t * pcb, voidfunc func, priority p) 
 {
@@ -124,24 +127,6 @@ int k_block_and_release_processor(void)
 	return k_release_processor();
 }
 
-void doTest(void){
-	
-	volatile int i = 0;
-	/* Initialize the null process with the lowest priority */
-	process_init(&rg_all_processes[i], null_proc, LOWEST);
-	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
-	gp_current_process = &rg_all_processes[i++];
-	
-	process_init(&rg_all_processes[i], proc_priority, MED);
-	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
-	gp_current_process = &rg_all_processes[i++];
-	
-	for(i; i < NUM_PROCESSES; ++i)
-	{
-		process_init(&rg_all_processes[i], proc_print, MED);
-		pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
-	}
-}
 
 void doMemoryTest(void){
 		volatile int i = 0;
@@ -152,34 +137,44 @@ void doMemoryTest(void){
 	
 	process_init(&rg_all_processes[i], proc_alloc1, HIGH);
 	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
-	gp_current_process = &rg_all_processes[i++];
+	i++;
 	
 	process_init(&rg_all_processes[i], proc_allocAll, MED);
 	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
+	i++;
+	
+	process_init(&rg_all_processes[i], proc_priority_one, LOW);
+	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
+	i++;
+	
+	process_init(&rg_all_processes[i], proc_priority_two, LOW);
+	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
+	i++;
 	
 	for(i; i < NUM_PROCESSES; ++i)
 	{
-		process_init(&rg_all_processes[i], proc_print, LOWEST);
+		process_init(&rg_all_processes[i], null_proc, LOWEST);
 		pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
 	}
+	
 }
 
 void initProcesses(void)
 {
 	pq_init(&priority_queue);
 	pq_init(&blocked_queue);
-#ifndef MEMORY_BLOCKS_TEST
-	doTest();
-#else
-	doMemoryTest();
-#endif
 	
+	doMemoryTest();
 }
 
+int k_set_priority(int p, int target) {
+	pq_move(&priority_queue, target, rg_all_processes[target].p, (priority)p);
+	pq_move(&blocked_queue, target, rg_all_processes[target].p, (priority)p);
+	rg_all_processes[target].p = (priority)p;
+	return 0;
+}
 
-
-int k_set_priority(int p) {
-	pq_move(&priority_queue, gp_current_process->m_pid, gp_current_process->p, p);
-	gp_current_process->p = p;
+int k_set_my_priority(int p) {
+	k_set_priority(p, gp_current_process->m_pid);
 	return 0;
 }

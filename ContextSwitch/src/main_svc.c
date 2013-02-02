@@ -15,7 +15,6 @@
 #define NULL 0
 #endif  /* DEBUG_0 */
 #include "uart_polling.h"
-
 #include "rtx.h"
 
 extern void initMemory(void);
@@ -24,7 +23,6 @@ extern void initProcesses(void);
 int main() 
 {
   volatile unsigned int ret_val = 1234;
-  
   SystemInit();  /* initialize the system */
   __disable_irq();
   uart0_init();

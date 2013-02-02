@@ -49,12 +49,14 @@ extern void initProcesses(void);		/* initialize all procs in the system */
 int scheduler(void);               /* pick the pid of the next to run process */
 
 int k_release_process(void);       /* kernel release_process function */
-int k_set_priority(int);
+int k_set_priority(int, int);
+int k_set_my_priority(int);
 
 extern void proc_print(void);           /* user process 1 */
-extern void proc_priority(void);
 extern void null_proc(void);
 extern void proc_alloc1(void);
+extern void proc_priority_one(void);
+extern void proc_priority_two(void);
 extern void proc_allocAll(void);
 extern void __rte(void);           /* pop exception stack frame */
 
