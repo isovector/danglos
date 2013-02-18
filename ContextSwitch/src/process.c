@@ -168,13 +168,26 @@ void initProcesses(void)
 }
 
 int k_set_priority(int p, int target) {
-	pq_move(&priority_queue, target, rg_all_processes[target].p, (priority)p);
-	pq_move(&blocked_queue, target, rg_all_processes[target].p, (priority)p);
+	priority prio = rg_all_processes[target].p;
+	int ret = 0;
+	ret = pq_move(&priority_queue, target, prio, (priority)p);
+	if(ret)
+	{
+		ret = pq_move(&blocked_queue, target, prio, (priority)p);
+	}
 	rg_all_processes[target].p = (priority)p;
-	return 0;
+	if((prio < p || (p < gp_current_process->p && target != gp_current_process->m_pid)) && !ret)
+		return k_release_processor();
+	return ret;
 }
 
 int k_set_my_priority(int p) {
 	k_set_priority(p, gp_current_process->m_pid);
 	return 0;
+}
+
+int k_get_priority(int target){
+	if(target < 0 || target >= NUM_PROCESSES)
+		return -1;
+	return rg_all_processes[target].p;
 }

@@ -51,6 +51,7 @@ int scheduler(void);               /* pick the pid of the next to run process */
 int k_release_process(void);       /* kernel release_process function */
 int k_set_priority(int, int);
 int k_set_my_priority(int);
+int k_get_priority(int);
 
 extern void proc_print(void);           /* user process 1 */
 extern void null_proc(void);
