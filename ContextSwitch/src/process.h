@@ -17,7 +17,7 @@
 #include "p_queue/p_queue.h"
 
 /* process states, note we only assume three states in this example */
-typedef enum {NEW = 0, RDY, RUN, BLOCKED} proc_state_t;  
+typedef enum {NEW = 0, RDY, RUN, BLOCKED, MSG_BLOCKED} proc_state_t;  
 
 /*
   PCB data structure definition.
@@ -44,6 +44,7 @@ pcb_t rg_all_processes[NUM_PROCESSES]; /* Array of all processes */
 p_queue priority_queue;	/* Priority Queue for scheduling processes */
 p_queue blocked_queue;
 
+extern void process_get_pid(void);
 extern void process_init(pcb_t *, voidfunc, priority p);  /* Initialize the a given process */  
 extern void initProcesses(void);		/* initialize all procs in the system */
 int scheduler(void);               /* pick the pid of the next to run process */

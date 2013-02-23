@@ -12,6 +12,9 @@
 #include "debug_print.h"
 
 
+void process_get_pid(void) {
+    return gp_current_process - &rg_all_processes[0];
+}
 
 void process_init(pcb_t * pcb, voidfunc func, priority p) 
 {
@@ -59,6 +62,7 @@ int scheduler(void)
 
 	/* Check to see if there is a blocked process that we can move to the ready state */
 	next_blocked = pq_front(&blocked_queue);
+    // TODO(sandy): we need logic if we are MSG_BLOCKED
 	if ( next_blocked != PQ_NOT_FOUND && mmu_can_alloc_mem() ) 
 	{
 		pq_enqueue(&priority_queue, next_blocked, rg_all_processes[next_blocked].p);
