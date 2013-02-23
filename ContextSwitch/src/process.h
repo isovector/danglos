@@ -44,7 +44,7 @@ pcb_t rg_all_processes[NUM_PROCESSES]; /* Array of all processes */
 p_queue priority_queue;	/* Priority Queue for scheduling processes */
 p_queue blocked_queue;
 
-extern void process_get_pid(void);
+extern int process_get_pid(void);
 extern void process_init(pcb_t *, voidfunc, priority p);  /* Initialize the a given process */  
 extern void initProcesses(void);		/* initialize all procs in the system */
 int scheduler(void);               /* pick the pid of the next to run process */

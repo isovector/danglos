@@ -12,7 +12,7 @@
 #include "debug_print.h"
 
 
-void process_get_pid(void) {
+int process_get_pid(void) {
     return gp_current_process - &rg_all_processes[0];
 }
 
