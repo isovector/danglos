@@ -10,7 +10,10 @@
 #define NUM_PROCESSES 7
 #define NUM_PRIORITIES 4
 
+#ifndef NULL
 #define NULL 0
+#endif
+
 #define INITIAL_xPSR 0x01000000    /* user process initial xPSR value */
 
 #include <stdint.h>
