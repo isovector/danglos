@@ -16,8 +16,7 @@ int process_get_pid(void) {
     return gp_current_process->m_pid;
 }
 
-
-voidfunc processes[NUM_PROCESSES] = { null_proc, proc_alloc1, proc_allocAll, proc_priority_one, proc_priority_two, null_proc, null_proc };
+proc_func processes[NUM_PROCESSES];
 void proc_wrapper(void)
 {
     processes[process_get_pid()]();
@@ -35,6 +34,8 @@ void process_init(pcb_t * pcb, voidfunc func, priority p)
 	}
 
 	/* initialize the first process	exception stack frame */
+    processes[x] = func;
+    
 	pcb->m_pid = x++;
 	pcb->m_state = NEW;
 	pcb->p = p;
@@ -47,7 +48,7 @@ void process_init(pcb_t * pcb, voidfunc func, priority p)
 	}
 	
 	*(--sp)  = INITIAL_xPSR;      /* user process initial xPSR */ 
-	*(--sp)  = (uint32_t) func;  /* PC contains t/he entry point of the process */
+	*(--sp)  = (uint32_t) proc_wrapper;  /* PC contains t/he entry point of the process */
 
 	for (i = 0; i < 6; i++) { /* R0-R3, R12 are cleared with 0 */
 		*(--sp) = 0x0;
@@ -143,25 +144,25 @@ int k_block_and_release_processor(void)
 void doMemoryTest(void){
     int i = 0;
 	/* Initialize the null process with the lowest priority */
-	process_init(&rg_all_processes[i], proc_wrapper, LOWEST);
+	process_init(&rg_all_processes[i], null_proc, LOWEST);
 	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
 	gp_current_process = &rg_all_processes[i++];
 	
-	process_init(&rg_all_processes[i], proc_wrapper, HIGH);
+	process_init(&rg_all_processes[i], proc_alloc1, HIGH);
 	pq_enqueue(&priority_queue, i, rg_all_processes[i++].p);
 	
-	process_init(&rg_all_processes[i], proc_wrapper, MED);
+	process_init(&rg_all_processes[i], proc_allocAll, MED);
 	pq_enqueue(&priority_queue, i, rg_all_processes[i++].p);
 	
-	process_init(&rg_all_processes[i], proc_wrapper, LOW);
+	process_init(&rg_all_processes[i], proc_priority_one, LOW);
 	pq_enqueue(&priority_queue, i, rg_all_processes[i++].p);
 	
-	process_init(&rg_all_processes[i], proc_wrapper, LOW);
+	process_init(&rg_all_processes[i], proc_priority_two, LOW);
 	pq_enqueue(&priority_queue, i, rg_all_processes[i++].p);
 	
 	for(; i < NUM_PROCESSES; ++i)
 	{
-		process_init(&rg_all_processes[i], proc_wrapper, LOWEST);
+		process_init(&rg_all_processes[i], null_proc, LOWEST);
 		pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
 	}
 	
