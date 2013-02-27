@@ -8,16 +8,18 @@
 #endif /* DEBUG_0 */
 
 #define NUM_PROCESSES 7
-#define NUM_PRIORITIES 4
 
+#ifndef NULL
 #define NULL 0
+#endif
+
 #define INITIAL_xPSR 0x01000000    /* user process initial xPSR value */
 
 #include <stdint.h>
 #include "p_queue/p_queue.h"
 
 /* process states, note we only assume three states in this example */
-typedef enum {NEW = 0, RDY, RUN, BLOCKED} proc_state_t;  
+typedef enum {NEW = 0, RDY, RUN, BLOCKED, MSG_BLOCKED} proc_state_t;  
 
 /*
   PCB data structure definition.
@@ -44,6 +46,7 @@ pcb_t rg_all_processes[NUM_PROCESSES]; /* Array of all processes */
 p_queue priority_queue;	/* Priority Queue for scheduling processes */
 p_queue blocked_queue;
 
+extern int process_get_pid(void);
 extern void process_init(pcb_t *, voidfunc, priority p);  /* Initialize the a given process */  
 extern void initProcesses(void);		/* initialize all procs in the system */
 int scheduler(void);               /* pick the pid of the next to run process */
@@ -51,6 +54,7 @@ int scheduler(void);               /* pick the pid of the next to run process */
 int k_release_process(void);       /* kernel release_process function */
 int k_set_priority(int, int);
 int k_set_my_priority(int);
+int k_get_priority(int);
 
 extern void proc_print(void);           /* user process 1 */
 extern void null_proc(void);
