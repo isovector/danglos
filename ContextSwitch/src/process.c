@@ -16,6 +16,14 @@ int process_get_pid(void) {
     return gp_current_process->m_pid;
 }
 
+
+voidfunc processes[NUM_PROCESSES] = { null_proc, proc_alloc1, proc_allocAll, proc_priority_one, proc_priority_two, null_proc, null_proc };
+void proc_wrapper(void)
+{
+    processes[process_get_pid()]();
+    gp_current_process->m_state = ZOMBIE;
+}
+
 void process_init(pcb_t * pcb, voidfunc func, priority p) 
 {
 	static int x = 0;
@@ -135,25 +143,25 @@ int k_block_and_release_processor(void)
 void doMemoryTest(void){
     int i = 0;
 	/* Initialize the null process with the lowest priority */
-	process_init(&rg_all_processes[i], null_proc, LOWEST);
+	process_init(&rg_all_processes[i], proc_wrapper, LOWEST);
 	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
 	gp_current_process = &rg_all_processes[i++];
 	
-	process_init(&rg_all_processes[i], proc_alloc1, HIGH);
+	process_init(&rg_all_processes[i], proc_wrapper, HIGH);
 	pq_enqueue(&priority_queue, i, rg_all_processes[i++].p);
 	
-	process_init(&rg_all_processes[i], proc_allocAll, MED);
+	process_init(&rg_all_processes[i], proc_wrapper, MED);
 	pq_enqueue(&priority_queue, i, rg_all_processes[i++].p);
 	
-	process_init(&rg_all_processes[i], proc_priority_one, LOW);
+	process_init(&rg_all_processes[i], proc_wrapper, LOW);
 	pq_enqueue(&priority_queue, i, rg_all_processes[i++].p);
 	
-	process_init(&rg_all_processes[i], proc_priority_two, LOW);
+	process_init(&rg_all_processes[i], proc_wrapper, LOW);
 	pq_enqueue(&priority_queue, i, rg_all_processes[i++].p);
 	
 	for(; i < NUM_PROCESSES; ++i)
 	{
-		process_init(&rg_all_processes[i], null_proc, LOWEST);
+		process_init(&rg_all_processes[i], proc_wrapper, LOWEST);
 		pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
 	}
 	

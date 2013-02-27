@@ -19,7 +19,7 @@
 #include "p_queue/p_queue.h"
 
 /* process states, note we only assume three states in this example */
-typedef enum {NEW = 0, RDY, RUN, BLOCKED, MSG_BLOCKED} proc_state_t;  
+typedef enum {NEW = 0, ZOMBIE, RDY, RUN, BLOCKED, MSG_BLOCKED} proc_state_t;  
 
 /*
   PCB data structure definition.
