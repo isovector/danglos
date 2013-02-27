@@ -1,10 +1,11 @@
 #include "queue.h"
+#include "error.h"
 
 int q_enqueue(queue_t *q, void* element) {
     int next = (q->end + 1) % MAX_QUEUE_LENGTH;
     
     if (next == q->start) {
-        return 1;
+        return ERR_Q_NO_SPACE;
     }
     
     q->data.elements[next] = element;

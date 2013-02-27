@@ -1,6 +1,7 @@
 #include "msg.h"
 #include "process.h"
 #include "queue.h"
+#include "error.h"
 
 queue_t inboxes[NUM_PROCESSES] = { 0 };
 
@@ -21,12 +22,14 @@ msg_envelope_t *msg_dequeue_msg(int pid) {
 }
 
 int msg_send_message(void *pmsg, int blocks) {
+    msg_envelope_t *msg = (msg_envelope_t*)pmsg;
+    pcb_t *recipient;
+
     if (msg->header.dest >= NUM_PROCESSES) {
-        return 1;
+        return ERR_MSG_BAD_PID;
     }
     
-    msg_envelope_t *msg = (msg_envelope_t*)pmsg;
-    pcb_t *recipient = &rg_all_processes[msg->header.dest];
+    recipient = &rg_all_processes[msg->header.dest];
     msg->header.src = process_get_pid();
 
     msg_enqueue_msg(msg);

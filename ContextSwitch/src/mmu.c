@@ -1,5 +1,6 @@
 #include "mmu.h"
 #include "rtx.h"
+#include "error.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -65,19 +66,19 @@ int s_release_memory_block(void* memory_block) {
     mem = (char*)memory_block;
     
     if (mem < (char*)MMU_MEMORY_START) {
-        return 1;
+        return ERR_MMU_EARLY_OFFSET;
     }
     
     index = mem - MMU_MEMORY_START;
     
     if (index % MMU_BLOCK_SIZE != 0) {
-        return 2;
+        return ERR_MMU_UNALIGNED_PTR;
     }
     
     index = getBitFromAddress(memory_block);
     
     if (get_bit(table.bitVector, index) == 0) {
-        return 3;
+        return ERR_MMU_ALREADY_FREE;
     }
     
     set_bit(table.bitVector, index, 0);
