@@ -16,7 +16,7 @@ int process_get_pid(void) {
     return gp_current_process->m_pid;
 }
 
-proc_func processes[NUM_PROCESSES];
+voidfunc processes[NUM_PROCESSES];
 void proc_wrapper(void)
 {
     processes[process_get_pid()]();
