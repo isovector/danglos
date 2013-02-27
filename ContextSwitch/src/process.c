@@ -19,7 +19,7 @@ int process_get_pid(void) {
 void process_init(pcb_t * pcb, voidfunc func, priority p) 
 {
 	static int x = 0;
-  	volatile int i;
+  	int i;
 	uint32_t * sp;
 	
 	if (pcb == NULL) {
@@ -82,8 +82,8 @@ int scheduler(void)
  */
 int k_release_processor(void)
 {
-	 volatile int pid;
-	 volatile proc_state_t state;
+	 int pid;
+	 proc_state_t state;
 	 pcb_t *p_pcb_old = NULL;
 
 	 pid = scheduler();
@@ -133,29 +133,25 @@ int k_block_and_release_processor(void)
 
 
 void doMemoryTest(void){
-		volatile int i = 0;
+    int i = 0;
 	/* Initialize the null process with the lowest priority */
 	process_init(&rg_all_processes[i], null_proc, LOWEST);
 	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
 	gp_current_process = &rg_all_processes[i++];
 	
 	process_init(&rg_all_processes[i], proc_alloc1, HIGH);
-	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
-	i++;
+	pq_enqueue(&priority_queue, i, rg_all_processes[i++].p);
 	
 	process_init(&rg_all_processes[i], proc_allocAll, MED);
-	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
-	i++;
+	pq_enqueue(&priority_queue, i, rg_all_processes[i++].p);
 	
 	process_init(&rg_all_processes[i], proc_priority_one, LOW);
-	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
-	i++;
+	pq_enqueue(&priority_queue, i, rg_all_processes[i++].p);
 	
 	process_init(&rg_all_processes[i], proc_priority_two, LOW);
-	pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
-	i++;
+	pq_enqueue(&priority_queue, i, rg_all_processes[i++].p);
 	
-	for(i; i < NUM_PROCESSES; ++i)
+	for(; i < NUM_PROCESSES; ++i)
 	{
 		process_init(&rg_all_processes[i], null_proc, LOWEST);
 		pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
@@ -174,14 +170,17 @@ void initProcesses(void)
 int k_set_priority(int p, int target) {
 	priority prio = rg_all_processes[target].p;
 	int ret = 0;
+    
 	ret = pq_move(&priority_queue, target, prio, (priority)p);
 	if(ret)
 	{
 		ret = pq_move(&blocked_queue, target, prio, (priority)p);
 	}
+    
 	rg_all_processes[target].p = (priority)p;
 	if((prio < p || (p < gp_current_process->p && target != gp_current_process->m_pid)) && !ret)
 		return k_release_processor();
+    
 	return ret;
 }
 

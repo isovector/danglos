@@ -34,11 +34,10 @@ void null_proc(void)
 
 void proc_print(void)
 {
-  while ( 1 ) {
-    uart0_put_string("\t(1) ping\n\r");
+    while ( 1 ) {
+        uart0_put_string("\t(1) ping\n\r");
 		release_processor();	
 	}
-
 }
 
 /* Starts high */
@@ -101,35 +100,37 @@ void proc_allocAll(void){
 	debugPrint("START");
 	debugPrint("total 2 tests");
 	
-	while(mmu_can_alloc_mem())
+	while (mmu_can_alloc_mem())
 	{
 		mem[i++] = s_request_memory_block();
 	}
+    
 	s_request_memory_block();
 	TEST_MEM_BLOCK = 1;
 	debugPrint("TEST 1 OK");
 	num_successful_tests++;
 	set_my_priority(3);
 	set_priority(0, 3);
-	while ( i >= 0 ) {
+    
+	while (i >= 0) {
 		s_release_memory_block(mem[--i]);
 	}
-	while ( 1 ) {
+    
+	for (;;) {
 		release_processor();
 	}
 }
 
 void proc_alloc1(void)
 {
-	
-	void*m = s_request_memory_block();
-	volatile int i = 1;
+	void* m = s_request_memory_block();
 	
 	set_my_priority(2);
 	release_processor();
 	s_release_memory_block(m);
 	set_my_priority(3);
-	while(i) {
+    
+	for (;;) {
 		release_processor();
 	}
 }
