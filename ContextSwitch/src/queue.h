@@ -3,13 +3,14 @@
 
 #include "mmu.h"
 
-#define MAX_QUEUE_LENGTH (MMU_BLOCK_SIZE - 2 * sizeof(size_t))
+#define MAX_QUEUE_SIZE (MMU_BLOCK_SIZE - 2 * sizeof(size_t))
+#define MAX_QUEUE_LENGTH (MAX_QUEUE_SIZE / sizeof(void*))
 
 typedef struct {
     size_t start, end;
     
     union {
-        char bytes[MAX_QUEUE_LENGTH];
+        char bytes[MAX_QUEUE_SIZE];
         void **elements;
     } data;
 } queue_t;
