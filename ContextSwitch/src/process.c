@@ -13,7 +13,7 @@
 
 
 int process_get_pid(void) {
-    return gp_current_process - &rg_all_processes[0];
+    return gp_current_process->m_pid;
 }
 
 void process_init(pcb_t * pcb, voidfunc func, priority p) 

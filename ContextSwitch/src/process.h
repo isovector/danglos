@@ -8,7 +8,6 @@
 #endif /* DEBUG_0 */
 
 #define NUM_PROCESSES 7
-#define NUM_PRIORITIES 4
 
 #ifndef NULL
 #define NULL 0

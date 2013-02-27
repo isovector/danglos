@@ -1,14 +1,30 @@
 #include "msg.h"
 #include "process.h"
+#include "queue.h"
+
+queue_t inboxes[NUM_PROCESSES] = { 0 };
 
 void msg_enqueue_msg(msg_envelope_t *msg) {
+    if (msg->header.dest >= NUM_PROCESSES) {
+        return;
+    }
+    
+    q_enqueue(&inboxes[msg->header.dest], (void*)msg);
 }
 
 msg_envelope_t *msg_dequeue_msg(int pid) {
-    return NULL;
+    if (pid >= NUM_PROCESSES) {
+        return NULL;
+    }
+    
+    return q_dequeue(&inboxes[pid]);
 }
 
 int msg_send_message(void *pmsg, int blocks) {
+    if (msg->header.dest >= NUM_PROCESSES) {
+        return 1;
+    }
+    
     msg_envelope_t *msg = (msg_envelope_t*)pmsg;
     pcb_t *recipient = &rg_all_processes[msg->header.dest];
     msg->header.src = process_get_pid();
