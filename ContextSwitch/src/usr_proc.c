@@ -25,15 +25,12 @@ int num_successful_tests = 0;
 
 extern void debugPrint(unsigned char *);
 
-extern uint32_t g_timer;
-
 
 void null_proc(void)
 {
 	while(1)
 	{
 		release_processor();
-		uart0_put_char((g_timer % 10) + '0');
 	}
 }
 

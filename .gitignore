@@ -1,12 +1,7 @@
-<<<<<<< HEAD
-a.out
 .svn
 *.o
 *.d
 *.bak
-=======
-# Object files
-*.o
 
 # Libraries
 *.lib
@@ -18,9 +13,7 @@ a.out
 *.so.*
 *.dylib
 
-# Executables
 *.exe
 *.out
 *.app
 p_queue
->>>>>>> 430c9a2a188f86d0bbf5927539c5454aaf0a55dd
