@@ -451,6 +451,11 @@
               <FileType>1</FileType>
               <FilePath>.\src\p_queue\p_queue.c</FilePath>
             </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\timer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -919,6 +924,11 @@
               <FileName>p_queue.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\p_queue\p_queue.c</FilePath>
+            </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\timer.c</FilePath>
             </File>
           </Files>
         </Group>

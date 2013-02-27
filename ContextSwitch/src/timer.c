@@ -1,7 +1,7 @@
 #include <LPC17xx.h>
 #include "timer.h"
 
-volatile int uint32_t g_timer = 0;
+volatile uint32_t g_timer = 0;
 
 void timer_init()
 {

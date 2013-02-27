@@ -16,6 +16,7 @@
 #endif  /* DEBUG_0 */
 #include "uart_polling.h"
 #include "rtx.h"
+#include "timer.h"
 
 extern void initMemory(void);
 extern void initProcesses(void);
@@ -26,6 +27,7 @@ int main()
   SystemInit();  /* initialize the system */
   __disable_irq();
   uart0_init();
+	timer_init();
 	initMemory();
   initProcesses();
   __enable_irq();

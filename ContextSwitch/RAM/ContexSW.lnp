@@ -1,4 +1,4 @@
---cpu Cortex-M3 ".\ram\startup_lpc17xx.o" ".\ram\uart_polling.o" ".\ram\retarget.o" ".\ram\system_lpc17xx.o" ".\ram\main_svc.o" ".\ram\process.o" ".\ram\hal.o" ".\ram\mmu.o" ".\ram\p_queue.o" ".\ram\usr_proc.o" 
+--cpu Cortex-M3 ".\ram\startup_lpc17xx.o" ".\ram\uart_polling.o" ".\ram\retarget.o" ".\ram\system_lpc17xx.o" ".\ram\main_svc.o" ".\ram\process.o" ".\ram\hal.o" ".\ram\mmu.o" ".\ram\p_queue.o" ".\ram\timer.o" ".\ram\usr_proc.o" 
 --strict --scatter ".\RAM\ContexSW.sct" 
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols 
 --info sizes --info totals --info unused --info veneers 
