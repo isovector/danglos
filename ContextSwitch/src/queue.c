@@ -8,7 +8,7 @@ int q_enqueue(queue_t *q, void* element) {
         return ERR_Q_NO_SPACE;
     }
     
-    q->data.elements[next] = element;
+    q->elements[next] = element;
     q->end = next;
     
     return 0;
@@ -21,7 +21,7 @@ void *q_dequeue(queue_t *q) {
         return NULL;
     }
     
-    element = q->data.elements[q->start];
+    element = q->elements[q->start];
     q->start = (q->start + 1) % MAX_QUEUE_LENGTH;
     
     return element;
