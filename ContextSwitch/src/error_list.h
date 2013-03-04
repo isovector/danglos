@@ -2,6 +2,6 @@ error(ERR_MMU_EARLY_OFFSET)
 error(ERR_MMU_UNALIGNED_PTR)
 error(ERR_MMU_ALREADY_FREE)
     
-error(ERR_MSG_BAD_PID)
+error(ERR_PROC_BAD_PID)
     
 error(ERR_Q_NO_SPACE)
