@@ -12,6 +12,10 @@
 #include "debug_print.h"
 
 
+int process_valid_pid(int pid) {
+    return pid >= 0 && pid < NUM_PROCESSES;
+}
+
 int process_get_pid(void) {
     return gp_current_process->m_pid;
 }
@@ -174,6 +178,27 @@ void initProcesses(void)
 	pq_init(&blocked_queue);
 	
 	doMemoryTest();
+}
+
+int k_set_msg_blocked(int target, int block) {
+    pcb_t *proc;
+    
+    if (!process_valid_pid(target))
+    {
+        return ERR_PROC_BAD_PID;
+    }
+    
+    proc = &rg_all_processes[target];
+    
+    if (block) {
+        proc->m_state = MSG_BLOCKED;
+        pq_remove(&priority_queue, target, proc->p);
+    } else {
+        proc->m_state = RDY;
+        pq_enqueue(&priority_queue, target, proc->p);
+    }
+    
+    return 0;
 }
 
 int k_set_priority(int p, int target) {

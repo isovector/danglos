@@ -25,7 +25,7 @@ int msg_send_message(void *pmsg, int blocks) {
     msg_envelope_t *msg = (msg_envelope_t*)pmsg;
     pcb_t *recipient;
 
-    if (msg->header.dest >= NUM_PROCESSES) {
+    if (!process_valid_pid(msg->header.dest)) {
         return ERR_MSG_BAD_PID;
     }
     
@@ -36,8 +36,7 @@ int msg_send_message(void *pmsg, int blocks) {
     
     if (recipient->m_state == MSG_BLOCKED)
     {
-        recipient->m_state = RDY;
-        
+        k_set_msg_blocked(recipient->m_pid, 0);
         if (blocks == 1 && recipient->p < gp_current_process->p)
         {
             release_processor();
@@ -69,7 +68,7 @@ void *receive_message(int *sender) {
         return msg;
     }
     
-    gp_current_process->m_state = MSG_BLOCKED;
+    k_set_msg_blocked(gp_current_process->m_pid, 1);
     release_processor();
     
     msg = msg_dequeue_msg(pid);
