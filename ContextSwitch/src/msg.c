@@ -26,7 +26,7 @@ int msg_send_message(void *pmsg, int blocks) {
     pcb_t *recipient;
 
     if (!process_valid_pid(msg->header.dest)) {
-        return ERR_MSG_BAD_PID;
+        return ERR_PROC_BAD_PID;
     }
     
     recipient = &rg_all_processes[msg->header.dest];
@@ -35,7 +35,7 @@ int msg_send_message(void *pmsg, int blocks) {
     msg_enqueue_msg(msg);
     
     if (recipient->m_state == MSG_BLOCKED)
-    {
+    {H
         k_set_msg_blocked(recipient->m_pid, 0);
         if (blocks == 1 && recipient->p < gp_current_process->p)
         {
