@@ -35,7 +35,7 @@ int msg_send_message(void *pmsg, int blocks) {
     msg_enqueue_msg(msg);
     
     if (recipient->m_state == MSG_BLOCKED)
-    {H
+    {
         k_set_msg_blocked(recipient->m_pid, 0);
         if (blocks == 1 && recipient->p < gp_current_process->p)
         {
