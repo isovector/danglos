@@ -43,6 +43,8 @@ void process_init(pcb_t * pcb, voidfunc func, priority p)
 	pcb->m_pid = x++;
 	pcb->m_state = NEW;
 	pcb->p = p;
+    
+    pcb->msg_head = pcb->msg_tail = NULL;
 
 	sp  = (void*)((char *)s_request_memory_block() + MMU_BLOCK_SIZE);
     
