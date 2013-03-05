@@ -3,6 +3,9 @@
 #include "queue.h"
 #include "error.h"
 
+extern volatile uint32_t g_clock;
+static msg_envelope_t * delay_msg_list = NULL;
+
 void msg_enqueue_msg(msg_envelope_t *msg, pcb_t *pcb) {
     if (!pcb->msg_head) {
         pcb->msg_head = pcb->msg_tail = msg;
@@ -11,6 +14,24 @@ void msg_enqueue_msg(msg_envelope_t *msg, pcb_t *pcb) {
         pcb->msg_tail = msg;
     }
 }
+
+void wait_enqueue_msg(msg_envelope_t * msg, pcb_t *pcb, int delay){
+	msg->delay = delay + g_clock;
+	if(!delay_msg_list){
+		delay_msg_list = msg;
+		
+	} else {
+		msg_envelope_t *prev = delay_msg_list;
+		while(prev->header.next && prev->header.next->delay < delay)
+		{
+			prev = prev->header.next;
+		}
+		msg->header.next = prev->header.next;
+		prev->header.next = msg;
+	}
+	
+}
+
 
 msg_envelope_t *msg_dequeue_msg(pcb_t *pcb) {
     msg_envelope_t *msg;
@@ -54,7 +75,7 @@ int msg_send_message(void *pmsg, int blocks) {
 }
 
 
-int send_message(int pid, void *pmsg) {
+int k_send_message(int pid, void *pmsg) {
     msg_envelope_t *msg = (msg_envelope_t*)pmsg;
     msg->header.dest = pid;
     msg_send_message(msg, 0);
@@ -85,7 +106,18 @@ void *receive_message(int *sender) {
     return msg;
 }
 
-int delayed_send(int pid, void *pmsg, int delay) {
+
+void msg_tick(uint32_t delay)
+{
+	int ret = 0;
+	while(!ret && delay_msg_list && delay_msg_list->delay <= delay)
+	{
+		ret = msg_send_message(delay_msg_list, 1);
+		delay_msg_list = delay_msg_list->header.next; 
+	}
+}
+
+int delayed_send(int pid, void *pmsg, uint32_t delay) {
     msg_envelope_t *msg = (msg_envelope_t*)pmsg;
     
     msg->header.dest = pid;

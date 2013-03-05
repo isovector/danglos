@@ -12,9 +12,10 @@
 ### List of Objects: adding '".\ram\p_queue.o"'
 ### List of Objects: adding '".\ram\timer.o"'
 ### List of Objects: adding '".\ram\msg.o"'
+### List of Objects: adding '".\ram\error.o"'
 ### List of Objects: adding '".\ram\usr_proc.o"'
 ### ADS-LD Command completed:
---cpu Cortex-M3 ".\ram\startup_lpc17xx.o" ".\ram\uart_polling.o" ".\ram\retarget.o" ".\ram\system_lpc17xx.o" ".\ram\main_svc.o" ".\ram\process.o" ".\ram\hal.o" ".\ram\mmu.o" ".\ram\p_queue.o" ".\ram\timer.o" ".\ram\msg.o" ".\ram\usr_proc.o" 
+--cpu Cortex-M3 ".\ram\startup_lpc17xx.o" ".\ram\uart_polling.o" ".\ram\retarget.o" ".\ram\system_lpc17xx.o" ".\ram\main_svc.o" ".\ram\process.o" ".\ram\hal.o" ".\ram\mmu.o" ".\ram\p_queue.o" ".\ram\timer.o" ".\ram\msg.o" ".\ram\error.o" ".\ram\usr_proc.o" 
 --strict --scatter ".\RAM\ContexSW.sct" 
 --summary_stderr --info summarysizes --map --xref --callgraph --symbols 
 --info sizes --info totals --info unused --info veneers 
@@ -22,10 +23,10 @@
 ### ADS-LD Output File: '.\RAM\ContexSW.axf'
 ### ADS-LD Command File: '.\RAM\ContexSW.lnp'
 ### Checking for dirty Components...
-### Creating CmdFile '.\RAM\ContexSW.lnp', Handle=0x00000478
+### Creating CmdFile '.\RAM\ContexSW.lnp', Handle=0x00000458
 ### Writing '.lnp' file
 ### ADS-LD Command file '.\RAM\ContexSW.lnp' is ready.
 ### ADS-LD: About to start ADS-LD Thread.
-### ADS-LD: executed with 3 errors
+### ADS-LD: executed with 0 errors
 ### Updating obj list
 ### LDADS_file() completed.

@@ -15,6 +15,8 @@ typedef struct {
 
 typedef struct message_envelope {
     msg_header_t header;
+		//used for delay_send
+		uint32_t delay;
     char data[MAX_MESSAGE_LENGTH];
 } msg_envelope_t;
 
@@ -23,6 +25,7 @@ extern void *receive_message(int *sender);
 
 // the lab manual says these should return an int, but doesn't say what
 extern int send_message(int pid, void *msg);
-extern int delayed_send(int pid, void *msg, int delay);
+extern int delayed_send(int pid, void *msg, uint32_t delay);
 
+void msg_tick(uint32_t);
 #endif

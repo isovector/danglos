@@ -2,6 +2,7 @@
 #include "timer.h"
 
 volatile uint32_t g_clock = 0;
+extern void msg_tick(uint32_t);
 
 void timer_init()
 {
@@ -28,4 +29,5 @@ void c_TIMER0_IRQHandler(void)
 	LPC_TIM0->IR = 1;  
 	
 	++g_clock;
+	msg_tick(g_clock);
 }
