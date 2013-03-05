@@ -1,5 +1,5 @@
-#include "msg.h"
 #include "process.h"
+#include "msg.h"
 #include "queue.h"
 #include "error.h"
 
@@ -46,7 +46,7 @@ int msg_send_message(void *pmsg, int blocks) {
         k_set_msg_blocked(recipient->m_pid, 0);
         if (blocks == 1 && recipient->p < gp_current_process->p)
         {
-            k_release_process();
+            k_release_processor();
         }
     }
     
@@ -75,7 +75,7 @@ void *receive_message(int *sender) {
     }
     
     k_set_msg_blocked(gp_current_process->m_pid, 1);
-    k_release_process();
+    k_release_processor();
     
     msg = msg_dequeue_msg(gp_current_process);
     if (sender) 

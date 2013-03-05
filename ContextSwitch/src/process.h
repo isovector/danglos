@@ -56,7 +56,7 @@ extern void process_init(pcb_t *, voidfunc, priority p);  /* Initialize the a gi
 extern void initProcesses(void);		/* initialize all procs in the system */
 int scheduler(void);               /* pick the pid of the next to run process */
 
-int k_release_process(void);       /* kernel release_process function */
+int k_release_processor(void);       /* kernel release_process function */
 int k_set_msg_blocked(int pid, int block);
 int k_set_priority(int, int);
 int k_set_my_priority(int);
