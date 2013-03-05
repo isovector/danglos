@@ -3,23 +3,29 @@
 #include "queue.h"
 #include "error.h"
 
-queue_t inboxes[NUM_PROCESSES] = { 0 };
-extern volatile uint32_t g_clock;
-
-void msg_enqueue_msg(msg_envelope_t *msg) {
-    if (msg->header.dest >= NUM_PROCESSES) {
-        return;
+void msg_enqueue_msg(msg_envelope_t *msg, pcb_t *pcb) {
+    if (!pcb->msg_head) {
+        pcb->msg_head = pcb->msg_tail = msg;
+    } else {
+        pcb->msg_tail->header.next = msg;
+        pcb->msg_tail = msg;
     }
-    
-    q_enqueue(&inboxes[msg->header.dest], (void*)msg);
 }
 
-msg_envelope_t *msg_dequeue_msg(int pid) {
-    if (pid >= NUM_PROCESSES) {
+msg_envelope_t *msg_dequeue_msg(pcb_t *pcb) {
+    msg_envelope_t *msg;
+    
+    if (!pcb->msg_head) {
         return NULL;
     }
     
-    return q_dequeue(&inboxes[pid]);
+    msg = pcb->msg_head;
+    pcb->msg_head = msg->header.next;
+    if (!msg->header.next) {
+        pcb->msg_tail = NULL;
+    }
+    
+    return msg;
 }
 
 int msg_send_message(void *pmsg, int blocks) {
@@ -33,7 +39,7 @@ int msg_send_message(void *pmsg, int blocks) {
     recipient = &rg_all_processes[msg->header.dest];
     msg->header.src = process_get_pid();
 
-    msg_enqueue_msg(msg);
+    msg_enqueue_msg(msg, recipient);
     
     if (recipient->m_state == MSG_BLOCKED)
     {
@@ -57,8 +63,7 @@ int send_message(int pid, void *pmsg) {
 }
 
 void *receive_message(int *sender) {
-    int pid = process_get_pid();
-    msg_envelope_t *msg = msg_dequeue_msg(pid);
+    msg_envelope_t *msg = msg_dequeue_msg(gp_current_process);
     
     if (msg)
     {
@@ -72,7 +77,7 @@ void *receive_message(int *sender) {
     k_set_msg_blocked(gp_current_process->m_pid, 1);
     k_release_process();
     
-    msg = msg_dequeue_msg(pid);
+    msg = msg_dequeue_msg(gp_current_process);
     if (sender) 
     {
         *sender = msg->header.src;

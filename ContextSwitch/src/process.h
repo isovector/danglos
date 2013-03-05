@@ -18,6 +18,8 @@
 #include <stdint.h>
 #include "p_queue/p_queue.h"
 
+#include "msg.h"
+
 /* process states, note we only assume three states in this example */
 typedef enum {NEW = 0, ZOMBIE, RDY, RUN, BLOCKED, MSG_BLOCKED} proc_state_t;  
 
@@ -27,11 +29,12 @@ typedef enum {NEW = 0, ZOMBIE, RDY, RUN, BLOCKED, MSG_BLOCKED} proc_state_t;
   in order to finish P1 and the entire project 
 */
 typedef struct pcb { 
-  //struct pcb *mp_next;     /* next pcb, not used in this example, RTX project most likely will need it, keep here for reference */  
-  uint32_t *mp_sp;         /* stack pointer of the process */
-  uint32_t m_pid;          /* process id */
-  proc_state_t m_state;    /* state of the process */     
-  priority p;
+    //struct pcb *mp_next;     /* next pcb, not used in this example, RTX project most likely will need it, keep here for reference */  
+    uint32_t *mp_sp;         /* stack pointer of the process */
+    uint32_t m_pid;          /* process id */
+    proc_state_t m_state;    /* state of the process */     
+    priority p;
+    msg_envelope_t *msg_head, *msg_tail;
 } pcb_t;
 
 typedef void (*voidfunc)(void);
