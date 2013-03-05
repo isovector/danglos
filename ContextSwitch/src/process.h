@@ -46,12 +46,15 @@ pcb_t rg_all_processes[NUM_PROCESSES]; /* Array of all processes */
 p_queue priority_queue;	/* Priority Queue for scheduling processes */
 p_queue blocked_queue;
 
+extern int process_valid_pid(int pid);
+
 extern int process_get_pid(void);
 extern void process_init(pcb_t *, voidfunc, priority p);  /* Initialize the a given process */  
 extern void initProcesses(void);		/* initialize all procs in the system */
 int scheduler(void);               /* pick the pid of the next to run process */
 
 int k_release_process(void);       /* kernel release_process function */
+int k_set_msg_blocked(int pid, int block);
 int k_set_priority(int, int);
 int k_set_my_priority(int);
 int k_get_priority(int);
