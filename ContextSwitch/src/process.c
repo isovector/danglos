@@ -2,6 +2,7 @@
 #include "uart_polling.h"
 #include "process.h"
 #include "p_queue/p_queue.h"
+#include "error.h"
 #define MEMORY_BLOCKS_TEST
  
 #ifdef DEBUG_0
@@ -11,6 +12,10 @@
 #include "mmu.h"
 #include "debug_print.h"
 
+pcb_t  *gp_current_process = NULL;
+pcb_t rg_all_processes[NUM_PROCESSES] = {0};
+p_queue priority_queue;
+p_queue blocked_queue;
 
 int process_valid_pid(int pid) {
     return pid >= 0 && pid < NUM_PROCESSES;

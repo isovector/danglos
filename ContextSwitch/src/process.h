@@ -39,12 +39,12 @@ typedef void (*voidfunc)(void);
 /*
 An array of pointers to all of the processses
 */
-pcb_t  *gp_current_process = NULL; /* always point to the current process */
+extern pcb_t  *gp_current_process; /* always point to the current process */
 
-pcb_t rg_all_processes[NUM_PROCESSES]; /* Array of all processes */
+extern pcb_t rg_all_processes[NUM_PROCESSES]; /* Array of all processes */
 
-p_queue priority_queue;	/* Priority Queue for scheduling processes */
-p_queue blocked_queue;
+extern p_queue priority_queue;	/* Priority Queue for scheduling processes */
+extern p_queue blocked_queue;
 
 extern int process_valid_pid(int pid);
 

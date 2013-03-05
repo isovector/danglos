@@ -1,7 +1,7 @@
 #include <LPC17xx.h>
 #include "timer.h"
 
-volatile uint32_t g_timer = 0;
+volatile uint32_t g_clock = 0;
 
 void timer_init()
 {
@@ -9,7 +9,7 @@ void timer_init()
 	pTimer->PR = 12499;
 	pTimer->MR0 = 1;
 	pTimer->MCR = 3;
-	g_timer = 0;
+	g_clock = 0;
 	NVIC_EnableIRQ(TIMER0_IRQn);
 	pTimer->TCR = 1;
 }
@@ -27,5 +27,5 @@ void c_TIMER0_IRQHandler(void)
 	/* ack inttrupt, see section  21.6.1 on pg 493 of LPC17XX_UM */
 	LPC_TIM0->IR = 1;  
 	
-	++g_timer;
+	++g_clock;
 }

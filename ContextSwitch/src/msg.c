@@ -4,6 +4,7 @@
 #include "error.h"
 
 queue_t inboxes[NUM_PROCESSES] = { 0 };
+extern volatile uint32_t g_clock;
 
 void msg_enqueue_msg(msg_envelope_t *msg) {
     if (msg->header.dest >= NUM_PROCESSES) {
@@ -39,7 +40,7 @@ int msg_send_message(void *pmsg, int blocks) {
         k_set_msg_blocked(recipient->m_pid, 0);
         if (blocks == 1 && recipient->p < gp_current_process->p)
         {
-            release_processor();
+            k_release_process();
         }
     }
     
@@ -69,7 +70,7 @@ void *receive_message(int *sender) {
     }
     
     k_set_msg_blocked(gp_current_process->m_pid, 1);
-    release_processor();
+    k_release_process();
     
     msg = msg_dequeue_msg(pid);
     if (sender) 
