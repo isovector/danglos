@@ -8,7 +8,7 @@
 #include "rtx.h"
 #include "uart_polling.h"
 #include "mmu.h"
-#include "p_queue/p_queue.h"
+#include "p_queue.h"
 
 #ifdef DEBUG_0
 #include <stdio.h>

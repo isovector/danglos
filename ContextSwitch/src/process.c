@@ -1,7 +1,7 @@
 #include <LPC17xx.h>
 #include "uart_polling.h"
 #include "process.h"
-#include "p_queue/p_queue.h"
+#include "p_queue.h"
 #define MEMORY_BLOCKS_TEST
  
 #ifdef DEBUG_0
