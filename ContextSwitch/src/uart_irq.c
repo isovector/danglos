@@ -205,7 +205,7 @@ void c_UART0_IRQHandler(void)
 	}	
 }
 
-void uart_send_string( uint32_t n_uart, uint8_t *p_buffer, uint32_t len )
+void uart_send_string( uint32_t n_uart, uint8_t *p_buffer)
 {
 	LPC_UART_TypeDef *pUart;
 
@@ -215,13 +215,12 @@ void uart_send_string( uint32_t n_uart, uint8_t *p_buffer, uint32_t len )
 		return;
 	}
 
-	while ( len != 0 ) {
+	while ( *p_buffer != 0 ) {
 		/* THRE status, contain valid data  */
 		while ( !(g_UART0_TX_empty & 0x01) );	
 		pUart->THR = *p_buffer;
 		g_UART0_TX_empty = 0;  // not empty in the THR until it shifts out
 		p_buffer++;
-		len--;
 	}
 	return;
 }

@@ -52,10 +52,12 @@
 			
 
 #define uart0_init() uart_init(0)	
+
+#define uart0_send_string(s)  uart_send_string(0, s)
      
 int uart_init(int n_uart); /* initialize the n_uart, interrupt driven */
 
 /* write a string to the n_uart */
-void uart_send_string( uint32_t n_uart, uint8_t *p_buffer, uint32_t len );
+void uart_send_string( uint32_t n_uart, uint8_t *p_buffer);
 
 #endif /* ! _UART_H_ */
