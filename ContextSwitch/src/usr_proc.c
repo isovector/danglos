@@ -6,7 +6,7 @@
  */
 
 #include "rtx.h"
-#include "uart_polling.h"
+#include "uart.h"
 #include "mmu.h"
 #include "p_queue/p_queue.h"
 
@@ -37,7 +37,7 @@ void null_proc(void)
 void proc_print(void)
 {
     while ( 1 ) {
-        uart0_put_string("\t(1) ping\n\r");
+        uart_send_string(0, "\t(1) ping\n\r");
 		release_processor();	
 	}
 }
@@ -61,13 +61,14 @@ void proc_priority_one (void)
 	} else {
 		debugPrint("TEST 2 FAIL");
 	}
-	uart0_put_string("G019_test: ");
-	uart0_put_char(num_successful_tests + '0');
-	uart0_put_string("/2 tests OK\r\n");
 	
-	uart0_put_string("G019_test: ");
-	uart0_put_char((2 - num_successful_tests) + '0');
-	uart0_put_string("/2 tests FAIL\r\n");
+	uart0_send_string("G019_test: ");
+	//uart0_send_string(num_successful_tests + '0');
+	uart0_send_string("/2 tests OK\r\n");
+	
+	uart0_send_string("G019_test: ");
+	//uart0_send_string((2 - num_successful_tests) + '0');
+	uart0_send_string("/2 tests FAIL\r\n");
 	
 	debugPrint("END");
 	while ( 1 ) {
