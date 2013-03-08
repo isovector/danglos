@@ -9,6 +9,9 @@
 #include "uart.h"
 #include "mmu.h"
 #include "p_queue/p_queue.h"
+#include "cmd.h"
+#include "msg.h"
+#include "process.h"
 
 #ifdef DEBUG_0
 #include <stdio.h>
@@ -136,4 +139,39 @@ void proc_alloc1(void)
 	for (;;) {
 		release_processor();
 	}
+}
+
+
+static volatile size_t clock_h = 0, clock_m = 0, clock_s = 0;
+void ucmd_set_time(const char *data) {
+    //TODO(sandy): jesus this is ugly
+    clock_h = (data[0] - '0') * 10 + (data[1] - '0');
+    clock_m = (data[3] - '0') * 10 + (data[4] - '0');
+    clock_s = (data[5] - '0') * 10 + (data[6] - '0');
+}
+
+void proc_clock(void)
+{
+    msg_envelope_t *msg;
+    cmd_register("HS", ucmd_set_time);
+    
+    msg = (msg_envelope_t*)s_request_memory_block();
+    for (;;)
+    {
+        delayed_send(process_get_pid(), msg, 1);
+        receive_message(NULL);
+        
+        if (++clock_s >= 60)
+        {
+            clock_s = 0;
+            if (++clock_m >= 60)
+            {
+                clock_m = 0;
+                if (++clock_h >= 24)
+                {
+                    clock_h = 0;
+                }
+            }
+        }
+    }
 }

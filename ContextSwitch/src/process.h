@@ -62,7 +62,8 @@ int k_set_priority(int, int);
 int k_set_my_priority(int);
 int k_get_priority(int);
 
-extern void proc_print(void);           /* user process 1 */
+extern void proc_print(void);           /*user process 1 */
+extern void proc_clock(void);
 extern void null_proc(void);
 extern void proc_alloc1(void);
 extern void proc_priority_one(void);
