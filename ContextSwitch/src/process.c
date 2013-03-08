@@ -27,10 +27,10 @@ int proc_get_pid(void)
     return current_process->pid;
 }
 
-uproc_func processes[NUM_PROCESSES];
+uproc_func proc_funcs[NUM_PROCESSES];
 void proc_wrapper(void)
 {
-    processes[proc_get_pid()]();
+    proc_funcs[proc_get_pid()]();
     current_process->state = ZOMBIE;
 }
 
@@ -45,7 +45,7 @@ void process_init(pcb_t *pcb, uproc_func func, priority_t p)
     }
 
     /* initialize the first process	exception stack frame */
-    processes[x] = func;
+    proc_funcs[x] = func;
 
     pcb->pid = x++;
     pcb->state = NEW;

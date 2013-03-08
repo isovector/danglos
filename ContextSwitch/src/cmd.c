@@ -1,5 +1,5 @@
 #include "cmd.h"
-
+#include "debug_print.h"
 static cmd_func COMMANDS[NUM_COMMANDS] = { NULL };
 
 size_t hash(const char *tag)

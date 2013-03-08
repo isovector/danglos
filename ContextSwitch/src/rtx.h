@@ -28,7 +28,7 @@ extern int k_set_my_priority(int priority);
 int __SVC_0 _set_my_priority(U32 p_func, int priority_t);
 
 extern int k_cmd_register(const char *tag, void (*func)(const char *args));
-#define cmd_register(tag, priority_t) _cmd_register((U32)k_cmd_register, priority_t)
+#define cmd_register(tag, func) _cmd_register((U32)k_cmd_register, tag, func)
 int __SVC_0 _cmd_register(U32 p_func, const char *tag, void (*func)(const char *args));
 
 #endif /* !_RTX_H_ */

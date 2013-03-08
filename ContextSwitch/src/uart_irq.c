@@ -171,7 +171,7 @@ void c_UART0_IRQHandler(void)
         if (inputChar == '\n')
         {
             g_UART0_buffer[g_UART0_count] = 0;
-            k_cmd_send(&g_UART0_buffer[0])
+            k_cmd_send((char*)&g_UART0_buffer[0]);
             g_UART0_count = 0;
         } else {
 			g_UART0_buffer[g_UART0_count++] = inputChar; 
@@ -208,7 +208,7 @@ void c_UART0_IRQHandler(void)
             if (inputChar == '\n')
             {
                 g_UART0_buffer[g_UART0_count] = 0;
-                k_cmd_send(&g_UART0_buffer[0])
+                k_cmd_send((char*)&g_UART0_buffer[0]);
                 g_UART0_count = 0;
             } else {
     			g_UART0_buffer[g_UART0_count++] = inputChar; 
