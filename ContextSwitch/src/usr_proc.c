@@ -47,6 +47,7 @@ void uproc_print(void)
 /* Starts high */
 void uproc_priority1(void)
 {
+		char cnum[2] = {0};
     while (i < 10) {
         i++;
         release_processor();
@@ -67,12 +68,13 @@ void uproc_priority1(void)
         debugPrint("TEST 2 FAIL");
     }
 
+		cnum[0] = num_successful_tests + '0';
     uart0_send_string("G019_test: ");
-    //uart0_send_string(num_successful_tests + '0');
+    uart0_send_string((uint8_t *)cnum);
     uart0_send_string("/2 tests OK\r\n");
-
+		cnum[0] = (2 - num_successful_tests) + '0';
     uart0_send_string("G019_test: ");
-    //uart0_send_string((2 - num_successful_tests) + '0');
+    uart0_send_string((uint8_t *)cnum);
     uart0_send_string("/2 tests FAIL\r\n");
 
     debugPrint("END");

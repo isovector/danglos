@@ -168,7 +168,7 @@ void c_UART0_IRQHandler(void)
 
 	if (IIR_IntId & IIR_RDA) { /* Receive Data Avaialbe */
         inputChar = pUart->RBR;
-        if (inputChar == '\n')
+        if (inputChar == '\r' || inputChar == '\n')
         {
             g_UART0_buffer[g_UART0_count] = 0;
             k_cmd_send((char*)&g_UART0_buffer[0]);
@@ -205,7 +205,7 @@ void c_UART0_IRQHandler(void)
 		if (LSR_Val & LSR_RDR) { /* Receive Data Ready */
 			/* read from the uart */
             inputChar = pUart->RBR;
-            if (inputChar == '\n')
+            if (inputChar == '\r' || inputChar == '\n')
             {
                 g_UART0_buffer[g_UART0_count] = 0;
                 k_cmd_send((char*)&g_UART0_buffer[0]);
