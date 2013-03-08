@@ -1,5 +1,6 @@
 #include <LPC17xx.h>
 #include "timer.h"
+#include "process.h"
 
 volatile uint32_t g_clock = 0;
 extern void msg_tick(uint32_t);
@@ -30,4 +31,6 @@ void c_TIMER0_IRQHandler(void)
 	
 	++g_clock;
 	msg_tick(g_clock);
+	if(0 == g_clock % TIMER_SLICE)
+		k_release_processor();
 }
