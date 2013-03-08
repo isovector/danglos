@@ -24,3 +24,6 @@
 *.plg
 *.map
 *.tra
+nbproject/
+*.htm
+*.plg
