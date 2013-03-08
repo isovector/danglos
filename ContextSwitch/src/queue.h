@@ -10,7 +10,7 @@ typedef struct {
     void *elements[MAX_QUEUE_LENGTH];
 } queue_t;
 
-int q_enqueue(queue_t *q, void* element);
+int q_enqueue(queue_t *q, void *element);
 void *q_dequeue(queue_t *q);
 
 #endif

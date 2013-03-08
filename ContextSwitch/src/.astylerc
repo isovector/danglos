@@ -1,0 +1,13 @@
+style=1tbs
+-s4
+indent-switches
+indent-preprocessor
+min-conditional-indent=0
+break-blocks
+unpad-paren
+pad-oper
+pad-header
+add-brackets
+align-pointer=name
+
+

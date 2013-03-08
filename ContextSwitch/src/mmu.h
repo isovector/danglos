@@ -6,12 +6,12 @@
 #include <string.h>
 
 #if EMULATION_MODE
-    #define MMU_MEMORY_SIZE 0x8000
-    char MMU_MEMORY_START[MMU_MEMORY_SIZE];
+#define MMU_MEMORY_SIZE 0x8000
+char MMU_MEMORY_START[MMU_MEMORY_SIZE];
 #else
-    extern unsigned int Image$$RW_IRAM1$$ZI$$Limit;
-    #define MMU_MEMORY_SIZE 0x8000
-    #define MMU_MEMORY_START ((char*)&Image$$RW_IRAM1$$ZI$$Limit)
+extern unsigned int Image$$RW_IRAM1$$ZI$$Limit;
+#define MMU_MEMORY_SIZE 0x8000
+#define MMU_MEMORY_START ((char*)&Image$$RW_IRAM1$$ZI$$Limit)
 #endif
 
 #define MMU_BLOCK_SIZE 512
@@ -30,6 +30,6 @@ typedef struct memory_table {
 extern void mmu_init(void);
 extern void *s_request_memory_block(void);
 extern int mmu_can_alloc_mem(void);
-extern int s_release_memory_block(void*);
+extern int s_release_memory_block(void *);
 
 #endif

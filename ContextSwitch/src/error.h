@@ -3,11 +3,11 @@
 
 typedef enum {
     SUCCESS = 0,
-    
+
 #define error(m) m,
 #include "error_list.h"
 #undef error
-    
+
 } error_t;
 
 

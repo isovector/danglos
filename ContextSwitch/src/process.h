@@ -21,18 +21,18 @@
 #include "msg.h"
 
 /* process states, note we only assume three states in this example */
-typedef enum {NEW = 0, ZOMBIE, RDY, RUN, BLOCKED, MSG_BLOCKED} proc_state_t;  
+typedef enum {NEW = 0, ZOMBIE, RDY, RUN, BLOCKED, MSG_BLOCKED} proc_state_t;
 
 /*
   PCB data structure definition.
   You may want to add your own member variables
-  in order to finish P1 and the entire project 
+  in order to finish P1 and the entire project
 */
-typedef struct pcb { 
-    //struct pcb *mp_next;     /* next pcb, not used in this example, RTX project most likely will need it, keep here for reference */  
+typedef struct pcb {
+    //struct pcb *mp_next;     /* next pcb, not used in this example, RTX project most likely will need it, keep here for reference */
     uint32_t *mp_sp;         /* stack pointer of the process */
     uint32_t m_pid;          /* process id */
-    proc_state_t m_state;    /* state of the process */     
+    proc_state_t m_state;    /* state of the process */
     priority p;
     msg_envelope_t *msg_head, *msg_tail;
 } pcb_t;
@@ -52,7 +52,7 @@ extern p_queue blocked_queue;
 extern int process_valid_pid(int pid);
 
 extern int process_get_pid(void);
-extern void process_init(pcb_t *, voidfunc, priority p);  /* Initialize the a given process */  
+extern void process_init(pcb_t *, voidfunc, priority p);  /* Initialize the a given process */
 extern void initProcesses(void);		/* initialize all procs in the system */
 int scheduler(void);               /* pick the pid of the next to run process */
 

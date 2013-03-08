@@ -31,119 +31,125 @@ extern void debugPrint(unsigned char *);
 
 void null_proc(void)
 {
-	while(1)
-	{
-		release_processor();
-	}
+    while (1) {
+        release_processor();
+    }
 }
 
 void proc_print(void)
 {
-    while ( 1 ) {
+    while (1) {
         uart_send_string(0, "\t(1) ping\n\r");
-		release_processor();	
-	}
+        release_processor();
+    }
 }
 
 /* Starts high */
-void proc_priority_one (void)
+void proc_priority_one(void)
 {
-	while ( i < 10 ) {
-		i++;
-		release_processor();
-		if ( j > 0 ) {
-			set_my_priority(3);
-		}
-	}
-	set_my_priority(3);
-	set_priority(0, 4);
-	release_processor();
-	if ( i == 10 && j == 10 ) {
-		debugPrint("TEST 2 OK");
-		num_successful_tests++;
-	} else {
-		debugPrint("TEST 2 FAIL");
-	}
-	
-	uart0_send_string("G019_test: ");
-	//uart0_send_string(num_successful_tests + '0');
-	uart0_send_string("/2 tests OK\r\n");
-	
-	uart0_send_string("G019_test: ");
-	//uart0_send_string((2 - num_successful_tests) + '0');
-	uart0_send_string("/2 tests FAIL\r\n");
-	
-	debugPrint("END");
-	while ( 1 ) {
-		release_processor();
-	}
+    while (i < 10) {
+        i++;
+        release_processor();
+
+        if (j > 0) {
+            set_my_priority(3);
+        }
+    }
+
+    set_my_priority(3);
+    set_priority(0, 4);
+    release_processor();
+
+    if (i == 10 && j == 10) {
+        debugPrint("TEST 2 OK");
+        num_successful_tests++;
+    } else {
+        debugPrint("TEST 2 FAIL");
+    }
+
+    uart0_send_string("G019_test: ");
+    //uart0_send_string(num_successful_tests + '0');
+    uart0_send_string("/2 tests OK\r\n");
+
+    uart0_send_string("G019_test: ");
+    //uart0_send_string((2 - num_successful_tests) + '0');
+    uart0_send_string("/2 tests FAIL\r\n");
+
+    debugPrint("END");
+
+    while (1) {
+        release_processor();
+    }
 }
 
 /* Starts low */
-void proc_priority_two (void)
+void proc_priority_two(void)
 {
-	while ( j < 10 ) {
-		j++;
-		release_processor();
-		if ( i != 10 ) {
-			set_my_priority(3);
-		}
-	}
-	set_my_priority(3);
-	set_priority(0, 3);
-	release_processor();
-	
-	while ( 1 ) {
-		release_processor();
-	}
+    while (j < 10) {
+        j++;
+        release_processor();
+
+        if (i != 10) {
+            set_my_priority(3);
+        }
+    }
+
+    set_my_priority(3);
+    set_priority(0, 3);
+    release_processor();
+
+    while (1) {
+        release_processor();
+    }
 
 }
 
-void proc_allocAll(void){
-	void* mem[100];
-	volatile int i = 0;
-	
-	debugPrint("START");
-	debugPrint("total 2 tests");
-	
-	while (mmu_can_alloc_mem())
-	{
-		mem[i++] = s_request_memory_block();
-	}
-    
-	s_request_memory_block();
-	TEST_MEM_BLOCK = 1;
-	debugPrint("TEST 1 OK");
-	num_successful_tests++;
-	set_my_priority(3);
-	set_priority(0, 3);
-    
-	while (i >= 0) {
-		s_release_memory_block(mem[--i]);
-	}
-    
-	for (;;) {
-		release_processor();
-	}
+void proc_allocAll(void)
+{
+    void *mem[100];
+    volatile int i = 0;
+
+    debugPrint("START");
+    debugPrint("total 2 tests");
+
+    while (mmu_can_alloc_mem()) {
+        mem[i++] = s_request_memory_block();
+    }
+
+    s_request_memory_block();
+    TEST_MEM_BLOCK = 1;
+    debugPrint("TEST 1 OK");
+    num_successful_tests++;
+    set_my_priority(3);
+    set_priority(0, 3);
+
+    while (i >= 0) {
+        s_release_memory_block(mem[--i]);
+    }
+
+    for (;;) {
+        release_processor();
+    }
 }
 
 void proc_alloc1(void)
 {
-	void* m = s_request_memory_block();
-	
-	set_my_priority(2);
-	release_processor();
-	s_release_memory_block(m);
-	set_my_priority(3);
-    
-	for (;;) {
-		release_processor();
-	}
+    void *m = s_request_memory_block();
+
+    set_my_priority(2);
+    release_processor();
+    s_release_memory_block(m);
+    set_my_priority(3);
+
+    for (;;) {
+        release_processor();
+    }
 }
 
 
 static volatile size_t clock_h = 0, clock_m = 0, clock_s = 0;
-void ucmd_set_time(const char *data) {
+void ucmd_set_time(const char *data)
+{
     //TODO(sandy): jesus this is ugly
     clock_h = (data[0] - '0') * 10 + (data[1] - '0');
     clock_m = (data[3] - '0') * 10 + (data[4] - '0');
@@ -154,21 +160,20 @@ void proc_clock(void)
 {
     msg_envelope_t *msg;
     cmd_register("HS", ucmd_set_time);
-    
-    msg = (msg_envelope_t*)s_request_memory_block();
-    for (;;)
-    {
+
+    msg = (msg_envelope_t *)s_request_memory_block();
+
+    for (;;) {
         delayed_send(process_get_pid(), msg, 1);
         receive_message(NULL);
-        
-        if (++clock_s >= 60)
-        {
+
+        if (++clock_s >= 60) {
             clock_s = 0;
-            if (++clock_m >= 60)
-            {
+
+            if (++clock_m >= 60) {
                 clock_m = 0;
-                if (++clock_h >= 24)
-                {
+
+                if (++clock_h >= 24) {
                     clock_h = 0;
                 }
             }
