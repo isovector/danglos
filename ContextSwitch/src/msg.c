@@ -16,7 +16,7 @@ void msg_enqueue_msg(msg_envelope_t *msg, pcb_t *pcb)
     }
 }
 
-void wait_enqueue_msg(msg_envelope_t *msg, pcb_t *pcb, int delay)
+void wait_enqueue_msg(msg_envelope_t *msg, int delay)
 {
     msg->delay = delay + g_clock;
 
@@ -130,8 +130,7 @@ int delayed_send(int pid, void *pmsg, uint32_t delay)
     msg_envelope_t *msg = (msg_envelope_t *)pmsg;
 
     msg->header.dest = pid;
-    msg_send_message(msg, 1);
-    // TODO(sandy): make this actually wait :D
+		wait_enqueue_msg(msg, delay);
 
     return 0;
 }
