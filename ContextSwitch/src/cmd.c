@@ -5,9 +5,9 @@ static cmd_func COMMANDS[NUM_COMMANDS] = { NULL };
 size_t hash(const char *tag)
 {
     int h = 1;
-    const char *c = &tag[0];
+    const char *c = tag;
 
-    while (c) {
+    while (c && *c) {
         h <<= (*c % 4);
         h |= *c;
         h = ~(h ^ -h);
