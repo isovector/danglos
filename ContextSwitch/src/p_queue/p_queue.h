@@ -16,7 +16,7 @@ typedef enum {
 	LOW 	= 2,
 	LOWEST	= 3,
 	N_PRIORITIES = 4	/* Not a real priority, used as a constant to represent the number of priorities */
-} priority;
+} priority_t;
 
 typedef struct {
 	QUEUE_TYPE elems[N_ELEMS * N_PRIORITIES];	/* Queue memory */
@@ -28,12 +28,12 @@ typedef struct {
 void pq_init( p_queue* pq );	/* Call before using the PQ */
 
 /* enqueue, dequeue and move return PQ_SUCCESS and PQ_FAILURE on success and failure respectively */
-int pq_enqueue ( p_queue* pq, QUEUE_TYPE val, priority p );	/* add an element with the given priority */
+int pq_enqueue ( p_queue* pq, QUEUE_TYPE val, priority_t p );	/* add an element with the given priority */
 int pq_dequeue ( p_queue* pq );								/* Remove the highest priority elem from the pq */
 
-int pq_remove  ( p_queue* pq, QUEUE_TYPE target, priority source);
+int pq_remove  ( p_queue* pq, QUEUE_TYPE target, priority_t source);
 
-int pq_move    ( p_queue* pq, QUEUE_TYPE target, priority source, priority dest ); /* Move target item from source priority to dest priority */
+int pq_move    ( p_queue* pq, QUEUE_TYPE target, priority_t source, priority_t dest ); /* Move target item from source priority to dest priority */
 
 
 QUEUE_TYPE pq_front( p_queue* pq );	/* Return the higest priority elem from the pq */ 

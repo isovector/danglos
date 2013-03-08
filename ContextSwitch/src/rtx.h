@@ -20,15 +20,15 @@ extern int k_block_and_release_processor(void);
 int __SVC_0 _block_and_release_processor(U32 p_func);
 
 extern int k_set_priority(int priority, int target);
-#define set_priority(priority, target) _set_priority((U32)k_set_priority, priority, target)
-int __SVC_0 _set_priority(U32 p_func, int priority, int target);
+#define set_priority(priority_t, target) _set_priority((U32)k_set_priority, priority_t, target)
+int __SVC_0 _set_priority(U32 p_func, int priority_t, int target);
 
 extern int k_set_my_priority(int priority);
-#define set_my_priority(priority) _set_my_priority((U32)k_set_my_priority, priority)
-int __SVC_0 _set_my_priority(U32 p_func, int priority);
+#define set_my_priority(priority_t) _set_my_priority((U32)k_set_my_priority, priority_t)
+int __SVC_0 _set_my_priority(U32 p_func, int priority_t);
 
 extern int k_cmd_register(const char *tag, void (*func)(const char *args));
-#define cmd_register(tag, priority) _cmd_register((U32)k_cmd_register, priority)
+#define cmd_register(tag, priority_t) _cmd_register((U32)k_cmd_register, priority_t)
 int __SVC_0 _cmd_register(U32 p_func, const char *tag, void (*func)(const char *args));
 
 #endif /* !_RTX_H_ */

@@ -12,29 +12,29 @@
 #include "mmu.h"
 #include "debug_print.h"
 
-pcb_t  *gp_current_process = NULL;
-pcb_t rg_all_processes[NUM_PROCESSES] = {0};
+pcb_t  *current_process = NULL;
+pcb_t processes[NUM_PROCESSES] = {0};
 p_queue priority_queue;
 p_queue blocked_queue;
 
-int process_valid_pid(int pid)
+int proc_is_valid_pid(int pid)
 {
     return pid >= 0 && pid < NUM_PROCESSES;
 }
 
-int process_get_pid(void)
+int proc_get_pid(void)
 {
-    return gp_current_process->m_pid;
+    return current_process->pid;
 }
 
-voidfunc processes[NUM_PROCESSES];
+uproc_func processes[NUM_PROCESSES];
 void proc_wrapper(void)
 {
-    processes[process_get_pid()]();
-    gp_current_process->m_state = ZOMBIE;
+    processes[proc_get_pid()]();
+    current_process->state = ZOMBIE;
 }
 
-void process_init(pcb_t *pcb, voidfunc func, priority p)
+void process_init(pcb_t *pcb, uproc_func func, priority_t p)
 {
     static int x = 0;
     int i;
@@ -47,9 +47,9 @@ void process_init(pcb_t *pcb, voidfunc func, priority p)
     /* initialize the first process	exception stack frame */
     processes[x] = func;
 
-    pcb->m_pid = x++;
-    pcb->m_state = NEW;
-    pcb->p = p;
+    pcb->pid = x++;
+    pcb->state = NEW;
+    pcb->priority = p;
 
     pcb->msg_head = pcb->msg_tail = NULL;
 
@@ -67,7 +67,7 @@ void process_init(pcb_t *pcb, voidfunc func, priority p)
         *(--sp) = 0x0;
     }
 
-    pcb->mp_sp = sp;
+    pcb->stackptr = sp;
 
 }
 
@@ -87,8 +87,8 @@ int scheduler(void)
 
     // TODO(sandy): we need logic if we are MSG_BLOCKED
     if (next_blocked != PQ_NOT_FOUND && mmu_can_alloc_mem()) {
-        pq_enqueue(&priority_queue, next_blocked, rg_all_processes[next_blocked].p);
-        rg_all_processes[next_blocked].m_state = RDY;
+        pq_enqueue(&priority_queue, next_blocked, processes[next_blocked].priority);
+        processes[next_blocked].state = RDY;
         pq_dequeue(&blocked_queue);
     }
 
@@ -110,40 +110,40 @@ int k_release_processor(void)
 
     pid = scheduler();
 
-    if (gp_current_process == NULL) {
+    if (current_process == NULL) {
         return -1;
     }
 
     /* Move the old proc into a temp and move the new process into the current proccess pointer */
-    p_pcb_old = gp_current_process;
-    gp_current_process = &(rg_all_processes[pid]);
+    p_pcb_old = current_process;
+    current_process = &(processes[pid]);
 
     /* Make sure to add the old process to the back of the pq */
-    if (p_pcb_old->m_state == BLOCKED) {
-        pq_enqueue(&blocked_queue, p_pcb_old->m_pid, p_pcb_old->p);
+    if (p_pcb_old->state == BLOCKED) {
+        pq_enqueue(&blocked_queue, p_pcb_old->pid, p_pcb_old->priority);
     } else {
-        pq_enqueue(&priority_queue, p_pcb_old->m_pid, p_pcb_old->p);
+        pq_enqueue(&priority_queue, p_pcb_old->pid, p_pcb_old->priority);
     }
 
-    state = gp_current_process->m_state;
+    state = current_process->state;
 
     if (state == NEW) {
-        if (p_pcb_old->m_state != NEW) {
-            p_pcb_old->m_state = RDY;
-            p_pcb_old->mp_sp = (uint32_t *) __get_MSP();
+        if (p_pcb_old->state != NEW) {
+            p_pcb_old->state = RDY;
+            p_pcb_old->stackptr = (uint32_t *) __get_MSP();
         }
 
-        gp_current_process->m_state = RUN;
-        __set_MSP((uint32_t) gp_current_process->mp_sp);
+        current_process->state = RUN;
+        __set_MSP((uint32_t) current_process->stackptr);
         __rte();  /* pop exception stack frame from the stack for a new process */
     } else if (state == RDY) {
-        p_pcb_old->m_state = RDY;
-        p_pcb_old->mp_sp = (uint32_t *) __get_MSP(); /* save the old process's sp */
+        p_pcb_old->state = RDY;
+        p_pcb_old->stackptr = (uint32_t *) __get_MSP(); /* save the old process's sp */
 
-        gp_current_process->m_state = RUN;
-        __set_MSP((uint32_t) gp_current_process->mp_sp); /* switch to the new proc's stack */
+        current_process->state = RUN;
+        __set_MSP((uint32_t) current_process->stackptr); /* switch to the new proc's stack */
     } else {
-        gp_current_process = p_pcb_old; /* revert back to the old proc on error */
+        current_process = p_pcb_old; /* revert back to the old proc on error */
         return -1;
     }
 
@@ -152,62 +152,56 @@ int k_release_processor(void)
 
 int k_block_and_release_processor(void)
 {
-    gp_current_process->m_state = BLOCKED;
+    current_process->state = BLOCKED;
     return k_release_processor();
 }
 
 
-void doMemoryTest(void)
+void proc_init(void)
 {
     int i = 0;
-    /* Initialize the null process with the lowest priority */
-    process_init(&rg_all_processes[i], null_proc, LOWEST);
-    pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
-    gp_current_process = &rg_all_processes[i++];
-
-    process_init(&rg_all_processes[i], proc_alloc1, HIGH);
-    pq_enqueue(&priority_queue, i, rg_all_processes[i++].p);
-
-    process_init(&rg_all_processes[i], proc_allocAll, MED);
-    pq_enqueue(&priority_queue, i, rg_all_processes[i++].p);
-
-    process_init(&rg_all_processes[i], proc_priority_one, LOW);
-    pq_enqueue(&priority_queue, i, rg_all_processes[i++].p);
-
-    process_init(&rg_all_processes[i], proc_priority_two, LOW);
-    pq_enqueue(&priority_queue, i, rg_all_processes[i++].p);
-
-    for (; i < NUM_PROCESSES; ++i) {
-        process_init(&rg_all_processes[i], null_proc, LOWEST);
-        pq_enqueue(&priority_queue, i, rg_all_processes[i].p);
-    }
-
-}
-
-void initProcesses(void)
-{
+    
     pq_init(&priority_queue);
     pq_init(&blocked_queue);
 
-    doMemoryTest();
+    process_init(&processes[i], uproc_null, LOWEST);
+    pq_enqueue(&priority_queue, i, processes[i].priority);
+    current_process = &processes[i++];
+
+    process_init(&processes[i], uproc_alloc1, HIGH);
+    pq_enqueue(&priority_queue, i, processes[i++].priority);
+
+    process_init(&processes[i], uproc_alloc_all, MED);
+    pq_enqueue(&priority_queue, i, processes[i++].priority);
+
+    process_init(&processes[i], uproc_priority1, LOW);
+    pq_enqueue(&priority_queue, i, processes[i++].priority);
+
+    process_init(&processes[i], uproc_priority2, LOW);
+    pq_enqueue(&priority_queue, i, processes[i++].priority);
+
+    for (; i < NUM_PROCESSES; ++i) {
+        process_init(&processes[i], uproc_null, LOWEST);
+        pq_enqueue(&priority_queue, i, processes[i].priority);
+    }
 }
 
 int k_set_msg_blocked(int target, int block)
 {
     pcb_t *proc;
 
-    if (!process_valid_pid(target)) {
+    if (!proc_is_valid_pid(target)) {
         return ERR_PROC_BAD_PID;
     }
 
-    proc = &rg_all_processes[target];
+    proc = &processes[target];
 
     if (block) {
-        proc->m_state = MSG_BLOCKED;
-        pq_remove(&priority_queue, target, proc->p);
+        proc->state = MSG_BLOCKED;
+        pq_remove(&priority_queue, target, proc->priority);
     } else {
-        proc->m_state = RDY;
-        pq_enqueue(&priority_queue, target, proc->p);
+        proc->state = RDY;
+        pq_enqueue(&priority_queue, target, proc->priority);
     }
 
     return 0;
@@ -215,18 +209,18 @@ int k_set_msg_blocked(int target, int block)
 
 int k_set_priority(int p, int target)
 {
-    priority prio = rg_all_processes[target].p;
+    priority_t prio = processes[target].priority;
     int ret = 0;
 
-    ret = pq_move(&priority_queue, target, prio, (priority)p);
+    ret = pq_move(&priority_queue, target, prio, (priority_t)p);
 
     if (ret) {
-        ret = pq_move(&blocked_queue, target, prio, (priority)p);
+        ret = pq_move(&blocked_queue, target, prio, (priority_t)p);
     }
 
-    rg_all_processes[target].p = (priority)p;
+    processes[target].priority = (priority_t)p;
 
-    if ((prio < p || (p < gp_current_process->p && target != gp_current_process->m_pid)) && !ret) {
+    if ((prio < p || (p < current_process->priority && target != current_process->pid)) && !ret) {
         return k_release_processor();
     }
 
@@ -235,7 +229,7 @@ int k_set_priority(int p, int target)
 
 int k_set_my_priority(int p)
 {
-    k_set_priority(p, gp_current_process->m_pid);
+    k_set_priority(p, current_process->pid);
     return 0;
 }
 
@@ -245,5 +239,5 @@ int k_get_priority(int target)
         return -1;
     }
 
-    return rg_all_processes[target].p;
+    return processes[target].priority;
 }

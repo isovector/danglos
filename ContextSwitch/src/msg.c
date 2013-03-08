@@ -60,19 +60,19 @@ int msg_send_message(void *pmsg, int blocks)
     msg_envelope_t *msg = (msg_envelope_t *)pmsg;
     pcb_t *recipient;
 
-    if (!process_valid_pid(msg->header.dest)) {
+    if (!proc_is_valid_pid(msg->header.dest)) {
         return ERR_PROC_BAD_PID;
     }
 
-    recipient = &rg_all_processes[msg->header.dest];
-    msg->header.src = process_get_pid();
+    recipient = &processes[msg->header.dest];
+    msg->header.src = proc_get_pid();
 
     msg_enqueue_msg(msg, recipient);
 
-    if (recipient->m_state == MSG_BLOCKED) {
-        k_set_msg_blocked(recipient->m_pid, 0);
+    if (recipient->state == MSG_BLOCKED) {
+        k_set_msg_blocked(recipient->pid, 0);
 
-        if (blocks == 1 && recipient->p < gp_current_process->p) {
+        if (blocks == 1 && recipient->priority < current_process->priority) {
             k_release_processor();
         }
     }
@@ -92,7 +92,7 @@ int k_send_message(int pid, void *pmsg)
 
 void *receive_message(int *sender)
 {
-    msg_envelope_t *msg = msg_dequeue_msg(gp_current_process);
+    msg_envelope_t *msg = msg_dequeue_msg(current_process);
 
     if (msg) {
         if (sender) {
@@ -102,10 +102,10 @@ void *receive_message(int *sender)
         return msg;
     }
 
-    k_set_msg_blocked(gp_current_process->m_pid, 1);
+    k_set_msg_blocked(current_process->pid, 1);
     k_release_processor();
 
-    msg = msg_dequeue_msg(gp_current_process);
+    msg = msg_dequeue_msg(current_process);
 
     if (sender) {
         *sender = msg->header.src;

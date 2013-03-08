@@ -29,14 +29,14 @@ int num_successful_tests = 0;
 extern void debugPrint(unsigned char *);
 
 
-void null_proc(void)
+void uproc_null(void)
 {
     while (1) {
         release_processor();
     }
 }
 
-void proc_print(void)
+void uproc_print(void)
 {
     while (1) {
         uart_send_string(0, "\t(1) ping\n\r");
@@ -45,7 +45,7 @@ void proc_print(void)
 }
 
 /* Starts high */
-void proc_priority_one(void)
+void uproc_priority1(void)
 {
     while (i < 10) {
         i++;
@@ -83,7 +83,7 @@ void proc_priority_one(void)
 }
 
 /* Starts low */
-void proc_priority_two(void)
+void uproc_priority2(void)
 {
     while (j < 10) {
         j++;
@@ -104,7 +104,7 @@ void proc_priority_two(void)
 
 }
 
-void proc_allocAll(void)
+void uproc_alloc_all(void)
 {
     void *mem[100];
     volatile int i = 0;
@@ -132,7 +132,7 @@ void proc_allocAll(void)
     }
 }
 
-void proc_alloc1(void)
+void uproc_alloc1(void)
 {
     void *m = s_request_memory_block();
 
@@ -156,7 +156,7 @@ void ucmd_set_time(const char *data)
     clock_s = (data[5] - '0') * 10 + (data[6] - '0');
 }
 
-void proc_clock(void)
+void uproc_clock(void)
 {
     msg_envelope_t *msg;
     cmd_register("HS", ucmd_set_time);
@@ -164,7 +164,7 @@ void proc_clock(void)
     msg = (msg_envelope_t *)s_request_memory_block();
 
     for (;;) {
-        delayed_send(process_get_pid(), msg, 1);
+        delayed_send(proc_get_pid(), msg, 1);
         receive_message(NULL);
 
         if (++clock_s >= 60) {

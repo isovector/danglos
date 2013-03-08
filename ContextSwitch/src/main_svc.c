@@ -19,7 +19,7 @@
 #include "timer.h"
 
 extern void initMemory(void);
-extern void initProcesses(void);
+extern void proc_init(void);
 
 int main() 
 {
@@ -29,7 +29,7 @@ int main()
   uart0_init();
 	timer_init();
 	initMemory();
-  initProcesses();
+  proc_init();
   __enable_irq();
   
   /* transit to unprivileged level, default MSP is used */

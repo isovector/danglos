@@ -29,31 +29,30 @@ typedef enum {NEW = 0, ZOMBIE, RDY, RUN, BLOCKED, MSG_BLOCKED} proc_state_t;
   in order to finish P1 and the entire project
 */
 typedef struct pcb {
-    //struct pcb *mp_next;     /* next pcb, not used in this example, RTX project most likely will need it, keep here for reference */
-    uint32_t *mp_sp;         /* stack pointer of the process */
-    uint32_t m_pid;          /* process id */
-    proc_state_t m_state;    /* state of the process */
-    priority p;
+    uint32_t *stackptr;         /* stack pointer of the process */
+    uint32_t pid;          /* process id */
+    proc_state_t state;    /* state of the process */
+    priority_t priority;
     msg_envelope_t *msg_head, *msg_tail;
 } pcb_t;
 
-typedef void (*voidfunc)(void);
+typedef void (*uproc_func)(void);
 
 /*
 An array of pointers to all of the processses
 */
-extern pcb_t  *gp_current_process; /* always point to the current process */
+extern pcb_t  *current_process; /* always point to the current process */
 
-extern pcb_t rg_all_processes[NUM_PROCESSES]; /* Array of all processes */
+extern pcb_t processes[NUM_PROCESSES]; /* Array of all processes */
 
 extern p_queue priority_queue;	/* Priority Queue for scheduling processes */
 extern p_queue blocked_queue;
 
-extern int process_valid_pid(int pid);
+extern int proc_is_valid_pid(int pid);
 
-extern int process_get_pid(void);
-extern void process_init(pcb_t *, voidfunc, priority p);  /* Initialize the a given process */
-extern void initProcesses(void);		/* initialize all procs in the system */
+extern int proc_get_pid(void);
+extern void process_init(pcb_t *, uproc_func, priority_t p);  /* Initialize the a given process */
+extern void proc_init(void);		/* initialize all procs in the system */
 int scheduler(void);               /* pick the pid of the next to run process */
 
 int k_release_processor(void);       /* kernel release_process function */
@@ -62,13 +61,13 @@ int k_set_priority(int, int);
 int k_set_my_priority(int);
 int k_get_priority(int);
 
-extern void proc_print(void);           /*user process 1 */
-extern void proc_clock(void);
-extern void null_proc(void);
-extern void proc_alloc1(void);
-extern void proc_priority_one(void);
-extern void proc_priority_two(void);
-extern void proc_allocAll(void);
+extern void uproc_print(void);           /*user process 1 */
+extern void uproc_clock(void);
+extern void uproc_null(void);
+extern void uproc_alloc1(void);
+extern void uproc_priority1(void);
+extern void uproc_priority2(void);
+extern void uproc_alloc_all(void);
 extern void __rte(void);           /* pop exception stack frame */
 
 #endif /* ! _PROCESS_H_ */

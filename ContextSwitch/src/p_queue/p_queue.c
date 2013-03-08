@@ -4,7 +4,7 @@
  * computes the index of the nth element of the queue with priority p
  * use to access elements in the elem array
  */
-int _pq_compute_offset( p_queue* pq, int n, priority p ) 
+int _pq_compute_offset( p_queue* pq, int n, priority_t p ) 
 {
 	int offset = pq->start[p] - ( p * N_ELEMS );
 	offset += n;
@@ -46,7 +46,7 @@ void pq_init(p_queue* pq)
  * returns PQ_FAILURE if the action was not successful (the queue was full)
  * returns PQ_SUCCESS otherwise
  */
-int pq_enqueue(p_queue* pq, QUEUE_TYPE val, priority p) 
+int pq_enqueue(p_queue* pq, QUEUE_TYPE val, priority_t p) 
 {
 	
 	if ( pq->size == N_ELEMS ) return PQ_FAILURE;
@@ -85,7 +85,7 @@ int pq_dequeue( p_queue* pq )
 			
 			/* calling _pq_compute_offset with an offset of 0 normalizes pq->start in case
 			   it has increased beyond the valid region for this priority */
-			pq->start[i] = _pq_compute_offset( pq, 0, (priority)i );
+			pq->start[i] = _pq_compute_offset( pq, 0, (priority_t)i );
 			pq->size--;
 			return PQ_SUCCESS;
 		}
@@ -93,7 +93,7 @@ int pq_dequeue( p_queue* pq )
 	return PQ_FAILURE;
 }
 
-int pq_remove(p_queue *pq, QUEUE_TYPE target, priority source) {
+int pq_remove(p_queue *pq, QUEUE_TYPE target, priority_t source) {
     int i, j, c;
 
 	for ( i = 0; i < pq->length[source]; i++ ) 
@@ -115,7 +115,7 @@ int pq_remove(p_queue *pq, QUEUE_TYPE target, priority source) {
     return PQ_FAILURE;
 }
 
-int pq_move(p_queue* pq, QUEUE_TYPE target, priority source, priority dest)
+int pq_move(p_queue* pq, QUEUE_TYPE target, priority_t source, priority_t dest)
 {
     if (pq_remove(pq, target, source) == PQ_SUCCESS) {
         pq_enqueue( pq, target, dest );
