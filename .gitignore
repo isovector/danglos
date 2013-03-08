@@ -16,7 +16,7 @@
 *.exe
 *.out
 *.app
-&.crf
+*.crf
 *.dep
 *.htm
 *.lnp
