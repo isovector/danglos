@@ -36,6 +36,10 @@ void k_cmd_send(char *buffer) {
     cmd_func cmd;
     int wasSpace;
     
+    if (*c != '%') {
+        return;
+    }
+    
     while (c && *c != ' ') 
     {
         ++c;

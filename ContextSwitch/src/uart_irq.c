@@ -7,6 +7,7 @@
 
 #include <LPC17xx.h>
 #include "uart.h"
+#include "cmd.h"
 
 volatile uint8_t g_UART0_TX_empty=1;
 volatile uint8_t g_UART0_buffer[BUFSIZE];
@@ -159,17 +160,25 @@ void c_UART0_IRQHandler(void)
 	uint8_t IIR_IntId;      /* Interrupt ID from IIR */		
 	uint8_t LSR_Val;        /* LSR Value             */
 	uint8_t dummy = dummy;	/* to clear interrupt upon LSR error */
+    uint8_t inputChar;
 	LPC_UART_TypeDef *pUart = (LPC_UART_TypeDef *)LPC_UART0;
 
 	/* Reading IIR automatically acknowledges the interrupt */
 	IIR_IntId = (pUart->IIR) >> 1 ; /* skip pending bit in IIR */
 
 	if (IIR_IntId & IIR_RDA) { /* Receive Data Avaialbe */
-		/* read UART. Read RBR will clear the interrupt */
-		g_UART0_buffer[g_UART0_count++] = pUart->RBR;
-		if (g_UART0_count == BUFSIZE) {
-			g_UART0_count = 0; /* buffer overflow */
-		}	
+        inputChar = pUart->RBR;
+        if (inputChar == '\n')
+        {
+            g_UART0_buffer[g_UART0_count] = 0;
+            k_cmd_send(&g_UART0_buffer[0])
+            g_UART0_count = 0;
+        } else {
+			g_UART0_buffer[g_UART0_count++] = inputChar; 
+    		if ( g_UART0_count == BUFSIZE ) {
+    			g_UART0_count = 0;  /* buffer overflow */
+            }
+        }
 	} else if (IIR_IntId & IIR_THRE) { 
 		/* THRE Interrupt, transmit holding register empty*/
 		
@@ -195,10 +204,18 @@ void c_UART0_IRQHandler(void)
 		*/
 		if (LSR_Val & LSR_RDR) { /* Receive Data Ready */
 			/* read from the uart */
-			g_UART0_buffer[g_UART0_count++] = pUart->RBR; 
-			if ( g_UART0_count == BUFSIZE ) {
-				g_UART0_count = 0;  /* buffer overflow */
-			}	
+            inputChar = pUart->RBR;
+            if (inputChar == '\n')
+            {
+                g_UART0_buffer[g_UART0_count] = 0;
+                k_cmd_send(&g_UART0_buffer[0])
+                g_UART0_count = 0;
+            } else {
+    			g_UART0_buffer[g_UART0_count++] = inputChar; 
+    			if ( g_UART0_count == BUFSIZE ) {
+    				g_UART0_count = 0;  /* buffer overflow */
+    			}	
+            }
 		}	    
 	} else { /* IIR_CTI and reserved combination are not implemented */
 		return;
