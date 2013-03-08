@@ -34,9 +34,10 @@ void proc_wrapper(void)
     current_process->state = ZOMBIE;
 }
 
-void process_init(pcb_t *pcb, uproc_func func, priority_t p)
+int process_init(uproc_func func, priority_t p)
 {
-    static int x = 0;
+    static int pid = 0;
+    pcb_t *pcb = &processes[pid];
     int i;
     uint32_t *sp;
 
@@ -45,9 +46,9 @@ void process_init(pcb_t *pcb, uproc_func func, priority_t p)
     }
 
     /* initialize the first process	exception stack frame */
-    proc_funcs[x] = func;
+    proc_funcs[pid] = func;
 
-    pcb->pid = x++;
+    pcb->pid = pid;
     pcb->state = NEW;
     pcb->priority = p;
 
@@ -68,7 +69,9 @@ void process_init(pcb_t *pcb, uproc_func func, priority_t p)
     }
 
     pcb->stackptr = sp;
-
+    pq_enqueue(&priority_queue, pid, p);
+    
+    return pid++;
 }
 
 /*@brief: scheduler, pick the pid of the next to run process
@@ -164,26 +167,18 @@ void proc_init(void)
     pq_init(&priority_queue);
     pq_init(&blocked_queue);
 
-    process_init(&processes[i], uproc_null, LOWEST);
-    pq_enqueue(&priority_queue, i, processes[i].priority);
-    current_process = &processes[i++];
-
-    process_init(&processes[i], uproc_alloc1, HIGH);
-    pq_enqueue(&priority_queue, i, processes[i++].priority);
-
-    process_init(&processes[i], uproc_alloc_all, MED);
-    pq_enqueue(&priority_queue, i, processes[i++].priority);
-
-    process_init(&processes[i], uproc_priority1, LOW);
-    pq_enqueue(&priority_queue, i, processes[i++].priority);
-
-    process_init(&processes[i], uproc_priority2, LOW);
-    pq_enqueue(&priority_queue, i, processes[i++].priority);
+    process_init(uproc_null, LOWEST);
+    process_init(uproc_alloc1, HIGH);
+    process_init(uproc_alloc_all, MED);
+    process_init(uproc_priority1, LOW);
+    process_init(uproc_priority2, LOW);
+    i = process_init(uproc_clock, HIGHEST);
 
     for (; i < NUM_PROCESSES; ++i) {
-        process_init(&processes[i], uproc_null, LOWEST);
-        pq_enqueue(&priority_queue, i, processes[i].priority);
+        process_init(uproc_null, LOWEST);
     }
+    
+    current_process = &processes[0];
 }
 
 int k_set_msg_blocked(int target, int block)
