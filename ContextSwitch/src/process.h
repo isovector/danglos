@@ -51,6 +51,7 @@ extern p_queue blocked_queue;
 extern int proc_is_valid_pid(int pid);
 
 extern int proc_get_pid(void);
+extern void process_init(pcb_t *, uproc_func, priority_t p);  /* Initialize the a given process */
 extern void proc_init(void);		/* initialize all procs in the system */
 int scheduler(void);               /* pick the pid of the next to run process */
 

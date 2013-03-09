@@ -34,7 +34,7 @@ void proc_wrapper(void)
     current_process->state = ZOMBIE;
 }
 
-void create_process(pcb_t *pcb, uproc_func func, priority_t p)
+void process_init(pcb_t *pcb, uproc_func func, priority_t p)
 {
     static int x = 0;
     int i;
@@ -164,24 +164,24 @@ void proc_init(void)
     pq_init(&priority_queue);
     pq_init(&blocked_queue);
 
-    create_process(&processes[i], uproc_null, LOWEST);
+    process_init(&processes[i], uproc_null, LOWEST);
     pq_enqueue(&priority_queue, i, processes[i].priority);
     current_process = &processes[i++];
 
-    create_process(&processes[i], uproc_clock, HIGH);
-    pq_enqueue(&priority_queue, i, processes[i++].priority);
-/*
-    create_process(&processes[i], uproc_alloc_all, MED);
+    process_init(&processes[i], uproc_alloc1, HIGH);
     pq_enqueue(&priority_queue, i, processes[i++].priority);
 
-    create_process(&processes[i], uproc_priority1, LOW);
+    process_init(&processes[i], uproc_alloc_all, MED);
     pq_enqueue(&priority_queue, i, processes[i++].priority);
 
-    create_process(&processes[i], uproc_priority2, LOW);
+    process_init(&processes[i], uproc_priority1, LOW);
     pq_enqueue(&priority_queue, i, processes[i++].priority);
-*/
+
+    process_init(&processes[i], uproc_priority2, LOW);
+    pq_enqueue(&priority_queue, i, processes[i++].priority);
+
     for (; i < NUM_PROCESSES; ++i) {
-        create_process(&processes[i], uproc_null, LOWEST);
+        process_init(&processes[i], uproc_null, LOWEST);
         pq_enqueue(&priority_queue, i, processes[i].priority);
     }
 }
