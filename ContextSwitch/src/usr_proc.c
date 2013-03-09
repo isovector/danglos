@@ -177,7 +177,7 @@ void uproc_clock(void)
     cmd_register("HS", ucmd_set_time);
 	
     time_str[8] = 0;
-    time_str[2] = time_str[4] = ':';
+    time_str[2] = time_str[5] = ':';
 
     msg = (msg_envelope_t *)s_request_memory_block();
 

@@ -95,19 +95,11 @@ void *receive_message(int *sender)
 {
     msg_envelope_t *msg = msg_dequeue_msg(current_process);
 
-    if (msg) {
-        if (sender) {
-            *sender = msg->header.src;
-        }
-
-        return msg;
+    while (!msg) {
+			k_set_msg_blocked(current_process->pid, 1);
+			release_processor();
+			msg = msg_dequeue_msg(current_process);
     }
-
-    k_set_msg_blocked(current_process->pid, 1);
-    release_processor();
-
-    msg = msg_dequeue_msg(current_process);
-
     if (sender) {
         *sender = msg->header.src;
     }
