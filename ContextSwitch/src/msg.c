@@ -6,6 +6,7 @@
 
 extern volatile uint32_t g_clock;
 static msg_envelope_t *delay_msg_list = NULL;
+volatile int32_t g_min_msg = -1;
 
 void msg_enqueue_msg(msg_envelope_t *msg, pcb_t *pcb)
 {
@@ -20,7 +21,9 @@ void msg_enqueue_msg(msg_envelope_t *msg, pcb_t *pcb)
 void wait_enqueue_msg(msg_envelope_t *msg, int delay)
 {
     msg->delay = delay + g_clock;
-
+		if(g_min_msg == -1 || msg->delay < g_min_msg)
+			g_min_msg = msg->delay;
+		
     if (!delay_msg_list) {
         delay_msg_list = msg;
 
@@ -115,6 +118,7 @@ void msg_tick(uint32_t delay)
     while (!ret && delay_msg_list && delay_msg_list->delay <= delay) {
         ret = msg_send_message(delay_msg_list, 1);
         delay_msg_list = delay_msg_list->header.next;
+				g_min_msg = delay_msg_list ? (int32_t)delay_msg_list->delay : -1;
     }
 }
 
