@@ -31,6 +31,4 @@ void c_TIMER0_IRQHandler(void)
 	
 	++g_clock;
 	msg_tick(g_clock);
-	if(0 == g_clock % TIMER_SLICE)
-		k_release_processor();
 }

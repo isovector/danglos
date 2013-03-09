@@ -149,6 +149,7 @@ void uproc_alloc1(void)
 }
 
 
+
 static volatile size_t clock_h = 0, clock_m = 0, clock_s = 0;
 void ucmd_set_time(const char *data)
 {
@@ -158,15 +159,34 @@ void ucmd_set_time(const char *data)
     clock_s = (data[5] - '0') * 10 + (data[6] - '0');
 }
 
+uint8_t time_str[9];
+
+void ucmd_format_time()
+{
+    time_str[0] = '0' + clock_h / 10;
+    time_str[1] = '0' + clock_h % 10;
+    time_str[3] = '0' + clock_m / 10;
+    time_str[4] = '0' + clock_m % 10;
+    time_str[6] = '0' + clock_s / 10;
+    time_str[7] = '0' + clock_s % 10;
+}
+
 void uproc_clock(void)
 {
     msg_envelope_t *msg;
     cmd_register("HS", ucmd_set_time);
+	
+    time_str[8] = 0;
+    time_str[2] = time_str[4] = ':';
 
     msg = (msg_envelope_t *)s_request_memory_block();
 
     for (;;) {
-        delayed_send(proc_get_pid(), msg, 1);
+        delayed_send(proc_get_pid(), msg, 1000);
+        ucmd_format_time();
+        uart0_send_string(time_str);
+        uart0_send_string("\r");
+			
         receive_message(NULL);
 
         if (++clock_s >= 60) {

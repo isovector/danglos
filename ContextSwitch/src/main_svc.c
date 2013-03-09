@@ -27,9 +27,9 @@ int main()
   SystemInit();  /* initialize the system */
   __disable_irq();
   uart0_init();
-	timer_init();
 	initMemory();
   proc_init();
+	timer_init();
   __enable_irq();
   
   /* transit to unprivileged level, default MSP is used */

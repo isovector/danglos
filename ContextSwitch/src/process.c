@@ -171,7 +171,7 @@ void proc_init(void)
     process_init(&processes[i], uproc_alloc1, HIGH);
     pq_enqueue(&priority_queue, i, processes[i++].priority);
 
-    process_init(&processes[i], uproc_alloc_all, MED);
+    process_init(&processes[i], uproc_clock, MED);
     pq_enqueue(&priority_queue, i, processes[i++].priority);
 
     process_init(&processes[i], uproc_priority1, LOW);

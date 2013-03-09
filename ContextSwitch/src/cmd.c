@@ -22,7 +22,7 @@ bool k_cmd_register(const char *tag, cmd_func func)
 {
     cmd_func *cmd = &COMMANDS[hash(tag)];
 
-    if (!cmd) {
+    if (!*cmd) {
         *cmd = func;
     } else {
         debugPrint("FUCK THAT HASH IS BAD");
