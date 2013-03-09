@@ -42,7 +42,7 @@ void k_cmd_send(char *buffer)
         return;
     }
 
-    while (*c != ' ') {
+    while (*c && *c != ' ') {
         ++c;
     }
 
