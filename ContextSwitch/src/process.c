@@ -163,9 +163,6 @@ void proc_init(void)
     pq_enqueue(&priority_queue, j, processes[j].priority);
     j++;
 
-		process_init(&processes[j], uproc_alloc_all, HIGH);
-    pq_enqueue(&priority_queue, j, processes[j].priority);
-    j++;
 	
     process_init(&processes[j], uproc_alloc1, HIGH);
     pq_enqueue(&priority_queue, j, processes[j].priority);
