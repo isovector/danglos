@@ -161,7 +161,7 @@ __asm void UART0_IRQHandler(void)
 } 
 
 
-inline void handle_char(LPC_UART_TypeDef *pUart) {
+void handle_char(LPC_UART_TypeDef *pUart) {
     char inputChar = pUart->RBR;
     
     if (inputChar == '%') {

@@ -34,7 +34,7 @@ void cmd_put(const char *tag, int pid)
     }
 }
 
-bool k_cmd_register(const char *tag, int pid)
+bool cmd_register(const char *tag, int pid)
 {
     cmd_put(tag, pid);
 

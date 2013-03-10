@@ -68,7 +68,7 @@ void ucmd_format_time()
 void uproc_clock(void)
 {
     msg_envelope_t *msg;
-	  msg_envelope_t *output;
+    msg_envelope_t *output;
     cmd_register("HS", ucmd_set_time);
 	
     time_str[2] = time_str[5] = ':';

@@ -1,6 +1,8 @@
 #ifndef _BIT_VECTOR_H_
 #define _BIT_VECTOR_H_
 
+#include <string.h>
+
 typedef char * bit_vector;
 
 void set_bit(bit_vector b, size_t bit, int on);
