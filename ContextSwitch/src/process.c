@@ -159,26 +159,31 @@ int k_block_and_release_processor(void)
 
 void proc_init(void)
 {
-    int i = 0;
+    int j = 0;
     
     pq_init(&priority_queue);
     pq_init(&blocked_queue);
 
-    process_init(&processes[i], uproc_null, LOWEST);
-    pq_enqueue(&priority_queue, i, processes[i].priority);
-    current_process = &processes[i++];
+    process_init(&processes[j], uproc_null, LOWEST);
+    pq_enqueue(&priority_queue, j, processes[j].priority);
+    current_process = &processes[j];
+    j++;
 
-    process_init(&processes[i], uproc_alloc1, HIGH);
-    pq_enqueue(&priority_queue, i, processes[i++].priority);
+    process_init(&processes[j], uproc_alloc1, HIGH);
+    pq_enqueue(&priority_queue, j, processes[j].priority);
+    j++;
 
-    process_init(&processes[i], uproc_clock, MED);
-    pq_enqueue(&priority_queue, i, processes[i++].priority);
+    process_init(&processes[j], uproc_clock, MED);
+    pq_enqueue(&priority_queue, j, processes[j].priority);
+    j++;
 
-    process_init(&processes[i], uproc_priority1, LOW);
-    pq_enqueue(&priority_queue, i, processes[i++].priority);
+    process_init(&processes[j], uproc_priority1, LOW);
+    pq_enqueue(&priority_queue, j, processes[j].priority);
+    j++;
 
-    process_init(&processes[i], uproc_priority2, LOW);
-    pq_enqueue(&priority_queue, i, processes[i++].priority);
+    process_init(&processes[j], uproc_priority2, LOW);
+    pq_enqueue(&priority_queue, j, processes[j].priority);
+    j++;
 
     for (; i < NUM_PROCESSES; ++i) {
         process_init(&processes[i], uproc_null, LOWEST);
