@@ -117,9 +117,7 @@ int k_release_processor(void)
     if (p_pcb_old == NULL) {
         p_pcb_old = current_process;
     }
-
-    /* Make sure to add the old process to the back of the pq */
-    if (p_pcb_old->state != MSG_BLOCKED) {
+		else if (p_pcb_old->state != MSG_BLOCKED) {
         if (p_pcb_old->state == BLOCKED) {
             pq_enqueue(&blocked_queue, p_pcb_old->pid, p_pcb_old->priority);
         } else {
@@ -137,10 +135,12 @@ int k_release_processor(void)
     }
     
     current_process->state = RUN;
-    __set_MSP((uint32_t) current_process->stackptr);
     if (state == NEW) {
+			__set_MSP((uint32_t) current_process->stackptr);
         __rte();
-    }
+    } else {
+			__set_MSP((uint32_t) current_process->stackptr);
+		}
     
     return 0;
 }
@@ -163,6 +163,10 @@ void proc_init(void)
     pq_enqueue(&priority_queue, j, processes[j].priority);
     j++;
 
+		process_init(&processes[j], uproc_alloc_all, HIGH);
+    pq_enqueue(&priority_queue, j, processes[j].priority);
+    j++;
+	
     process_init(&processes[j], uproc_alloc1, HIGH);
     pq_enqueue(&priority_queue, j, processes[j].priority);
     j++;

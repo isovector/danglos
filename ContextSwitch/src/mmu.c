@@ -1,6 +1,7 @@
 #include "mmu.h"
 #include "rtx.h"
 #include "error.h"
+#include "process.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -41,7 +42,8 @@ void *s_request_memory_block()
     mmu_blockdesc_t *b;
 
     if (!mmu_can_alloc_mem()) {
-        block_and_release_processor();
+			current_process->state = BLOCKED;
+			release_processor();
     }
 
     if (table.block->next) {
