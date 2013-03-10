@@ -6,9 +6,7 @@
 
 #define NUM_COMMANDS 32
 
-typedef void (*cmd_func)(const char *args);
-
-extern bool k_cmd_register(const char *tag, cmd_func func);
+extern bool k_cmd_register(const char *tag, int func);
 extern void k_cmd_send(char *buffer);
 
 #endif

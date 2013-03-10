@@ -1,6 +1,6 @@
 #include "cmd.h"
 #include "debug_print.h"
-static cmd_func COMMANDS[NUM_COMMANDS] = { NULL };
+static int COMMANDS[NUM_COMMANDS] = { -1 };
 
 size_t hash(const char *tag)
 {
@@ -18,16 +18,25 @@ size_t hash(const char *tag)
     return h % NUM_COMMANDS;
 }
 
-bool k_cmd_register(const char *tag, cmd_func func)
-{
-    cmd_func *cmd = &COMMANDS[hash(tag)];
+int cmd_get(const char *tag) {
+    return COMMANDS[hash(tag)];
+}
 
-    if (!*cmd) {
-        *cmd = func;
+void cmd_put(const char *tag, int pid)
+{
+    int *cmd = &COMMANDS[hash(tag)];
+
+    if (*cmd == -1) {
+        *cmd = pid;
     } else {
         debugPrint("FUCK THAT HASH IS BAD");
         *((int *)NULL) = 0;
     }
+}
+
+bool k_cmd_register(const char *tag, int pid)
+{
+    cmd_put(tag, pid);
 
     return true;
 }
@@ -35,7 +44,7 @@ bool k_cmd_register(const char *tag, cmd_func func)
 void k_cmd_send(char *buffer)
 {
     char *c = &buffer[0];
-    cmd_func cmd;
+    int cmd;
     int wasSpace;
 
     if (*c != '%') {
@@ -51,9 +60,7 @@ void k_cmd_send(char *buffer)
 
     cmd = COMMANDS[hash(buffer + 1)];
 
-    if (cmd) {
-        //TODO(sandy): disable kernel mode
-        cmd(c + (wasSpace ? 1 : 0));
-        //TODO(sandy): enable kernel mode
+    if (cmd != -1) {
+        // c + (wasSpace ? 1 : 0) is the the message payload
     }
 }
