@@ -64,3 +64,8 @@ void k_cmd_send(char *buffer)
         // c + (wasSpace ? 1 : 0) is the the message payload
     }
 }
+
+void k_cmd_hotkey(char hotkey)
+{
+    // send message to sysproc_hotkeys
+}

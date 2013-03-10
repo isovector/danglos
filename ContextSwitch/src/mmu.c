@@ -2,26 +2,13 @@
 #include "rtx.h"
 #include "error.h"
 #include "process.h"
+#include "bit_vector.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
 mmu_memtable_t table;
 
-
-void set_bit(char *bitVector, size_t bit, int on)
-{
-    if (on != 0) {
-        bitVector[bit / 8] |= 1 << (bit % 8);
-    } else {
-        bitVector[bit / 8] &= ~(1 << (bit % 8));
-    }
-}
-
-char get_bit(char *bitVector, size_t bit)
-{
-    return bitVector[bit / 8] & (1 << (bit % 8));
-}
 
 size_t getBitFromAddress(void *address)
 {
