@@ -110,16 +110,14 @@ int k_release_processor(void)
 
     pid = scheduler();
 
-    if (current_process == NULL) {
-        return -1;
-    }
-
     /* Move the old proc into a temp and move the new process into the current proccess pointer */
     p_pcb_old = current_process;
     current_process = &(processes[pid]);
-
-    /* Make sure to add the old process to the back of the pq */
-    if (p_pcb_old->state != MSG_BLOCKED) {
+    
+    if (p_pcb_old == NULL) {
+        p_pcb_old = current_process;
+    }
+		else if (p_pcb_old->state != MSG_BLOCKED) {
         if (p_pcb_old->state == BLOCKED) {
             pq_enqueue(&blocked_queue, p_pcb_old->pid, p_pcb_old->priority);
         } else {
@@ -129,26 +127,21 @@ int k_release_processor(void)
 
     state = current_process->state;
 
-    if (state == NEW) {
-        if (p_pcb_old->state != NEW) {
+    if (p_pcb_old != current_process) {
+        if (p_pcb_old->state == RUN) {
             p_pcb_old->state = RDY;
-            p_pcb_old->stackptr = (uint32_t *) __get_MSP();
         }
-
-        current_process->state = RUN;
-        __set_MSP((uint32_t) current_process->stackptr);
-        __rte();  /* pop exception stack frame from the stack for a new process */
-    } else if (state == RDY) {
-        p_pcb_old->state = RDY;
-        p_pcb_old->stackptr = (uint32_t *) __get_MSP(); /* save the old process's sp */
-
-        current_process->state = RUN;
-        __set_MSP((uint32_t) current_process->stackptr); /* switch to the new proc's stack */
-    } else {
-        current_process = p_pcb_old; /* revert back to the old proc on error */
-        return -1;
+        p_pcb_old->stackptr = (uint32_t *) __get_MSP();
     }
-
+    
+    current_process->state = RUN;
+    if (state == NEW) {
+			__set_MSP((uint32_t) current_process->stackptr);
+        __rte();
+    } else {
+			__set_MSP((uint32_t) current_process->stackptr);
+		}
+    
     return 0;
 }
 
@@ -168,24 +161,16 @@ void proc_init(void)
 
     process_init(&processes[j], uproc_null, LOWEST);
     pq_enqueue(&priority_queue, j, processes[j].priority);
-    current_process = &processes[j];
     j++;
 
-    process_init(&processes[j], uproc_alloc1, HIGH);
+	  process_init(&processes[j], uproc_crt_display, HIGH);
     pq_enqueue(&priority_queue, j, processes[j].priority);
     j++;
-
+	
     process_init(&processes[j], uproc_clock, MED);
     pq_enqueue(&priority_queue, j, processes[j].priority);
     j++;
 
-    process_init(&processes[j], uproc_priority1, LOW);
-    pq_enqueue(&priority_queue, j, processes[j].priority);
-    j++;
-
-    process_init(&processes[j], uproc_priority2, LOW);
-    pq_enqueue(&priority_queue, j, processes[j].priority);
-    j++;
 
     for (; j < NUM_PROCESSES; ++j) {
         process_init(&processes[j], uproc_null, LOWEST);

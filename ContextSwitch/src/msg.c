@@ -1,3 +1,4 @@
+#include <LPC17xx.H>
 #include "process.h"
 #include "msg.h"
 #include "queue.h"
@@ -59,7 +60,8 @@ msg_envelope_t *msg_dequeue_msg(pcb_t *pcb)
     return msg;
 }
 
-int msg_send_message(void *pmsg)
+
+int msg_send_message(void *pmsg, int kernelMode)
 {
     msg_envelope_t *msg = (msg_envelope_t *)pmsg;
     pcb_t *recipient;
@@ -75,8 +77,8 @@ int msg_send_message(void *pmsg)
     if (recipient->state == MSG_BLOCKED) {
         proc_set_msg_blocked(recipient->pid, 0);
 
-        if (recipient->priority < current_process->priority) {
-            release_processor();
+        if (recipient->priority < current_process->priority && !kernelMode) {
+						release_processor();
         }
     }
 
@@ -89,7 +91,7 @@ int send_message(int pid, void *pmsg)
     msg_envelope_t *msg = (msg_envelope_t *)pmsg;
     msg->header.dest = pid;
     msg->header.src = proc_get_pid();
-    msg_send_message(msg);
+    msg_send_message(msg, 0);
 
     return 0;
 }
