@@ -77,11 +77,8 @@ int msg_send_message(void *pmsg, int kernelMode)
         proc_set_msg_blocked(recipient->pid, 0);
 
         if (recipient->priority < current_process->priority) {
-					if (kernelMode)
+					if (!kernelMode)
 					{
-            k_release_processor();
-					}
-					else {
 						release_processor();
 					}
         }
