@@ -159,8 +159,8 @@ int k_block_and_release_processor(void)
 
 void proc_init(void)
 {
-    int j = 0;
-    
+    int j = 0;  
+	
     pq_init(&priority_queue);
     pq_init(&blocked_queue);
 
@@ -185,9 +185,9 @@ void proc_init(void)
     pq_enqueue(&priority_queue, j, processes[j].priority);
     j++;
 
-    for (; i < NUM_PROCESSES; ++i) {
-        process_init(&processes[i], uproc_null, LOWEST);
-        pq_enqueue(&priority_queue, i, processes[i].priority);
+    for (; j < NUM_PROCESSES; ++j) {
+        process_init(&processes[j], uproc_null, LOWEST);
+        pq_enqueue(&priority_queue, j, processes[j].priority);
     }
 }
 
