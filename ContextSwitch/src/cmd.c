@@ -3,7 +3,15 @@
 #include "msg.h"
 #include "process.h"
 
-static int COMMANDS[NUM_COMMANDS] = { -1 };
+static int COMMANDS[NUM_COMMANDS];
+
+void cmd_init(void)
+{
+    int i;
+    for (i = 0; i < NUM_COMMANDS; ++i) {
+        COMMANDS[i] = -1;
+    }
+}
 
 size_t hash(const char *tag)
 {
