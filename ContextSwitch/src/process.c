@@ -119,10 +119,12 @@ int k_release_processor(void)
     current_process = &(processes[pid]);
 
     /* Make sure to add the old process to the back of the pq */
-    if (p_pcb_old->state == BLOCKED) {
-        pq_enqueue(&blocked_queue, p_pcb_old->pid, p_pcb_old->priority);
-    } else {
-        pq_enqueue(&priority_queue, p_pcb_old->pid, p_pcb_old->priority);
+    if (p_pcb_old->state != MSG_BLOCKED) {
+        if (p_pcb_old->state == BLOCKED) {
+            pq_enqueue(&blocked_queue, p_pcb_old->pid, p_pcb_old->priority);
+        } else {
+            pq_enqueue(&priority_queue, p_pcb_old->pid, p_pcb_old->priority);
+        }
     }
 
     state = current_process->state;
@@ -186,7 +188,7 @@ void proc_init(void)
     }
 }
 
-int k_set_msg_blocked(int target, int block)
+int proc_set_msg_blocked(int target, int block)
 {
     pcb_t *proc;
 
@@ -198,7 +200,6 @@ int k_set_msg_blocked(int target, int block)
 
     if (block) {
         proc->state = MSG_BLOCKED;
-        pq_remove(&priority_queue, target, proc->priority);
     } else {
         proc->state = RDY;
         pq_enqueue(&priority_queue, target, proc->priority);
