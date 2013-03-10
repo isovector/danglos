@@ -163,22 +163,14 @@ void proc_init(void)
     pq_enqueue(&priority_queue, j, processes[j].priority);
     j++;
 
-	
-    process_init(&processes[j], uproc_alloc1, HIGH);
+	  process_init(&processes[j], uproc_crt_display, HIGH);
     pq_enqueue(&priority_queue, j, processes[j].priority);
     j++;
-
+	
     process_init(&processes[j], uproc_clock, MED);
     pq_enqueue(&priority_queue, j, processes[j].priority);
     j++;
 
-    process_init(&processes[j], uproc_priority1, LOW);
-    pq_enqueue(&priority_queue, j, processes[j].priority);
-    j++;
-
-    process_init(&processes[j], uproc_priority2, LOW);
-    pq_enqueue(&priority_queue, j, processes[j].priority);
-    j++;
 
     for (; j < NUM_PROCESSES; ++j) {
         process_init(&processes[j], uproc_null, LOWEST);

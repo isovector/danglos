@@ -79,10 +79,10 @@ int msg_send_message(void *pmsg, int kernelMode)
         if (recipient->priority < current_process->priority) {
 					if (kernelMode)
 					{
-            k_release_processor();
+            //k_release_processor();
 					}
 					else {
-						release_processor();
+						//release_processor();
 					}
         }
     }

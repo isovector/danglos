@@ -64,10 +64,8 @@ int k_get_priority(int);
 extern void uproc_print(void);           /*user process 1 */
 extern void uproc_clock(void);
 extern void uproc_null(void);
-extern void uproc_alloc1(void);
-extern void uproc_priority1(void);
-extern void uproc_priority2(void);
-extern void uproc_alloc_all(void);
+extern void uproc_crt_display(void);
+
 extern void __rte(void);           /* pop exception stack frame */
 
 #endif /* ! _PROCESS_H_ */
