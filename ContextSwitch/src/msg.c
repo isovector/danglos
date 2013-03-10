@@ -74,10 +74,10 @@ int msg_send_message(void *pmsg, int blocks)
     msg_enqueue_msg(msg, recipient);
 
     if (recipient->state == MSG_BLOCKED) {
-        k_set_msg_blocked(recipient->pid, 0);
+        proc_set_msg_blocked(recipient->pid, 0);
 
         if (blocks == 1 && recipient->priority < current_process->priority) {
-            k_release_processor();
+            release_processor();
         }
     }
 
@@ -85,7 +85,7 @@ int msg_send_message(void *pmsg, int blocks)
 }
 
 
-int k_send_message(int pid, void *pmsg)
+int send_message(int pid, void *pmsg)
 {
     msg_envelope_t *msg = (msg_envelope_t *)pmsg;
     msg->header.dest = pid;
@@ -99,7 +99,7 @@ void *receive_message(int *sender)
     msg_envelope_t *msg = msg_dequeue_msg(current_process);
 
     while (!msg) {
-			k_set_msg_blocked(current_process->pid, 1);
+			proc_set_msg_blocked(current_process->pid, 1);
 			release_processor();
 			msg = msg_dequeue_msg(current_process);
     }
