@@ -1,5 +1,8 @@
 #include "cmd.h"
 #include "debug_print.h"
+#include "msg.h"
+#include "process.h"
+
 static int COMMANDS[NUM_COMMANDS] = { -1 };
 
 size_t hash(const char *tag)
@@ -67,5 +70,7 @@ void k_cmd_send(char *buffer)
 
 void k_cmd_hotkey(char hotkey)
 {
-    // send message to sysproc_hotkeys
+	msg_envelope_t * msg = (msg_envelope_t *)s_request_memory_block();
+	msg->header.ctrl = hotkey;
+	send_message(HOTKEYS_PROC, msg);
 }
