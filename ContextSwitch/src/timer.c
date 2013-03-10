@@ -1,7 +1,7 @@
 #include <LPC17xx.h>
 #include "timer.h"
 #include "process.h"
-#define DEBUG_TIMER
+//#define DEBUG_TIMER
 
 #ifdef DEBUG_TIMER
 #define CLOCK_FREQUENCY 1249

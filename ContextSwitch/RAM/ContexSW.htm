@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\RAM\ContexSW.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\RAM\ContexSW.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5.02 [Build 28]: Last Updated: Sun Mar 10 16:10:06 2013
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5.02 [Build 28]: Last Updated: Sun Mar 10 16:52:02 2013
 <BR><P>
 <H3>Maximum Stack Usage =         92 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -450,6 +450,10 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[44]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_exit_exit
 </UL>
 
+<P><STRONG><a name="[50]"></a>SystemInit</STRONG> (Thumb, 476 bytes, Stack size 0 bytes, system_lpc17xx.o(.text))
+<BR><BR>[Called By]<UL><LI><a href="#[40]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
 <P><STRONG><a name="[40]"></a>main</STRONG> (Thumb, 62 bytes, Stack size 8 bytes, main_svc.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = main &rArr; proc_init &rArr; process_init &rArr; s_request_memory_block &rArr; set_bit
 </UL>
@@ -460,20 +464,6 @@ Global Symbols
 <LI><a href="#[50]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;SystemInit
 </UL>
 <BR>[Called By]<UL><LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_entry_main
-</UL>
-
-<P><STRONG><a name="[a1]"></a>__I$use$semihosting</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, use_no_semi.o(.text), UNUSED)
-
-<P><STRONG><a name="[a2]"></a>__use_no_semihosting_swi</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, use_no_semi.o(.text), UNUSED)
-
-<P><STRONG><a name="[a3]"></a>__use_two_region_memory</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
-
-<P><STRONG><a name="[a4]"></a>__rt_heap_escrow$2region</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
-
-<P><STRONG><a name="[a5]"></a>__rt_heap_expand$2region</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
-
-<P><STRONG><a name="[50]"></a>SystemInit</STRONG> (Thumb, 476 bytes, Stack size 0 bytes, system_lpc17xx.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[40]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
 <P><STRONG><a name="[62]"></a>proc_is_valid_pid</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, process.o(.text))
@@ -525,8 +515,8 @@ Global Symbols
 <LI><a href="#[5f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;k_block_and_release_processor
 </UL>
 <BR>[Address Reference Count : 4]<UL><LI> mmu.o(.text)
-<LI> msg.o(.text)
 <LI> main_svc.o(.text)
+<LI> msg.o(.text)
 <LI> usr_proc.o(.text)
 </UL>
 <P><STRONG><a name="[5f]"></a>k_block_and_release_processor</STRONG> (Thumb, 16 bytes, Stack size 8 bytes, process.o(.text), UNUSED)
@@ -564,7 +554,7 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[63]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;k_set_priority
 </UL>
 
-<P><STRONG><a name="[a6]"></a>k_get_priority</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, process.o(.text), UNUSED)
+<P><STRONG><a name="[a1]"></a>k_get_priority</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, process.o(.text), UNUSED)
 
 <P><STRONG><a name="[67]"></a>set_bit</STRONG> (Thumb, 52 bytes, Stack size 12 bytes, mmu.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = set_bit
@@ -627,7 +617,7 @@ Global Symbols
 <LI><a href="#[5d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pq_dequeue
 </UL>
 
-<P><STRONG><a name="[a7]"></a>_pq_swap</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, p_queue.o(.text), UNUSED)
+<P><STRONG><a name="[a2]"></a>_pq_swap</STRONG> (Thumb, 20 bytes, Stack size 8 bytes, p_queue.o(.text), UNUSED)
 
 <P><STRONG><a name="[60]"></a>pq_init</STRONG> (Thumb, 44 bytes, Stack size 0 bytes, p_queue.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[53]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;proc_init
@@ -715,6 +705,28 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[35]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;k_cmd_register
 </UL>
 
+<P><STRONG><a name="[51]"></a>uart_init</STRONG> (Thumb, 126 bytes, Stack size 12 bytes, uart_irq.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = uart_init
+</UL>
+<BR>[Called By]<UL><LI><a href="#[40]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+</UL>
+
+<P><STRONG><a name="[47]"></a>c_UART0_IRQHandler</STRONG> (Thumb, 210 bytes, Stack size 24 bytes, uart_irq.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = c_UART0_IRQHandler &rArr; k_cmd_send &rArr; hash
+</UL>
+<BR>[Calls]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;k_cmd_send
+</UL>
+<BR>[Called By]<UL><LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART0_IRQHandler
+</UL>
+
+<P><STRONG><a name="[70]"></a>uart_send_string</STRONG> (Thumb, 46 bytes, Stack size 8 bytes, uart_irq.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = uart_send_string
+</UL>
+<BR>[Called By]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uproc_print
+<LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;debugPrint
+<LI><a href="#[33]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uproc_crt_display
+</UL>
+
 <P><STRONG><a name="[72]"></a>msg_enqueue_msg</STRONG> (Thumb, 18 bytes, Stack size 0 bytes, msg.o(.text))
 <BR><BR>[Called By]<UL><LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;msg_send_message
 </UL>
@@ -738,7 +750,7 @@ Global Symbols
 <LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;msg_tick
 </UL>
 
-<P><STRONG><a name="[73]"></a>send_message</STRONG> (Thumb, 28 bytes, Stack size 16 bytes, msg.o(.text))
+<P><STRONG><a name="[73]"></a>send_message</STRONG> (Thumb, 32 bytes, Stack size 16 bytes, msg.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = send_message &rArr; msg_send_message &rArr; proc_set_msg_blocked &rArr; pq_enqueue &rArr; _pq_compute_offset
 </UL>
 <BR>[Calls]<UL><LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;msg_send_message
@@ -765,35 +777,13 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;c_TIMER0_IRQHandler
 </UL>
 
-<P><STRONG><a name="[76]"></a>delayed_send</STRONG> (Thumb, 34 bytes, Stack size 24 bytes, msg.o(.text))
+<P><STRONG><a name="[76]"></a>delayed_send</STRONG> (Thumb, 38 bytes, Stack size 24 bytes, msg.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = delayed_send
 </UL>
 <BR>[Calls]<UL><LI><a href="#[77]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;wait_enqueue_msg
 <LI><a href="#[56]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;proc_get_pid
 </UL>
 <BR>[Called By]<UL><LI><a href="#[34]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uproc_clock
-</UL>
-
-<P><STRONG><a name="[51]"></a>uart_init</STRONG> (Thumb, 126 bytes, Stack size 12 bytes, uart_irq.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = uart_init
-</UL>
-<BR>[Called By]<UL><LI><a href="#[40]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
-</UL>
-
-<P><STRONG><a name="[47]"></a>c_UART0_IRQHandler</STRONG> (Thumb, 210 bytes, Stack size 24 bytes, uart_irq.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = c_UART0_IRQHandler &rArr; k_cmd_send &rArr; hash
-</UL>
-<BR>[Calls]<UL><LI><a href="#[6f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;k_cmd_send
-</UL>
-<BR>[Called By]<UL><LI><a href="#[12]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART0_IRQHandler
-</UL>
-
-<P><STRONG><a name="[70]"></a>uart_send_string</STRONG> (Thumb, 46 bytes, Stack size 8 bytes, uart_irq.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = uart_send_string
-</UL>
-<BR>[Called By]<UL><LI><a href="#[78]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uproc_print
-<LI><a href="#[6e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;debugPrint
-<LI><a href="#[33]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uproc_crt_display
 </UL>
 
 <P><STRONG><a name="[32]"></a>uproc_null</STRONG> (Thumb, 10 bytes, Stack size 0 bytes, usr_proc.o(.text))
@@ -832,11 +822,21 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> process.o(.text)
 </UL>
+<P><STRONG><a name="[a3]"></a>__I$use$semihosting</STRONG> (Thumb, 0 bytes, Stack size 0 bytes, use_no_semi.o(.text), UNUSED)
+
+<P><STRONG><a name="[a4]"></a>__use_no_semihosting_swi</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, use_no_semi.o(.text), UNUSED)
+
 <P><STRONG><a name="[7b]"></a>strcpy</STRONG> (Thumb, 72 bytes, Stack size 12 bytes, strcpy.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = strcpy
 </UL>
 <BR>[Called By]<UL><LI><a href="#[34]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;uproc_clock
 </UL>
+
+<P><STRONG><a name="[a5]"></a>__use_two_region_memory</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
+
+<P><STRONG><a name="[a6]"></a>__rt_heap_escrow$2region</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
+
+<P><STRONG><a name="[a7]"></a>__rt_heap_expand$2region</STRONG> (Thumb, 2 bytes, Stack size 0 bytes, heapauxi.o(.text), UNUSED)
 
 <P><STRONG><a name="[3c]"></a>__user_setup_stackheap</STRONG> (Thumb, 74 bytes, Stack size 8 bytes, sys_stackheap_outer.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8 + Unknown Stack Size

@@ -91,6 +91,7 @@ int send_message(int pid, void *pmsg)
     msg_envelope_t *msg = (msg_envelope_t *)pmsg;
     msg->header.dest = pid;
     msg->header.src = proc_get_pid();
+		msg->header.next = NULL;
     msg_send_message(msg, 0);
 
     return 0;
@@ -130,7 +131,7 @@ int delayed_send(int pid, void *pmsg, uint32_t delay)
 
     msg->header.dest = pid;
     msg->header.src = proc_get_pid();
-    
+    msg->header.next = NULL;
     wait_enqueue_msg(msg, delay);
 
     return 0;
