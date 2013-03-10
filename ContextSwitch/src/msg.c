@@ -59,7 +59,7 @@ msg_envelope_t *msg_dequeue_msg(pcb_t *pcb)
     return msg;
 }
 
-int msg_send_message(void *pmsg, int blocks)
+int msg_send_message(void *pmsg)
 {
     msg_envelope_t *msg = (msg_envelope_t *)pmsg;
     pcb_t *recipient;
@@ -69,15 +69,14 @@ int msg_send_message(void *pmsg, int blocks)
     }
 
     recipient = &processes[msg->header.dest];
-    msg->header.src = proc_get_pid();
 
     msg_enqueue_msg(msg, recipient);
 
     if (recipient->state == MSG_BLOCKED) {
-        k_set_msg_blocked(recipient->pid, 0);
+        proc_set_msg_blocked(recipient->pid, 0);
 
-        if (blocks == 1 && recipient->priority < current_process->priority) {
-            k_release_processor();
+        if (recipient->priority < current_process->priority) {
+            release_processor();
         }
     }
 
@@ -85,11 +84,12 @@ int msg_send_message(void *pmsg, int blocks)
 }
 
 
-int k_send_message(int pid, void *pmsg)
+int send_message(int pid, void *pmsg)
 {
     msg_envelope_t *msg = (msg_envelope_t *)pmsg;
     msg->header.dest = pid;
-    msg_send_message(msg, 0);
+    msg->header.src = proc_get_pid();
+    msg_send_message(msg);
 
     return 0;
 }
@@ -99,7 +99,7 @@ void *receive_message(int *sender)
     msg_envelope_t *msg = msg_dequeue_msg(current_process);
 
     while (!msg) {
-			k_set_msg_blocked(current_process->pid, 1);
+			proc_set_msg_blocked(current_process->pid, 1);
 			release_processor();
 			msg = msg_dequeue_msg(current_process);
     }
@@ -116,7 +116,7 @@ void msg_tick(uint32_t delay)
     int ret = 0;
 
     while (!ret && delay_msg_list && delay_msg_list->delay <= delay) {
-        ret = msg_send_message(delay_msg_list, 1);
+        ret = msg_send_message(delay_msg_list);
         delay_msg_list = delay_msg_list->header.next;
 				g_min_msg = delay_msg_list ? (int32_t)delay_msg_list->delay : -1;
     }
@@ -127,6 +127,8 @@ int delayed_send(int pid, void *pmsg, uint32_t delay)
     msg_envelope_t *msg = (msg_envelope_t *)pmsg;
 
     msg->header.dest = pid;
+    msg->header.src = proc_get_pid();
+    
     wait_enqueue_msg(msg, delay);
 
     return 0;

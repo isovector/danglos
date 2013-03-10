@@ -56,7 +56,7 @@ extern void proc_init(void);		/* initialize all procs in the system */
 int scheduler(void);               /* pick the pid of the next to run process */
 
 int k_release_processor(void);       /* kernel release_process function */
-int k_set_msg_blocked(int pid, int block);
+int proc_set_msg_blocked(int pid, int block);
 int k_set_priority(int, int);
 int k_set_my_priority(int);
 int k_get_priority(int);
