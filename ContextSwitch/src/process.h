@@ -7,7 +7,8 @@
 #define USR_SZ_STACK 0x080         /* user proc stack size 512B  = 0x80*4  */
 #endif /* DEBUG_0 */
 
-#define NUM_PROCESSES 7
+#define NUM_PROCESSES 20
+#define NUM_USER_PROCESSES 7
 
 #ifndef NULL
 #define NULL 0
@@ -19,6 +20,9 @@
 #include "p_queue/p_queue.h"
 
 #include "msg.h"
+
+/* System processes need fixed pids so that they can be referenced consistently */
+#define CRT_DISPLAY 10
 
 /* process states, note we only assume three states in this example */
 typedef enum {NEW = 0, ZOMBIE, RDY, RUN, BLOCKED, MSG_BLOCKED} proc_state_t;
@@ -51,7 +55,7 @@ extern p_queue blocked_queue;
 extern int proc_is_valid_pid(int pid);
 
 extern int proc_get_pid(void);
-extern void process_init(pcb_t *, uproc_func, priority_t p);  /* Initialize the a given process */
+extern void process_init(pcb_t *, uproc_func, priority_t p, int target_pid);  /* Initialize the a given process */
 extern void proc_init(void);		/* initialize all procs in the system */
 int scheduler(void);               /* pick the pid of the next to run process */
 
@@ -61,10 +65,11 @@ int k_set_priority(int, int);
 int k_set_my_priority(int);
 int k_get_priority(int);
 
+extern void sysproc_crt_display(void);
+
 extern void uproc_print(void);           /*user process 1 */
 extern void uproc_clock(void);
 extern void uproc_null(void);
-extern void uproc_crt_display(void);
 
 extern void __rte(void);           /* pop exception stack frame */
 

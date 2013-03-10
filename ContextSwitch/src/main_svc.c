@@ -20,6 +20,7 @@
 
 extern void initMemory(void);
 extern void proc_init(void);
+extern void system_proc_init(void);
 
 int main() 
 {
@@ -28,6 +29,7 @@ int main()
   __disable_irq();
   uart0_init();
 	initMemory();
+	system_proc_init();
   proc_init();
 	timer_init();
   __enable_irq();

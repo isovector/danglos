@@ -44,18 +44,6 @@ void uproc_print(void)
     }
 }
 
-void uproc_crt_display(void) 
-{
-	msg_envelope_t *msg;
-	
-	while (1) 
-	{
-		msg = receive_message(NULL);
-		uart0_send_string((uint8_t*)msg->data);
-		s_release_memory_block(msg);
-	}
-}
-
 static volatile size_t clock_h = 0, clock_m = 0, clock_s = 0;
 void ucmd_set_time(const char *data)
 {
@@ -91,10 +79,10 @@ void uproc_clock(void)
     output = (msg_envelope_t*)s_request_memory_block();  
 	
     for (;;) {
-        delayed_send(proc_get_pid(), msg, 1000);
+        delayed_send(proc_get_pid(), msg, 100);
         ucmd_format_time();
         strcpy(output->data, (char*)time_str);
-			  send_message(1, output);
+			  send_message(CRT_DISPLAY, output);	/* Send the output to the CRT_DISPLAY */
 			
         receive_message(NULL);
 

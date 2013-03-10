@@ -34,9 +34,8 @@ void proc_wrapper(void)
     current_process->state = ZOMBIE;
 }
 
-void process_init(pcb_t *pcb, uproc_func func, priority_t p)
+void process_init(pcb_t *pcb, uproc_func func, priority_t p, int target_pid)
 {
-    static int x = 0;
     int i;
     uint32_t *sp;
 
@@ -45,9 +44,9 @@ void process_init(pcb_t *pcb, uproc_func func, priority_t p)
     }
 
     /* initialize the first process	exception stack frame */
-    proc_funcs[x] = func;
+    proc_funcs[target_pid] = func;
 
-    pcb->pid = x++;
+    pcb->pid = target_pid;
     pcb->state = NEW;
     pcb->priority = p;
 
@@ -154,28 +153,29 @@ int k_block_and_release_processor(void)
 
 void proc_init(void)
 {
-    int j = 0;  
-	
-    pq_init(&priority_queue);
-    pq_init(&blocked_queue);
+    int j = 0;
 
-    process_init(&processes[j], uproc_null, LOWEST);
-    pq_enqueue(&priority_queue, j, processes[j].priority);
-    j++;
-
-	  process_init(&processes[j], uproc_crt_display, HIGH);
+    process_init(&processes[j], uproc_null, LOWEST, j);
     pq_enqueue(&priority_queue, j, processes[j].priority);
     j++;
 	
-    process_init(&processes[j], uproc_clock, MED);
+    process_init(&processes[j], uproc_clock, MED, j);
     pq_enqueue(&priority_queue, j, processes[j].priority);
     j++;
 
 
-    for (; j < NUM_PROCESSES; ++j) {
-        process_init(&processes[j], uproc_null, LOWEST);
+    for (; j < NUM_USER_PROCESSES; ++j) {
+        process_init(&processes[j], uproc_null, LOWEST, j);
         pq_enqueue(&priority_queue, j, processes[j].priority);
     }
+}
+
+void system_proc_init(void) {
+	pq_init(&priority_queue);
+  pq_init(&blocked_queue);
+	
+  process_init(&processes[CRT_DISPLAY], sysproc_crt_display, HIGH, CRT_DISPLAY);
+  pq_enqueue(&priority_queue, CRT_DISPLAY, processes[CRT_DISPLAY].priority);
 }
 
 int proc_set_msg_blocked(int target, int block)
