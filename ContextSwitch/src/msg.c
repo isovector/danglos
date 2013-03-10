@@ -118,7 +118,7 @@ void msg_tick(uint32_t delay)
     int ret = 0;
 
     while (!ret && delay_msg_list && delay_msg_list->delay <= delay) {
-        ret = msg_send_message(delay_msg_list);
+        ret = msg_send_message(delay_msg_list, 1);
         delay_msg_list = delay_msg_list->header.next;
 				g_min_msg = delay_msg_list ? (int32_t)delay_msg_list->delay : -1;
     }
