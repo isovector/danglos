@@ -83,6 +83,7 @@ void ucmd_format_time()
 
 void uproc_clock(void)
 {
+		int enabled;
     msg_envelope_t *msg;
 	  msg_envelope_t *result;
     cmd_register("%WR");
@@ -91,13 +92,14 @@ void uproc_clock(void)
     time_str[2] = time_str[5] = ':';
     time_str[8] = '\r';
 	  time_str[9] = 0;
-
+		enabled = 1;
+	
     msg = (msg_envelope_t *)s_request_memory_block();
     
 	
     for (;;) {
 				msg->data[1] = 3;
-        delayed_send(proc_get_pid(), msg, 100);
+        delayed_send(proc_get_pid(), msg, 1000);
         ucmd_format_time();
 				msg_print(time_str);
 				
@@ -105,23 +107,24 @@ void uproc_clock(void)
 					result = receive_message(NULL);
 					result->data[4] = '\0';
 					if (strcmp(&result->data[1], "%WR") == 0) {
+						enabled = 1;
 						clock_s = 0;
 						clock_m = 0;
 						clock_h = 0;
 						ucmd_format_time();
 						msg_print(time_str);
+						break;
 					} else if (strcmp(&result->data[1], "%WT") == 0) {
 						s_release_memory_block(result);
 						msg_print("\r          \r");
-						while (1) {
-							set_my_priority(LOW);
-							release_processor();
-						}
+						enabled = 0;
 					} else if(strcmp(&result->data[1], "%WS") == 0){
+						enabled = 1;
 						ucmd_set_time(&result->data[5]);
 						ucmd_format_time();
 						msg_print(time_str);
-					}	else if (result->data[1] == 3) {
+						break;
+					}	else if (result->data[1] == 3 && enabled) {
 						break;
 					}
 					s_release_memory_block(result);

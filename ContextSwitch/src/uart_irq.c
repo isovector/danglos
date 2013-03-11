@@ -9,6 +9,7 @@
 #include "uart.h"
 #include "cmd.h"
 #include "bit_vector.h"
+#include "process.h"
 
 volatile uint8_t g_UART0_TX_empty=1;
 volatile uint8_t g_UART0_buffer[BUFSIZE];
@@ -191,6 +192,8 @@ void c_UART0_IRQHandler(void)
 	uint8_t dummy = dummy;	/* to clear interrupt upon LSR error */
 	LPC_UART_TypeDef *pUart = (LPC_UART_TypeDef *)LPC_UART0;
 
+	//proc_set_iproc(KBD_IPROC_PID);
+	
 	/* Reading IIR automatically acknowledges the interrupt */
 	IIR_IntId = (pUart->IIR) >> 1 ; /* skip pending bit in IIR */
 
@@ -214,6 +217,7 @@ void c_UART0_IRQHandler(void)
 			   Dummy read on RX to clear interrupt, then bail out
 			*/
 			dummy = pUart->RBR; 
+			//proc_reset_iproc();
 			return; /* error occurs, return */
 		}
 		/* If no error on RLS, normal ready, save into the data buffer.
@@ -223,6 +227,7 @@ void c_UART0_IRQHandler(void)
                     handle_char(pUart);
 		}	    
 	} else { /* IIR_CTI and reserved combination are not implemented */
+		//proc_reset_iproc();
 		return;
 	}	
 }
@@ -230,10 +235,13 @@ void c_UART0_IRQHandler(void)
 void uart_send_string( uint32_t n_uart, uint8_t *p_buffer)
 {
 	LPC_UART_TypeDef *pUart;
+	
+	proc_set_iproc(UART_IPROC_PID);
 
 	if(n_uart == 0 ) { /* UART0 is implemented */
 		pUart = (LPC_UART_TypeDef *)LPC_UART0;
 	} else { /* other UARTs are not implemented */
+		proc_reset_iproc();
 		return;
 	}
 
@@ -244,6 +252,7 @@ void uart_send_string( uint32_t n_uart, uint8_t *p_buffer)
 		g_UART0_TX_empty = 0;  // not empty in the THR until it shifts out
 		p_buffer++;
 	}
+	proc_reset_iproc();
 	return;
 }
 

@@ -25,6 +25,9 @@
 #define CRT_DISPLAY_PID 10
 #define CMD_DECODER_PID 11
 #define HOTKEY_PROC     12
+#define KBD_IPROC_PID   13
+#define UART_IPROC_PID  14
+#define TIMER_IPROC_PID 15
 
 typedef enum {NOTIFY = 1, REGISTER} cmd_t;
 
@@ -42,6 +45,7 @@ typedef struct pcb {
     uint32_t pid;          /* process id */
     proc_state_t state;    /* state of the process */
     priority_t priority;
+	  int iproc;
     msg_envelope_t *msg_head, *msg_tail;
 } pcb_t;
 
@@ -51,7 +55,7 @@ typedef void (*uproc_func)(void);
 An array of pointers to all of the processses
 */
 extern pcb_t  *current_process; /* always point to the current process */
-
+extern int old_pid;
 extern pcb_t processes[NUM_PROCESSES]; /* Array of all processes */
 
 extern p_queue priority_queue;	/* Priority Queue for scheduling processes */
@@ -69,6 +73,9 @@ int proc_set_msg_blocked(int pid, int block);
 int k_set_priority(int, int);
 int k_set_my_priority(int);
 int k_get_priority(int);
+
+void proc_set_iproc(int);
+void proc_reset_iproc(void);
 
 extern void sysproc_crt_display(void);
 extern void sysproc_command_decoder(void);

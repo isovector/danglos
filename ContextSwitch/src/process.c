@@ -16,6 +16,7 @@ pcb_t  *current_process = NULL;
 pcb_t processes[NUM_PROCESSES] = {0};
 p_queue priority_queue;
 p_queue blocked_queue;
+int old_pid = -1;
 
 int proc_is_valid_pid(int pid)
 {
@@ -49,6 +50,7 @@ void process_init(pcb_t *pcb, uproc_func func, priority_t p, int target_pid)
     pcb->pid = target_pid;
     pcb->state = NEW;
     pcb->priority = p;
+		pcb->iproc = 0;
 
     pcb->msg_head = pcb->msg_tail = NULL;
 
@@ -170,6 +172,21 @@ void proc_init(void)
     }
 }
 
+void proc_set_iproc(int pid) {
+	/*__disable_irq();
+	old_pid = current_process->pid;
+	current_process->state = RDY;
+	current_process = &processes[pid];
+	current_process->state = RUN;*/
+}
+
+void proc_reset_iproc(void){
+	/*current_process->state = RDY;
+	current_process = &processes[old_pid];
+	current_process->state = RUN;
+	__enable_irq();*/
+}
+
 void system_proc_init(void) {
 	pq_init(&priority_queue);
   pq_init(&blocked_queue);
@@ -182,6 +199,10 @@ void system_proc_init(void) {
 	
   process_init(&processes[HOTKEY_PROC], sysproc_hotkeys, HIGH, HOTKEY_PROC);
   pq_enqueue(&priority_queue, HOTKEY_PROC, processes[HOTKEY_PROC].priority);
+	
+	process_init(&processes[KBD_IPROC_PID], proc_init, LOW, KBD_IPROC_PID);
+	process_init(&processes[TIMER_IPROC_PID], proc_init, LOW, TIMER_IPROC_PID);
+	process_init(&processes[UART_IPROC_PID], proc_init, LOW, UART_IPROC_PID);
 }
 
 int proc_set_msg_blocked(int target, int block)

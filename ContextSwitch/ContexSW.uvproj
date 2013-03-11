@@ -476,6 +476,21 @@
               <FileType>1</FileType>
               <FilePath>.\src\msg.c</FilePath>
             </File>
+            <File>
+              <FileName>bit_vector.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\bit_vector.c</FilePath>
+            </File>
+            <File>
+              <FileName>queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\queue.c</FilePath>
+            </File>
+            <File>
+              <FileName>system_processes.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\system_processes.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -619,7 +634,7 @@
             <RestoreMemoryDisplay>1</RestoreMemoryDisplay>
             <RestoreFunctions>1</RestoreFunctions>
             <RestoreToolbox>1</RestoreToolbox>
-            <LimitSpeedToRealTime>0</LimitSpeedToRealTime>
+            <LimitSpeedToRealTime>1</LimitSpeedToRealTime>
           </Simulator>
           <Target>
             <UseTarget>1</UseTarget>
@@ -790,7 +805,7 @@
               </OCR_RVCT3>
               <OCR_RVCT4>
                 <Type>1</Type>
-                <StartAddress>0x1000000</StartAddress>
+                <StartAddress>0x10000000</StartAddress>
                 <Size>0x4000</Size>
               </OCR_RVCT4>
               <OCR_RVCT5>
@@ -969,6 +984,21 @@
               <FileName>msg.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\src\msg.c</FilePath>
+            </File>
+            <File>
+              <FileName>bit_vector.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\bit_vector.c</FilePath>
+            </File>
+            <File>
+              <FileName>queue.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\queue.c</FilePath>
+            </File>
+            <File>
+              <FileName>system_processes.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\src\system_processes.c</FilePath>
             </File>
           </Files>
         </Group>
