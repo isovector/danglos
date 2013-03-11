@@ -29,15 +29,15 @@
          msg = receive_message(NULL);
          switch (msg->header.ctrl) {
              case 'z': {
-                 // print priorities
+                 proc_print(msg, RDY);
              } break;
              
              case 'x': {
-                 // print blocked
+                 proc_print(msg, BLOCKED);
              } break;
              
              case 'c': {
-                 // print msg blocked
+                 proc_print(msg, MSG_BLOCKED);
              } break;
          }
          s_release_memory_block(msg);

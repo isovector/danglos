@@ -69,6 +69,8 @@ int k_get_priority(int);
 extern void sysproc_crt_display(void);
 extern void sysproc_hotkeys(void);
 
+void proc_print(msg_envelope_t *, proc_state_t);
+
 extern void uproc_print(void);           /*user process 1 */
 extern void uproc_clock(void);
 extern void uproc_null(void);

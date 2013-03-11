@@ -235,3 +235,27 @@ int k_get_priority(int target)
 
     return processes[target].priority;
 }
+
+
+void proc_print(msg_envelope_t * msg, proc_state_t state)
+{
+	char header_txt [] = "PID\tPRIO\n";
+	int header_len = sizeof(header_txt) - 1;
+	int i;
+	int lines = 0;
+	char line_txt [] = "00\t0\n";
+	int line_len = sizeof(line_txt) - 1;
+	strcpy(msg->data, header_txt);
+	for(i = 0; i < NUM_PROCESSES; ++i)
+	{
+		if(processes[i].state == state)
+		{
+			line_txt[0] = '0' + processes[i].pid / 10;
+			line_txt[1] = '0' + processes[i].pid % 10;
+			line_txt[3] = '0' + processes[i].priority;
+			strcpy(msg->data + header_len + lines * line_len, line_txt);
+			++lines;
+		}
+	}
+	send_kernel_message(CRT_DISPLAY, proc_get_pid(), msg);
+}
