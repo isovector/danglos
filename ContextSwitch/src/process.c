@@ -174,8 +174,11 @@ void system_proc_init(void) {
 	pq_init(&priority_queue);
   pq_init(&blocked_queue);
 	
-  process_init(&processes[CRT_DISPLAY], sysproc_crt_display, HIGH, CRT_DISPLAY);
-  pq_enqueue(&priority_queue, CRT_DISPLAY, processes[CRT_DISPLAY].priority);
+  process_init(&processes[CRT_DISPLAY_PID], sysproc_crt_display, HIGH, CRT_DISPLAY_PID);
+  pq_enqueue(&priority_queue, CRT_DISPLAY_PID, processes[CRT_DISPLAY_PID].priority);
+	
+	process_init(&processes[CMD_DECODER_PID], sysproc_command_decoder, HIGH, CMD_DECODER_PID);
+  pq_enqueue(&priority_queue, CMD_DECODER_PID, processes[CMD_DECODER_PID].priority);
 }
 
 int proc_set_msg_blocked(int target, int block)

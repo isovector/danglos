@@ -7,6 +7,7 @@
  
  #include "process.h"
  #include "uart.h"
+ #include "cmd.h"
  
  void sysproc_crt_display(void) 
 {
@@ -43,3 +44,23 @@
          s_release_memory_block(msg);
      }
  }
+
+/* Accepts messages and routes them to their respective registered processes */
+void sysproc_command_decoder(void)
+{
+	msg_envelope_t *msg;
+	int message_target;
+	
+	while (1) 
+	{
+		msg = receive_message(NULL);
+		
+		if (msg->data[0] == REGISTER) {
+			cmd_put(&(msg->data[2]), msg->data[1]);
+			s_release_memory_block(msg);
+		} else if (msg->data[0] == NOTIFY) {
+			message_target = cmd_get(&msg->data[1]);
+			send_message(message_target, msg);
+	  }
+	}
+}

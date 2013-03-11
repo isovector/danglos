@@ -1,5 +1,7 @@
 #include "cmd.h"
 #include "debug_print.h"
+#include "process.h"
+
 static int COMMANDS[NUM_COMMANDS];
 
 void cmd_init(void)
@@ -41,16 +43,27 @@ void cmd_put(const char *tag, int pid)
         *((int *)NULL) = 0;
     }
 }
-
+/*
 bool cmd_register(const char *tag, int pid)
 {
     cmd_put(tag, pid);
 
     return true;
 }
-
+*/
 void k_cmd_send(char *buffer)
 {
+	msg_envelope_t* msg;
+	msg = (msg_envelope_t*)s_request_memory_block();
+	
+	msg->data[0] = NOTIFY;
+	msg->header.dest = CMD_DECODER_PID;
+	msg->header.next = NULL;
+	msg->header.src = -1;
+	strcpy(&(msg->data[1]), buffer);
+	msg_send_message(msg, 1);
+	
+	/*
     char *c = &buffer[0];
     int cmd;
     int wasSpace;
@@ -71,6 +84,7 @@ void k_cmd_send(char *buffer)
     if (cmd != -1) {
         // c + (wasSpace ? 1 : 0) is the the message payload
     }
+		*/
 }
 
 void k_cmd_hotkey(char hotkey)

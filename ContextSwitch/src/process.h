@@ -22,7 +22,10 @@
 #include "msg.h"
 
 /* System processes need fixed pids so that they can be referenced consistently */
-#define CRT_DISPLAY 10
+#define CRT_DISPLAY_PID 10
+#define CMD_DECODER_PID 11
+
+typedef enum {NOTIFY = 1, REGISTER} cmd_t;
 
 /* process states, note we only assume three states in this example */
 typedef enum {NEW = 0, ZOMBIE, RDY, RUN, BLOCKED, MSG_BLOCKED} proc_state_t;
@@ -66,6 +69,7 @@ int k_set_my_priority(int);
 int k_get_priority(int);
 
 extern void sysproc_crt_display(void);
+extern void sysproc_command_decoder(void);
 
 extern void uproc_print(void);           /*user process 1 */
 extern void uproc_clock(void);
