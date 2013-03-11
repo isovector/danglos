@@ -14,7 +14,6 @@ volatile uint8_t g_UART0_TX_empty=1;
 volatile uint8_t g_UART0_buffer[BUFSIZE];
 volatile uint32_t g_UART0_count = 0;
 
-volatile char hotkey_map[8];
 volatile int command_mode = 0;
 
 /**
@@ -27,10 +26,6 @@ volatile int command_mode = 0;
 int uart_init(int n_uart) {
 	LPC_UART_TypeDef *pUart;
         
-        set_bit(hotkey_map, 'z', 1);
-        set_bit(hotkey_map, 'x', 1);
-        set_bit(hotkey_map, 'c', 1);
-
 	if (n_uart ==0 ) {
 		/*
 		Steps 1 & 2: system control configuration.
@@ -181,7 +176,7 @@ void handle_char(LPC_UART_TypeDef *pUart) {
                 g_UART0_count = 0;  /* buffer overflow */
             }
         }
-    } else if (get_bit(hotkey_map, inputChar)) {
+    } else if ('z' == inputChar || 'x' == inputChar || 'c' == inputChar) {
         k_cmd_hotkey(inputChar);
     }
 }

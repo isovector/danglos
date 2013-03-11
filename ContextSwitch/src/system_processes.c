@@ -21,30 +21,6 @@
 	}
 }
 
- 
- void sysproc_hotkeys(void)
- {
-     msg_envelope_t *msg;
-     
-     while (1) {
-         msg = receive_message(NULL);
-         switch (msg->header.ctrl) {
-             case 'z': {
-                 // print priorities
-             } break;
-             
-             case 'x': {
-                 // print blocked
-             } break;
-             
-             case 'c': {
-                 // print msg blocked
-             } break;
-         }
-         s_release_memory_block(msg);
-     }
- }
-
 /* Accepts messages and routes them to their respective registered processes */
 void sysproc_command_decoder(void)
 {
@@ -63,4 +39,27 @@ void sysproc_command_decoder(void)
 			send_message(message_target, msg);
 	  }
 	}
+}
+
+void sysproc_hotkeys(void)
+{
+	 msg_envelope_t *msg;
+	 
+	 while (1) {
+			 msg = receive_message(NULL);
+			 switch (msg->header.ctrl) {
+					 case 'z': {
+							 proc_print(msg, RDY);
+					 } break;
+					 
+					 case 'x': {
+							 proc_print(msg, BLOCKED);
+					 } break;
+					 
+					 case 'c': {
+							 proc_print(msg, MSG_BLOCKED);
+					 } break;
+			 }
+			 s_release_memory_block(msg);
+	 }
 }

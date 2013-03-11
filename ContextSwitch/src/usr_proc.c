@@ -36,7 +36,6 @@ void msg_print(const char* s) {
 }
 
 char* cmd_parse(char* c) {
-    int cmd;
     int wasSpace;
 
     while (*c && *c != ' ') {

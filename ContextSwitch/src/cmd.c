@@ -1,5 +1,6 @@
 #include "cmd.h"
 #include "debug_print.h"
+#include "msg.h"
 #include "process.h"
 
 static int COMMANDS[NUM_COMMANDS];
@@ -66,7 +67,7 @@ void k_cmd_send(char *buffer)
 	/*
     char *c = &buffer[0];
     int cmd;
-    int wasSpace;
+    //int wasSpace;
 
     if (*c != '%') {
         return;
@@ -76,7 +77,7 @@ void k_cmd_send(char *buffer)
         ++c;
     }
 
-    wasSpace = *c == ' ';
+    //wasSpace = *c == ' ';
     *c = 0;
 
     cmd = COMMANDS[hash(buffer + 1)];
@@ -89,5 +90,7 @@ void k_cmd_send(char *buffer)
 
 void k_cmd_hotkey(char hotkey)
 {
-    // send message to sysproc_hotkeys
+	msg_envelope_t * msg = (msg_envelope_t *)s_request_memory_block();
+	msg->header.ctrl = hotkey;
+	send_kernel_message(HOTKEY_PROC, proc_get_pid(), msg);
 }
