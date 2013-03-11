@@ -56,7 +56,7 @@ int pq_enqueue(p_queue* pq, QUEUE_TYPE val, priority_t p)
 	
 	/* Increment the size of this priority and the overall size */
 	pq->length[p]++;
-	pq->size++;
+		pq->size++;
 
 	return PQ_SUCCESS;
 }

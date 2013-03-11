@@ -8,10 +8,13 @@
 #include <LPC17xx.h>
 #include "uart.h"
 #include "cmd.h"
+#include "bit_vector.h"
 
 volatile uint8_t g_UART0_TX_empty=1;
 volatile uint8_t g_UART0_buffer[BUFSIZE];
 volatile uint32_t g_UART0_count = 0;
+
+volatile int command_mode = 0;
 
 /**
  * @brief: initialize the n_uart
@@ -21,9 +24,8 @@ volatile uint32_t g_UART0_count = 0;
  *        in Section 14.1 on pg 298 of LPC17xx_UM
  */
 int uart_init(int n_uart) {
-
 	LPC_UART_TypeDef *pUart;
-
+        
 	if (n_uart ==0 ) {
 		/*
 		Steps 1 & 2: system control configuration.
@@ -152,6 +154,33 @@ __asm void UART0_IRQHandler(void)
 	BL c_UART0_IRQHandler
 	POP{r4-r11, pc}
 } 
+
+
+void handle_char(LPC_UART_TypeDef *pUart) {
+    char inputChar = pUart->RBR;
+    
+    if (inputChar == '%') {
+        command_mode = 1;
+    }
+
+    if (command_mode) {
+        if (inputChar == '\r' || inputChar == '\n')
+        {
+            g_UART0_buffer[g_UART0_count] = 0;
+            k_cmd_send((char*)&g_UART0_buffer[0]);
+            g_UART0_count = 0;
+            command_mode = 0;
+        } else {
+            g_UART0_buffer[g_UART0_count++] = inputChar; 
+            if ( g_UART0_count == BUFSIZE ) {
+                g_UART0_count = 0;  /* buffer overflow */
+            }
+        }
+    } else if ('z' == inputChar || 'x' == inputChar || 'c' == inputChar) {
+        k_cmd_hotkey(inputChar);
+    }
+}
+
 /**
  * @brief: c UART0 IRQ Handler
  */
@@ -160,25 +189,13 @@ void c_UART0_IRQHandler(void)
 	uint8_t IIR_IntId;      /* Interrupt ID from IIR */		
 	uint8_t LSR_Val;        /* LSR Value             */
 	uint8_t dummy = dummy;	/* to clear interrupt upon LSR error */
-    uint8_t inputChar;
 	LPC_UART_TypeDef *pUart = (LPC_UART_TypeDef *)LPC_UART0;
 
 	/* Reading IIR automatically acknowledges the interrupt */
 	IIR_IntId = (pUart->IIR) >> 1 ; /* skip pending bit in IIR */
 
 	if (IIR_IntId & IIR_RDA) { /* Receive Data Avaialbe */
-        inputChar = pUart->RBR;
-        if (inputChar == '\r' || inputChar == '\n')
-        {
-            g_UART0_buffer[g_UART0_count] = 0;
-            k_cmd_send((char*)&g_UART0_buffer[0]);
-            g_UART0_count = 0;
-        } else {
-			g_UART0_buffer[g_UART0_count++] = inputChar; 
-    		if ( g_UART0_count == BUFSIZE ) {
-    			g_UART0_count = 0;  /* buffer overflow */
-            }
-        }
+            handle_char(pUart);
 	} else if (IIR_IntId & IIR_THRE) { 
 		/* THRE Interrupt, transmit holding register empty*/
 		
@@ -203,19 +220,7 @@ void c_UART0_IRQHandler(void)
 	           Note: read RBR will clear the interrupt 
 		*/
 		if (LSR_Val & LSR_RDR) { /* Receive Data Ready */
-			/* read from the uart */
-            inputChar = pUart->RBR;
-            if (inputChar == '\r' || inputChar == '\n')
-            {
-                g_UART0_buffer[g_UART0_count] = 0;
-                k_cmd_send((char*)&g_UART0_buffer[0]);
-                g_UART0_count = 0;
-            } else {
-    			g_UART0_buffer[g_UART0_count++] = inputChar; 
-    			if ( g_UART0_count == BUFSIZE ) {
-    				g_UART0_count = 0;  /* buffer overflow */
-    			}	
-            }
+                    handle_char(pUart);
 		}	    
 	} else { /* IIR_CTI and reserved combination are not implemented */
 		return;

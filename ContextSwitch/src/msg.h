@@ -24,6 +24,7 @@ typedef struct message_envelope {
 extern void *receive_message(int *sender);
 
 // the lab manual says these should return an int, but doesn't say what
+extern int send_kernel_message(int dest, int src, void *pmsg);
 extern int send_message(int pid, void *msg);
 extern int delayed_send(int pid, void *msg, uint32_t delay);
 

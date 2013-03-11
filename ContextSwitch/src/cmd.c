@@ -1,6 +1,17 @@
 #include "cmd.h"
 #include "debug_print.h"
-static cmd_func COMMANDS[NUM_COMMANDS] = { NULL };
+#include "msg.h"
+#include "process.h"
+
+static int COMMANDS[NUM_COMMANDS];
+
+void cmd_init(void)
+{
+    int i;
+    for (i = 0; i < NUM_COMMANDS; ++i) {
+        COMMANDS[i] = -1;
+    }
+}
 
 size_t hash(const char *tag)
 {
@@ -18,25 +29,45 @@ size_t hash(const char *tag)
     return h % NUM_COMMANDS;
 }
 
-bool k_cmd_register(const char *tag, cmd_func func)
-{
-    cmd_func *cmd = &COMMANDS[hash(tag)];
+int cmd_get(const char *tag) {
+    return COMMANDS[hash(tag)];
+}
 
-    if (!*cmd) {
-        *cmd = func;
+void cmd_put(const char *tag, int pid)
+{
+    int *cmd = &COMMANDS[hash(tag)];
+
+    if (*cmd == -1) {
+        *cmd = pid;
     } else {
         debugPrint("FUCK THAT HASH IS BAD");
         *((int *)NULL) = 0;
     }
+}
+/*
+bool cmd_register(const char *tag, int pid)
+{
+    cmd_put(tag, pid);
 
     return true;
 }
-
+*/
 void k_cmd_send(char *buffer)
 {
+	msg_envelope_t* msg;
+	msg = (msg_envelope_t*)s_request_memory_block();
+	
+	msg->data[0] = NOTIFY;
+	msg->header.dest = CMD_DECODER_PID;
+	msg->header.next = NULL;
+	msg->header.src = -1;
+	strcpy(&(msg->data[1]), buffer);
+	msg_send_message(msg, 1);
+	
+	/*
     char *c = &buffer[0];
-    cmd_func cmd;
-    int wasSpace;
+    int cmd;
+    //int wasSpace;
 
     if (*c != '%') {
         return;
@@ -46,14 +77,20 @@ void k_cmd_send(char *buffer)
         ++c;
     }
 
-    wasSpace = *c == ' ';
+    //wasSpace = *c == ' ';
     *c = 0;
 
     cmd = COMMANDS[hash(buffer + 1)];
 
-    if (cmd) {
-        //TODO(sandy): disable kernel mode
-        cmd(c + (wasSpace ? 1 : 0));
-        //TODO(sandy): enable kernel mode
+    if (cmd != -1) {
+        // c + (wasSpace ? 1 : 0) is the the message payload
     }
+		*/
+}
+
+void k_cmd_hotkey(char hotkey)
+{
+	msg_envelope_t * msg = (msg_envelope_t *)s_request_memory_block();
+	msg->header.ctrl = hotkey;
+	send_kernel_message(HOTKEY_PROC, proc_get_pid(), msg);
 }
