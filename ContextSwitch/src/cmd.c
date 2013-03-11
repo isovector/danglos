@@ -56,7 +56,7 @@ void k_cmd_send(char *buffer)
 {
     char *c = &buffer[0];
     int cmd;
-    int wasSpace;
+    //int wasSpace;
 
     if (*c != '%') {
         return;
@@ -66,7 +66,7 @@ void k_cmd_send(char *buffer)
         ++c;
     }
 
-    wasSpace = *c == ' ';
+    //wasSpace = *c == ' ';
     *c = 0;
 
     cmd = COMMANDS[hash(buffer + 1)];

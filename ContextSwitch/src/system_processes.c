@@ -21,25 +21,25 @@
 }
 
  
- void sysproc_hotkeys(void)
- {
-     msg_envelope_t *msg;
-     
-     while (1) {
-         msg = receive_message(NULL);
-         switch (msg->header.ctrl) {
-             case 'z': {
-                 proc_print(msg, RDY);
-             } break;
-             
-             case 'x': {
-                 proc_print(msg, BLOCKED);
-             } break;
-             
-             case 'c': {
-                 proc_print(msg, MSG_BLOCKED);
-             } break;
-         }
-         s_release_memory_block(msg);
-     }
- }
+void sysproc_hotkeys(void)
+{
+	 msg_envelope_t *msg;
+	 
+	 while (1) {
+			 msg = receive_message(NULL);
+			 switch (msg->header.ctrl) {
+					 case 'z': {
+							 proc_print(msg, RDY);
+					 } break;
+					 
+					 case 'x': {
+							 proc_print(msg, BLOCKED);
+					 } break;
+					 
+					 case 'c': {
+							 proc_print(msg, MSG_BLOCKED);
+					 } break;
+			 }
+			 s_release_memory_block(msg);
+	 }
+}

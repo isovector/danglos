@@ -239,11 +239,11 @@ int k_get_priority(int target)
 
 void proc_print(msg_envelope_t * msg, proc_state_t state)
 {
-	char header_txt [] = "PID\tPRIO\n";
+	char header_txt [] = "\r\nPID\tPRIO\r\n";
 	int header_len = sizeof(header_txt) - 1;
 	int i;
 	int lines = 0;
-	char line_txt [] = "00\t0\n";
+	char line_txt [] = "00\t0\r\n";
 	int line_len = sizeof(line_txt) - 1;
 	strcpy(msg->data, header_txt);
 	for(i = 0; i < NUM_PROCESSES; ++i)
