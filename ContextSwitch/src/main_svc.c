@@ -17,20 +17,24 @@
 #include "uart.h"
 #include "rtx.h"
 #include "timer.h"
+#include "cmd.h"
 
 extern void initMemory(void);
 extern void proc_init(void);
+extern void system_proc_init(void);
 
 int main() 
 {
-  volatile unsigned int ret_val = 1234;
-  SystemInit();  /* initialize the system */
-  __disable_irq();
-  uart0_init();
-	initMemory();
-  proc_init();
-	timer_init();
-  __enable_irq();
+    volatile unsigned int ret_val = 1234;
+    SystemInit();  /* initialize the system */
+    __disable_irq();
+    uart0_init();
+    initMemory();
+    system_proc_init();
+    cmd_init();
+    proc_init();
+    timer_init();
+    __enable_irq();
   
   /* transit to unprivileged level, default MSP is used */
   __set_CONTROL(__get_CONTROL() | BIT(0));  

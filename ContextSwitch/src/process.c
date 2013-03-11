@@ -34,9 +34,8 @@ void proc_wrapper(void)
     current_process->state = ZOMBIE;
 }
 
-void process_init(pcb_t *pcb, uproc_func func, priority_t p)
+void process_init(pcb_t *pcb, uproc_func func, priority_t p, int target_pid)
 {
-    static int x = 0;
     int i;
     uint32_t *sp;
 
@@ -45,9 +44,9 @@ void process_init(pcb_t *pcb, uproc_func func, priority_t p)
     }
 
     /* initialize the first process	exception stack frame */
-    proc_funcs[x] = func;
+    proc_funcs[target_pid] = func;
 
-    pcb->pid = x++;
+    pcb->pid = target_pid;
     pcb->state = NEW;
     pcb->priority = p;
 
@@ -154,28 +153,35 @@ int k_block_and_release_processor(void)
 
 void proc_init(void)
 {
-    int j = 0;  
-	
-    pq_init(&priority_queue);
-    pq_init(&blocked_queue);
+    int j = 0;
 
-    process_init(&processes[j], uproc_null, LOWEST);
-    pq_enqueue(&priority_queue, j, processes[j].priority);
-    j++;
-
-	  process_init(&processes[j], uproc_crt_display, HIGH);
+    process_init(&processes[j], uproc_null, LOWEST, j);
     pq_enqueue(&priority_queue, j, processes[j].priority);
     j++;
 	
-    process_init(&processes[j], uproc_clock, MED);
+    process_init(&processes[j], uproc_clock, MED, j);
     pq_enqueue(&priority_queue, j, processes[j].priority);
     j++;
 
 
-    for (; j < NUM_PROCESSES; ++j) {
-        process_init(&processes[j], uproc_null, LOWEST);
+    for (; j < NUM_USER_PROCESSES; ++j) {
+        process_init(&processes[j], uproc_null, LOWEST, j);
         pq_enqueue(&priority_queue, j, processes[j].priority);
     }
+}
+
+void system_proc_init(void) {
+	pq_init(&priority_queue);
+  pq_init(&blocked_queue);
+	
+  process_init(&processes[CRT_DISPLAY_PID], sysproc_crt_display, HIGH, CRT_DISPLAY_PID);
+  pq_enqueue(&priority_queue, CRT_DISPLAY_PID, processes[CRT_DISPLAY_PID].priority);
+	
+	process_init(&processes[CMD_DECODER_PID], sysproc_command_decoder, HIGH, CMD_DECODER_PID);
+  pq_enqueue(&priority_queue, CMD_DECODER_PID, processes[CMD_DECODER_PID].priority);
+	
+  process_init(&processes[HOTKEY_PROC], sysproc_hotkeys, HIGH, HOTKEY_PROC);
+  pq_enqueue(&priority_queue, HOTKEY_PROC, processes[HOTKEY_PROC].priority);
 }
 
 int proc_set_msg_blocked(int target, int block)
@@ -231,4 +237,28 @@ int k_get_priority(int target)
     }
 
     return processes[target].priority;
+}
+
+
+void proc_print(msg_envelope_t * msg, proc_state_t state)
+{
+	char header_txt [] = "\r\nPID\tPRIO\r\n";
+	int header_len = sizeof(header_txt) - 1;
+	int i;
+	int lines = 0;
+	char line_txt [] = "00\t0\r\n";
+	int line_len = sizeof(line_txt) - 1;
+	strcpy(msg->data, header_txt);
+	for(i = 0; i < NUM_PROCESSES; ++i)
+	{
+		if(processes[i].state == state)
+		{
+			line_txt[0] = '0' + processes[i].pid / 10;
+			line_txt[1] = '0' + processes[i].pid % 10;
+			line_txt[3] = '0' + processes[i].priority;
+			strcpy(msg->data + header_len + lines * line_len, line_txt);
+			++lines;
+		}
+	}
+	send_kernel_message(CRT_DISPLAY_PID, proc_get_pid(), msg);
 }
