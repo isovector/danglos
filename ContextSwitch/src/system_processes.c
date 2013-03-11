@@ -35,7 +35,8 @@ void sysproc_command_decoder(void)
 			cmd_put(&(msg->data[2]), msg->data[1]);
 			s_release_memory_block(msg);
 		} else if (msg->data[0] == NOTIFY) {
-			message_target = cmd_get(&msg->data[1]);
+			cmd_parse(msg->data + 1);
+			message_target = cmd_get(msg->data + 1);
 			send_message(message_target, msg);
 	  }
 	}

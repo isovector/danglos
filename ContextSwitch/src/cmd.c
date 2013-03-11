@@ -4,10 +4,12 @@
 #include "process.h"
 
 static int COMMANDS[NUM_COMMANDS];
+static msg_envelope_t* reserved_hotkey_envelope;
 
 void cmd_init(void)
 {
     int i;
+	  reserved_hotkey_envelope = (msg_envelope_t*)s_request_memory_block();
     for (i = 0; i < NUM_COMMANDS; ++i) {
         COMMANDS[i] = -1;
     }
@@ -44,14 +46,21 @@ void cmd_put(const char *tag, int pid)
         *((int *)NULL) = 0;
     }
 }
-/*
-bool cmd_register(const char *tag, int pid)
-{
-    cmd_put(tag, pid);
 
-    return true;
+char* cmd_parse(char* c) {
+    int wasSpace;
+
+    while (*c && *c != ' ') {
+        ++c;
+    }
+    wasSpace = *c == ' ';
+		if (wasSpace) {
+			wasSpace = wasSpace;
+		}
+    *c = 0;
+    return c + (wasSpace ? 1 : 0);
 }
-*/
+
 void k_cmd_send(char *buffer)
 {
 	msg_envelope_t* msg;
@@ -90,7 +99,7 @@ void k_cmd_send(char *buffer)
 
 void k_cmd_hotkey(char hotkey)
 {
-	msg_envelope_t * msg = (msg_envelope_t *)s_request_memory_block();
-	msg->header.ctrl = hotkey;
-	send_kernel_message(HOTKEY_PROC, proc_get_pid(), msg);
+	reserved_hotkey_envelope->header.ctrl = hotkey;
+	send_kernel_message(HOTKEY_PROC, proc_get_pid(), reserved_hotkey_envelope);
+	reserved_hotkey_envelope = (msg_envelope_t *)s_request_memory_block();
 }

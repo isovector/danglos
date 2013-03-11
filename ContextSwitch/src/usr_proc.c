@@ -35,20 +35,6 @@ void msg_print(const char* s) {
 		send_message(CRT_DISPLAY_PID, output);	/* Send the output to the CRT_DISPLAY */
 }
 
-char* cmd_parse(char* c) {
-    int wasSpace;
-
-    while (*c && *c != ' ') {
-        ++c;
-    }
-    wasSpace = *c == ' ';
-		if (wasSpace) {
-			wasSpace = wasSpace;
-		}
-    *c = 0;
-    return c + (wasSpace ? 1 : 0);
-}
-
 void cmd_register(const char* tag)
 {
 	msg_envelope_t *msg;
