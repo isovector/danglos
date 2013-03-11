@@ -80,5 +80,5 @@ void k_cmd_hotkey(char hotkey)
 {
 	msg_envelope_t * msg = (msg_envelope_t *)s_request_memory_block();
 	msg->header.ctrl = hotkey;
-	send_message(HOTKEYS_PROC, msg);
+	send_message(HOTKEY_PROC, msg);
 }

@@ -176,6 +176,9 @@ void system_proc_init(void) {
 	
   process_init(&processes[CRT_DISPLAY], sysproc_crt_display, HIGH, CRT_DISPLAY);
   pq_enqueue(&priority_queue, CRT_DISPLAY, processes[CRT_DISPLAY].priority);
+	
+  process_init(&processes[HOTKEY_PROC], sysproc_hotkeys, HIGH, HOTKEY_PROC);
+  pq_enqueue(&priority_queue, HOTKEY_PROC, processes[HOTKEY_PROC].priority);
 }
 
 int proc_set_msg_blocked(int target, int block)
