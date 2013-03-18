@@ -18,6 +18,7 @@ typedef struct message_envelope {
     //used for delay_send
     uint32_t delay;
     char data[MAX_MESSAGE_LENGTH];
+	  const char * msg_type;
 } msg_envelope_t;
 
 

@@ -28,6 +28,86 @@ int num_successful_tests = 0;
 
 extern void debugPrint(unsigned char* c);
 
+void processA(void) {
+	
+	 msg_envelope_t *p;
+	 msg_envelope_t*q;
+	 int num;
+	 p = (msg_envelope_t *)s_request_memory_block();
+   cmd_register("%Z");
+	 while(1) {
+		 p = receive_message(NULL);
+	   if (strcmp(&p->data[1], "%Z") == 0) {
+				s_release_memory_block(p);
+			  break;
+		 } else {
+			 s_release_memory_block(p);
+		 }
+	 }
+	 num = 0;
+	 while(1) {
+		 p = (msg_envelope_t *)s_request_memory_block();
+		 p->msg_type = "count_report";
+		 p->data[0] = num;
+		 send_message(8, p);
+		 num++;
+		 release_processor();
+	 } 
+}	
+
+void processB(void) {
+	msg_envelope_t *p;
+	while(1) {
+		p = receive_message(NULL);
+		send_message(9, p);
+	}		
+}
+
+void processC(void) {
+	msg_envelope_t *head = 0;
+	msg_envelope_t *tail = 0;
+	msg_envelope_t *p;
+	msg_envelope_t *q;
+	while(1) {
+		if (!head) {
+			p = receive_message(NULL);
+		} else {
+			p = head;
+			head = head->header.next;
+			if (!head->header.next) {
+        tail = NULL;
+      }
+		}
+		if (p->msg_type == "count_report") {
+			if (p->data[0] % 20 == 0) {
+				msg_print("Process C");
+				q = (msg_envelope_t *)s_request_memory_block();
+				q->msg_type = "wakeup10";
+				delayed_send(proc_get_pid(), q, 1000);
+				while(1) {
+					p = receive_message(NULL);
+					if (p->msg_type == "wakeup10")
+						break;
+					else {
+						if (!head) {
+							head = tail = p;
+						} else {
+							tail->header.next = p;
+							tail = p;
+						}
+					}		
+				}					
+			}
+		}
+	  s_release_memory_block(p);
+		release_processor();
+	}
+				
+			
+	
+	
+}
+
 void msg_print(const char* s) {
 	  msg_envelope_t *output;
 		output = (msg_envelope_t*)s_request_memory_block();

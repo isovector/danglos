@@ -49,7 +49,7 @@ void sysproc_hotkeys(void)
 	 while (1) {
 			 msg = receive_message(NULL);
 			 switch (msg->header.ctrl) {
-					 case 'z': {
+					 case 'v': {
 							 proc_print(msg, RDY);
 					 } break;
 					 
