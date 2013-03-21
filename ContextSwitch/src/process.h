@@ -86,6 +86,10 @@ extern void uproc_print(void);           /*user process 1 */
 extern void uproc_clock(void);
 extern void uproc_null(void);
 
+extern void processA(void);
+extern void processB(void);
+extern void processC(void);
+
 extern void __rte(void);           /* pop exception stack frame */
 
 #endif /* ! _PROCESS_H_ */

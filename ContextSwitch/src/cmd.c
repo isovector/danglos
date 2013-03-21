@@ -42,7 +42,7 @@ void cmd_put(const char *tag, int pid)
     if (*cmd == -1) {
         *cmd = pid;
     } else {
-        debugPrint("FUCK THAT HASH IS BAD");
+        debugPrint("hash collision");
         *((int *)NULL) = 0;
     }
 }

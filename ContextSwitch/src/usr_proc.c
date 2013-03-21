@@ -28,6 +28,23 @@ int num_successful_tests = 0;
 
 extern void debugPrint(unsigned char* c);
 
+void msg_print(const char* s) {
+	  msg_envelope_t *output;
+		output = (msg_envelope_t*)s_request_memory_block();
+		strcpy(output->data, s);
+		send_message(CRT_DISPLAY_PID, output);	/* Send the output to the CRT_DISPLAY */
+}
+
+void cmd_register(const char* tag)
+{
+	msg_envelope_t *msg;
+	msg = (msg_envelope_t *)s_request_memory_block();
+	msg->data[0] = REGISTER;
+	msg->data[1] = proc_get_pid();
+	strcpy(&(msg->data[2]), tag);
+	send_message(CMD_DECODER_PID, msg);
+}
+
 void processA(void) {
 	
 	 msg_envelope_t *p;
@@ -102,27 +119,6 @@ void processC(void) {
 	  s_release_memory_block(p);
 		release_processor();
 	}
-				
-			
-	
-	
-}
-
-void msg_print(const char* s) {
-	  msg_envelope_t *output;
-		output = (msg_envelope_t*)s_request_memory_block();
-		strcpy(output->data, s);
-		send_message(CRT_DISPLAY_PID, output);	/* Send the output to the CRT_DISPLAY */
-}
-
-void cmd_register(const char* tag)
-{
-	msg_envelope_t *msg;
-	msg = (msg_envelope_t *)s_request_memory_block();
-	msg->data[0] = REGISTER;
-	msg->data[1] = proc_get_pid();
-	strcpy(&(msg->data[2]), tag);
-	send_message(CMD_DECODER_PID, msg);
 }
 
 void uproc_null(void)

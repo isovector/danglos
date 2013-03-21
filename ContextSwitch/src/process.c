@@ -164,7 +164,23 @@ void proc_init(void)
     process_init(&processes[j], uproc_clock, MED, j);
     pq_enqueue(&priority_queue, j, processes[j].priority);
     j++;
-
+		for (; j < 7; ++j) {
+        process_init(&processes[j], uproc_null, LOWEST, j);
+        pq_enqueue(&priority_queue, j, processes[j].priority);
+    }
+		
+		process_init(&processes[j], processA, HIGH, j);
+		pq_enqueue(&priority_queue, j, processes[j].priority);
+	
+		j++;
+		process_init(&processes[j], processB, HIGH, j);
+		pq_enqueue(&priority_queue, j, processes[j].priority);
+		
+		j++;
+		process_init(&processes[j], processC, HIGH, j);
+		pq_enqueue(&priority_queue, j, processes[j].priority);
+		
+		j++;
 
     for (; j < NUM_USER_PROCESSES; ++j) {
         process_init(&processes[j], uproc_null, LOWEST, j);
@@ -203,6 +219,7 @@ void system_proc_init(void) {
 	process_init(&processes[KBD_IPROC_PID], proc_init, LOW, KBD_IPROC_PID);
 	process_init(&processes[TIMER_IPROC_PID], proc_init, LOW, TIMER_IPROC_PID);
 	process_init(&processes[UART_IPROC_PID], proc_init, LOW, UART_IPROC_PID);
+
 }
 
 int proc_set_msg_blocked(int target, int block)
