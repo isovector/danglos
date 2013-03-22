@@ -9,16 +9,15 @@ typedef struct {
     int type, dest, src, len;
     char ctrl;
     struct message_envelope *next;
+    
+    uint32_t delay;
 } msg_header_t;
 
 #define MAX_MESSAGE_LENGTH (MMU_BLOCK_SIZE - sizeof(msg_header_t))
 
 typedef struct message_envelope {
     msg_header_t header;
-    //used for delay_send
-    uint32_t delay;
     char data[MAX_MESSAGE_LENGTH];
-	  const char * msg_type;
 } msg_envelope_t;
 
 

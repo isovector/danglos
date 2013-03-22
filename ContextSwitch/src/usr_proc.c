@@ -18,13 +18,8 @@
 #include <stdlib.h>
 #endif  /* DEBUG_0 */
 
-int TEST_MEM_BLOCK = 0;
-int TEST_PRIORITY_SWAP = 0;
+typedef enum { WAKEUP = 1, COUNT_REPORT };
 
-volatile int i = 0;
-volatile int j = 0;
-
-int num_successful_tests = 0;
 
 extern void debugPrint(unsigned char* c);
 
@@ -46,30 +41,30 @@ void cmd_register(const char* tag)
 }
 
 void processA(void) {
-	
-	 msg_envelope_t *p;
-	 msg_envelope_t*q;
-	 int num;
-	 p = (msg_envelope_t *)s_request_memory_block();
-   cmd_register("%Z");
-	 while(1) {
-		 p = receive_message(NULL);
-	   if (strcmp(&p->data[1], "%Z") == 0) {
-				s_release_memory_block(p);
-			  break;
-		 } else {
-			 s_release_memory_block(p);
-		 }
-	 }
-	 num = 0;
-	 while(1) {
-		 p = (msg_envelope_t *)s_request_memory_block();
-		 p->msg_type = "count_report";
-		 p->data[0] = num;
-		 send_message(8, p);
-		 num++;
-		 release_processor();
-	 } 
+    msg_envelope_t *p;
+    msg_envelope_t*q;
+    int num;
+    p = (msg_envelope_t *)s_request_memory_block();
+    cmd_register("%Z");
+    while(1) {
+        p = receive_message(NULL);
+        if (strcmp(&p->data[1], "%Z") == 0) {
+            s_release_memory_block(p);
+            break;
+        } else {
+            s_release_memory_block(p);
+        }
+    }
+    
+    num = 0;
+    while(1) {
+        p = (msg_envelope_t *)s_request_memory_block();
+        p->header.ctrl = COUNT_REPORT;
+        p->data[0] = num;
+        send_message(8, p);
+        num++;
+        release_processor();
+    } 
 }	
 
 void processB(void) {
@@ -95,15 +90,16 @@ void processC(void) {
         tail = NULL;
       }
 		}
-		if (p->msg_type == "count_report") {
+		if (p->header.ctrl == COUNT_REPORT) {
 			if (p->data[0] % 20 == 0) {
 				msg_print("Process C");
 				q = (msg_envelope_t *)s_request_memory_block();
-				q->msg_type = "wakeup10";
+                
+                q->header.ctrl = WAKEUP;
 				delayed_send(proc_get_pid(), q, 1000);
 				while(1) {
 					p = receive_message(NULL);
-					if (p->msg_type == "wakeup10")
+					if (p->header.ctrl == WAKEUP)
 						break;
 					else {
 						if (!head) {
@@ -159,52 +155,53 @@ void ucmd_format_time()
 
 void uproc_clock(void)
 {
-		int enabled;
+    int enabled;
     msg_envelope_t *msg;
-	  msg_envelope_t *result;
+    msg_envelope_t *result;
+    
     cmd_register("%WR");
-		cmd_register("%WT");
+    cmd_register("%WT");
 	
     time_str[2] = time_str[5] = ':';
     time_str[8] = '\r';
-	  time_str[9] = 0;
-		enabled = 1;
+    time_str[9] = 0;
+    enabled = 1;
 	
     msg = (msg_envelope_t *)s_request_memory_block();
     
 	
     for (;;) {
-				msg->data[1] = 3;
+        msg->data[1] = 3;
         delayed_send(proc_get_pid(), msg, 1000);
         ucmd_format_time();
-				msg_print(time_str);
-				
-				while (1) {
-					result = receive_message(NULL);
-					result->data[4] = '\0';
-					if (strcmp(&result->data[1], "%WR") == 0) {
-						enabled = 1;
-						clock_s = 0;
-						clock_m = 0;
-						clock_h = 0;
-						ucmd_format_time();
-						msg_print(time_str);
-						break;
-					} else if (strcmp(&result->data[1], "%WT") == 0) {
-						s_release_memory_block(result);
-						msg_print("\r          \r");
-						enabled = 0;
-					} else if(strcmp(&result->data[1], "%WS") == 0){
-						enabled = 1;
-						ucmd_set_time(&result->data[5]);
-						ucmd_format_time();
-						msg_print(time_str);
-						break;
-					}	else if (result->data[1] == 3 && enabled) {
-						break;
-					}
-					s_release_memory_block(result);
-				}
+        msg_print(time_str);
+
+        while (1) {
+            result = receive_message(NULL);
+            result->data[4] = '\0';
+            if (strcmp(&result->data[1], "%WR") == 0) {
+                enabled = 1;
+                clock_s = 0;
+                clock_m = 0;
+                clock_h = 0;
+                ucmd_format_time();
+                msg_print(time_str);
+                break;
+            } else if (strcmp(&result->data[1], "%WT") == 0) {
+                s_release_memory_block(result);
+                msg_print("\r          \r");
+                enabled = 0;
+            } else if(strcmp(&result->data[1], "%WS") == 0){
+                enabled = 1;
+                ucmd_set_time(&result->data[5]);
+                ucmd_format_time();
+                msg_print(time_str);
+                break;
+            }	else if (result->data[1] == 3 && enabled) {
+                break;
+            }
+            s_release_memory_block(result);
+        }
 
         if (++clock_s >= 60) {
             clock_s = 0;
