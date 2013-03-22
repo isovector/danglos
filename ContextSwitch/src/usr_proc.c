@@ -166,7 +166,7 @@ void uproc_clock(void)
     
 	
     for (;;) {
-        msg->header.type = CLOCK_TICK_MSG;
+        msg->header.type = USER_MSG;
         delayed_send(proc_get_pid(), msg, 1000);
         ucmd_format_time();
         msg_print(time_str);
@@ -197,7 +197,7 @@ void uproc_clock(void)
                     
                     break;
                 }
-            } else if (result.header.type = CLOCK_TICK_MSG && enabled) {
+            } else if (result.header.type = USER_MSG && enabled) {
                 break;
             }
             s_release_memory_block(result);
