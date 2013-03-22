@@ -177,8 +177,17 @@ void handle_char(LPC_UART_TypeDef *pUart) {
                 g_UART0_count = 0;  /* buffer overflow */
             }
         }
-    } else if ('z' == inputChar || 'x' == inputChar || 'c' == inputChar) {
-        k_cmd_hotkey(inputChar);
+    } else {
+        switch (inputChar) {
+            case 'z':
+            case 'x':
+            case 'c':
+            case 'v':
+                k_cmd_hotkey(inputChar);
+                break;
+            
+            default: break;
+        }
     }
 }
 

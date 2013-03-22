@@ -8,15 +8,15 @@
 static msg_envelope_t* reserved_hotkey_envelope;
 
 typedef struct {
-    char tag[5];
+    char tag[6];
     int pid;
-} command_t;
+} cmd_t;
 
-static command_t COMMANDS[NUM_COMMANDS];
+static cmd_t COMMANDS[NUM_COMMANDS];
 
-command_t *lookup(const char *tag, bool insert) {
+cmd_t *lookup(const char *tag, bool insert) {
     size_t i = 0;
-    command_t *cmd;
+    cmd_t *cmd;
     
     for (; i < NUM_COMMANDS; i++) {
         cmd = &COMMANDS[i];
@@ -48,14 +48,14 @@ void cmd_init(void)
 }
 
 int cmd_get(const char *tag) {
-    command_t *cmd = lookup(tag, false);
+    cmd_t *cmd = lookup(tag, false);
     
     return cmd ? cmd->pid : -1;
 }
 
 void cmd_put(const char *tag, int pid)
 {
-    command_t *cmd = lookup(tag, true);
+    cmd_t *cmd = lookup(tag, true);
     if (cmd->pid == pid || cmd->pid == -1) {
         cmd->pid = pid;
     } else {
@@ -77,22 +77,33 @@ char* cmd_parse(char* c) {
     return c + (wasSpace ? 1 : 0);
 }
 
+
+void cmd_register(const char* tag)
+{
+	msg_envelope_t *msg;
+	msg = (msg_envelope_t *)s_request_memory_block();
+    msg->header.type = CMD_REGISTER_MSG;
+	strcpy(msg->data, tag);
+	send_message(CMD_DECODER_PID, msg);
+}
+
 void k_cmd_send(char *buffer)
 {
 	msg_envelope_t* msg;
 	msg = (msg_envelope_t*)s_request_memory_block();
-	
-	msg->data[0] = NOTIFY;
-	msg->header.dest = CMD_DECODER_PID;
-	msg->header.next = NULL;
-	msg->header.src = -1;
-	strcpy(&(msg->data[1]), buffer);
+    
+    msg_init_envelope(msg, -1, CMD_DECORDER_PID);
+    msg->header.type = CMD_NOTIFY_MSG;
+	strcpy(msg->data, buffer);
+    
 	msg_send_message(msg, 1);
 }
 
 void k_cmd_hotkey(char hotkey)
 {
+    reserved_hotkey_envelope->header.type = CMD_HOTKEY_MSG;
 	reserved_hotkey_envelope->header.ctrl = hotkey;
-	send_kernel_message(HOTKEY_PROC, proc_get_pid(), reserved_hotkey_envelope);
+	send_kernel_message(HOTKEY_PROC, -1, reserved_hotkey_envelope);
+    
 	reserved_hotkey_envelope = (msg_envelope_t *)s_request_memory_block();
 }
