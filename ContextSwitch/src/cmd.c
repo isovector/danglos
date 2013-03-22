@@ -10,13 +10,13 @@ static msg_envelope_t* reserved_hotkey_envelope;
 typedef struct {
     char tag[6];
     int pid;
-} command_t;
+} cmd_t;
 
-static command_t COMMANDS[NUM_COMMANDS];
+static cmd_t COMMANDS[NUM_COMMANDS];
 
-command_t *lookup(const char *tag, bool insert) {
+cmd_t *lookup(const char *tag, bool insert) {
     size_t i = 0;
-    command_t *cmd;
+    cmd_t *cmd;
     
     for (; i < NUM_COMMANDS; i++) {
         cmd = &COMMANDS[i];
@@ -48,14 +48,14 @@ void cmd_init(void)
 }
 
 int cmd_get(const char *tag) {
-    command_t *cmd = lookup(tag, false);
+    cmd_t *cmd = lookup(tag, false);
     
     return cmd ? cmd->pid : -1;
 }
 
 void cmd_put(const char *tag, int pid)
 {
-    command_t *cmd = lookup(tag, true);
+    cmd_t *cmd = lookup(tag, true);
     if (cmd->pid == pid || cmd->pid == -1) {
         cmd->pid = pid;
     } else {
