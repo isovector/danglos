@@ -21,17 +21,17 @@ void msg_enqueue_msg(msg_envelope_t *msg, pcb_t *pcb)
 
 void wait_enqueue_msg(msg_envelope_t *msg, int delay)
 {
-    msg->delay = delay + g_clock;
-		if(g_min_msg == -1 || msg->delay < g_min_msg)
-			g_min_msg = msg->delay;
+    msg->header.delay = delay + g_clock;
+    if(g_min_msg == -1 || msg->header.delay < g_min_msg) {
+        g_min_msg = msg->header.delay;
+    }
 		
     if (!delay_msg_list) {
         delay_msg_list = msg;
-
     } else {
         msg_envelope_t *prev = delay_msg_list;
 
-        while (prev->header.next && prev->header.next->delay < delay) {
+        while (prev->header.next && prev->header.next->header.delay < delay) {
             prev = prev->header.next;
         }
 
@@ -78,7 +78,7 @@ int msg_send_message(void *pmsg, int kernelMode)
         proc_set_msg_blocked(recipient->pid, 0);
 
         if (recipient->priority < current_process->priority && !kernelMode) {
-						release_processor();
+            release_processor();
         }
     }
 
@@ -131,10 +131,10 @@ void msg_tick(uint32_t delay)
 {
     int ret = 0;
 
-    while (!ret && delay_msg_list && delay_msg_list->delay <= delay) {
+    while (!ret && delay_msg_list && delay_msg_list->header.delay <= delay) {
         ret = msg_send_message(delay_msg_list, 1);
         delay_msg_list = delay_msg_list->header.next;
-	g_min_msg = delay_msg_list ? (int32_t)delay_msg_list->delay : -1;
+        g_min_msg = delay_msg_list ? (int32_t)delay_msg_list->header.delay : -1;
     }
 }
 

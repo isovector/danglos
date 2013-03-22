@@ -5,26 +5,29 @@
 
 struct message_envelope;
 
+typedef enum { USER_MSG, SYSTEM_MSG, CMD_REGISTER_MSG, CMD_NOTIFY_MSG, CMD_HOTKEY_MSG } msg_type_t;
+
 typedef struct {
-    int type, dest, src, len;
+    msg_type_t type;
     char ctrl;
+    
+    int dest, src;
+    size_t len;
     struct message_envelope *next;
+    
+    uint32_t delay;
 } msg_header_t;
 
 #define MAX_MESSAGE_LENGTH (MMU_BLOCK_SIZE - sizeof(msg_header_t))
 
 typedef struct message_envelope {
     msg_header_t header;
-    //used for delay_send
-    uint32_t delay;
     char data[MAX_MESSAGE_LENGTH];
-	  const char * msg_type;
 } msg_envelope_t;
 
 
 extern void *receive_message(int *sender);
 
-// the lab manual says these should return an int, but doesn't say what
 extern int send_kernel_message(int dest, int src, void *pmsg);
 extern int send_message(int pid, void *msg);
 extern int delayed_send(int pid, void *msg, uint32_t delay);

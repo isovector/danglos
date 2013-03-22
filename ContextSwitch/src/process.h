@@ -29,8 +29,6 @@
 #define UART_IPROC_PID  14
 #define TIMER_IPROC_PID 15
 
-typedef enum {NOTIFY = 1, REGISTER} cmd_t;
-
 
 /* process states, note we only assume three states in this example */
 typedef enum {NEW = 0, ZOMBIE, RDY, RUN, BLOCKED, MSG_BLOCKED} proc_state_t;
