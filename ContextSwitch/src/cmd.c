@@ -1,49 +1,65 @@
+#include "config.h"
 #include "cmd.h"
 #include "debug_print.h"
 #include "msg.h"
 #include "process.h"
+#include <string.h>
 
-static int COMMANDS[NUM_COMMANDS];
 static msg_envelope_t* reserved_hotkey_envelope;
+
+typedef struct {
+    char tag[5];
+    int pid;
+} command_t;
+
+static command_t COMMANDS[NUM_COMMANDS];
+
+command_t *lookup(const char *tag, bool insert) {
+    size_t i = 0;
+    command_t *cmd;
+    
+    for (; i < NUM_COMMANDS; i++) {
+        cmd = &COMMANDS[i];
+        if (!cmd->tag[0]) {
+            if (!insert) {
+                return NULL;
+            }
+            
+            strcpy(cmd->tag, tag);
+            return cmd;
+        }
+        
+        if (strcmp(tag, cmd->tag) == 0) {
+            return cmd;
+        }
+    }
+    
+    return NULL;
+}
 
 void cmd_init(void)
 {
     int i;
-	  reserved_hotkey_envelope = (msg_envelope_t*)s_request_memory_block();
+    reserved_hotkey_envelope = (msg_envelope_t*)s_request_memory_block();
     for (i = 0; i < NUM_COMMANDS; ++i) {
-        COMMANDS[i] = -1;
+        COMMANDS[i].tag[0] = 0;
+        COMMANDS[i].pid = -1;
     }
-}
-
-size_t hash(const char *tag)
-{
-    int h = 1;
-    const char *c = tag;
-
-    while (c && *c) {
-        h <<= (*c % 4);
-        h |= *c;
-        h = ~(h ^ -h);
-
-        ++c;
-    }
-
-    return h % NUM_COMMANDS;
 }
 
 int cmd_get(const char *tag) {
-    return COMMANDS[hash(tag)];
+    command_t *cmd = lookup(tag, false);
+    
+    return cmd ? cmd->pid : -1;
 }
 
 void cmd_put(const char *tag, int pid)
 {
-    int *cmd = &COMMANDS[hash(tag)];
-
-    if (*cmd == -1) {
-        *cmd = pid;
+    command_t *cmd = lookup(tag, true);
+    if (cmd->pid == pid || cmd->pid == -1) {
+        cmd->pid = pid;
     } else {
-        debugPrint("hash collision");
-        *((int *)NULL) = 0;
+        debugPrint("re-registering cmd tag with new pid");
     }
 }
 
@@ -72,29 +88,6 @@ void k_cmd_send(char *buffer)
 	msg->header.src = -1;
 	strcpy(&(msg->data[1]), buffer);
 	msg_send_message(msg, 1);
-	
-	/*
-    char *c = &buffer[0];
-    int cmd;
-    //int wasSpace;
-
-    if (*c != '%') {
-        return;
-    }
-
-    while (*c && *c != ' ') {
-        ++c;
-    }
-
-    //wasSpace = *c == ' ';
-    *c = 0;
-
-    cmd = COMMANDS[hash(buffer + 1)];
-
-    if (cmd != -1) {
-        // c + (wasSpace ? 1 : 0) is the the message payload
-    }
-		*/
 }
 
 void k_cmd_hotkey(char hotkey)
