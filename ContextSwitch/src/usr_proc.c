@@ -30,16 +30,6 @@ void msg_print(const char* s) {
 		send_message(CRT_DISPLAY_PID, output);	/* Send the output to the CRT_DISPLAY */
 }
 
-void cmd_register(const char* tag)
-{
-	msg_envelope_t *msg;
-	msg = (msg_envelope_t *)s_request_memory_block();
-	msg->data[0] = REGISTER;
-	msg->data[1] = proc_get_pid();
-	strcpy(&(msg->data[2]), tag);
-	send_message(CMD_DECODER_PID, msg);
-}
-
 void processA(void) {
     msg_envelope_t *p;
     int num;
