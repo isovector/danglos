@@ -8,7 +8,7 @@
 static msg_envelope_t* reserved_hotkey_envelope;
 
 typedef struct {
-    char tag[5];
+    char tag[6];
     int pid;
 } command_t;
 
@@ -81,18 +81,19 @@ void k_cmd_send(char *buffer)
 {
 	msg_envelope_t* msg;
 	msg = (msg_envelope_t*)s_request_memory_block();
-	
-	msg->data[0] = NOTIFY;
-	msg->header.dest = CMD_DECODER_PID;
-	msg->header.next = NULL;
-	msg->header.src = -1;
-	strcpy(&(msg->data[1]), buffer);
+    
+    msg_init_envelope(msg, -1, CMD_DECORDER_PID);
+    msg->header.type = CMD_NOTIFY_MSG;
+	strcpy(msg->data, buffer);
+    
 	msg_send_message(msg, 1);
 }
 
 void k_cmd_hotkey(char hotkey)
 {
+    reserved_hotkey_envelope->header.type = CMD_HOTKEY_MSG;
 	reserved_hotkey_envelope->header.ctrl = hotkey;
-	send_kernel_message(HOTKEY_PROC, proc_get_pid(), reserved_hotkey_envelope);
+	send_kernel_message(HOTKEY_PROC, -1, reserved_hotkey_envelope);
+    
 	reserved_hotkey_envelope = (msg_envelope_t *)s_request_memory_block();
 }
