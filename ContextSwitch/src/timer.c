@@ -12,7 +12,6 @@
 
 volatile uint32_t g_clock = 0;
 extern void msg_tick(uint32_t);
-extern volatile int32_t g_min_msg;
 
 void timer_init()
 {
@@ -40,7 +39,6 @@ void c_TIMER0_IRQHandler(void)
 	LPC_TIM0->IR = 1;  
 	
 	++g_clock;
-	if(g_min_msg != -1 && g_clock >= g_min_msg)
-		msg_tick(g_clock);
+	msg_tick(g_clock);
 	proc_reset_iproc();
 }

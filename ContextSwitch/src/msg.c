@@ -7,7 +7,6 @@
 
 extern volatile uint32_t g_clock;
 static msg_envelope_t *delay_msg_list = NULL;
-volatile int32_t g_min_msg = -1;
 
 void msg_enqueue_msg(msg_envelope_t *msg, pcb_t *pcb)
 {
@@ -21,17 +20,16 @@ void msg_enqueue_msg(msg_envelope_t *msg, pcb_t *pcb)
 
 void wait_enqueue_msg(msg_envelope_t *msg, int delay)
 {
-    msg->header.delay = delay + g_clock;
-    if(g_min_msg == -1 || msg->header.delay < g_min_msg) {
-        g_min_msg = msg->header.delay;
-    }
+    msg->header.tick = delay + g_clock;
 		
     if (!delay_msg_list) {
         delay_msg_list = msg;
-    } else {
+    } else if(delay_msg_list->header.tick > msg->header.tick){
+			msg->header.next = delay_msg_list;
+			delay_msg_list = msg;
+		}else{
         msg_envelope_t *prev = delay_msg_list;
-
-        while (prev->header.next && prev->header.next->header.delay < delay) {
+        while (prev->header.next != NULL && prev->header.next->header.tick <= msg->header.tick) {
             prev = prev->header.next;
         }
 
@@ -127,14 +125,13 @@ void *receive_message(int *sender)
 }
 
 
-void msg_tick(uint32_t delay)
+void msg_tick(uint32_t tick)
 {
     int ret = 0;
 
-    while (!ret && delay_msg_list && delay_msg_list->header.delay <= delay) {
-        ret = msg_send_message(delay_msg_list, 1);
+    while (!ret && delay_msg_list && delay_msg_list->header.tick <= tick) {
+        ret = msg_send_message(delay_msg_list, 0);
         delay_msg_list = delay_msg_list->header.next;
-        g_min_msg = delay_msg_list ? (int32_t)delay_msg_list->header.delay : -1;
     }
 }
 

@@ -15,7 +15,7 @@ typedef struct {
     size_t len;
     struct message_envelope *next;
     
-    uint32_t delay;
+    uint32_t tick;
 } msg_header_t;
 
 #define MAX_MESSAGE_LENGTH (MMU_BLOCK_SIZE - sizeof(msg_header_t))
