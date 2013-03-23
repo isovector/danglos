@@ -78,10 +78,10 @@ void processC(void) {
 			p = receive_message(NULL);
 		} else {
 			p = head;
-			head = head->header.next;
 			if (!head->header.next) {
-                tail = NULL;
-            }
+				tail = NULL;
+      }
+			head = head->header.next;
 		}
         
 		if (p->header.ctrl == COUNT_REPORT) {
