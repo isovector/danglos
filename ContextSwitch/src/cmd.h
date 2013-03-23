@@ -14,5 +14,5 @@ extern void k_cmd_send(char *buffer);
 extern void k_cmd_hotkey(char hotkey);
 extern int cmd_get(const char *tag);
 extern void cmd_put(const char *tag, int pid);
-
+extern void cmd_register(const char* tag);
 #endif

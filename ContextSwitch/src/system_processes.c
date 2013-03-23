@@ -32,9 +32,9 @@ void sysproc_command_decoder(void)
 	{
 		msg = receive_message(&source);
         
-        switch (msg->type) {
+        switch (msg->header.type) {
             case CMD_REGISTER_MSG: {
-                cmd_put(msg->data, source)
+                cmd_put(msg->data, source);
                 s_release_memory_block(msg);
             } break;
             

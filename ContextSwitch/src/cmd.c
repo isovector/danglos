@@ -91,12 +91,10 @@ void k_cmd_send(char *buffer)
 {
 	msg_envelope_t* msg;
 	msg = (msg_envelope_t*)s_request_memory_block();
-    
-    msg_init_envelope(msg, -1, CMD_DECORDER_PID);
-    msg->header.type = CMD_NOTIFY_MSG;
+  msg->header.type = CMD_NOTIFY_MSG;
 	strcpy(msg->data, buffer);
     
-	msg_send_message(msg, 1);
+	send_kernel_message(CMD_DECODER_PID, -1, msg);
 }
 
 void k_cmd_hotkey(char hotkey)

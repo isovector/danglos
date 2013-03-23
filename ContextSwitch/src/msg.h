@@ -31,6 +31,7 @@ extern void *receive_message(int *sender);
 extern int send_kernel_message(int dest, int src, void *pmsg);
 extern int send_message(int pid, void *msg);
 extern int delayed_send(int pid, void *msg, uint32_t delay);
+extern void msg_init_envelope(void *pmsg, int src, int dest);
 
 void msg_tick(uint32_t);
 #endif

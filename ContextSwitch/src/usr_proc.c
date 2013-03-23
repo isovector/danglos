@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #endif  /* DEBUG_0 */
 
-typedef enum { WAKEUP = 1, COUNT_REPORT };
+enum { WAKEUP = 1, COUNT_REPORT };
 
 
 extern void debugPrint(unsigned char* c);
@@ -136,7 +136,7 @@ void ucmd_set_time(const char *data)
     clock_s = (data[6] - '0') * 10 + (data[7] - '0');
 }
 
-uint8_t time_str[10];
+char time_str[10];
 
 void ucmd_format_time()
 {
@@ -173,7 +173,7 @@ void uproc_clock(void)
 
         while (1) {
             result = receive_message(NULL);
-            if (result.header.type == CMD_NOTIFY_MSG) {
+            if (result->header.type == CMD_NOTIFY_MSG) {
                 result->data[3] = '\0';
                 
                 if (strcmp(result->data, "%WR") == 0) {
@@ -197,7 +197,7 @@ void uproc_clock(void)
                     
                     break;
                 }
-            } else if (result.header.type = USER_MSG && enabled) {
+            } else if (result->header.type == USER_MSG && enabled) {
                 break;
             }
             s_release_memory_block(result);
