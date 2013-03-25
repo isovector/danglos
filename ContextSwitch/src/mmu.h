@@ -5,13 +5,16 @@
 
 #include <string.h>
 
+#define MMU_MAX_MEMORY_ADDR 0x10008000
 #if EMULATION_MODE
 #define MMU_MEMORY_SIZE 0x8000
+#define MMU_MAX_MEMORY_SIZE 0x8000
 char MMU_MEMORY_START[MMU_MEMORY_SIZE];
 #else
 extern unsigned int Image$$RW_IRAM1$$ZI$$Limit;
-#define MMU_MEMORY_SIZE 0x8000
 #define MMU_MEMORY_START ((char*)&Image$$RW_IRAM1$$ZI$$Limit)
+#define MMU_MEMORY_SIZE ((char*)MMU_MAX_MEMORY_ADDR - MMU_MEMORY_START)
+#define MMU_MAX_MEMORY_SIZE 0x4000
 #endif
 
 #define MMU_BLOCK_SIZE 512
@@ -23,7 +26,7 @@ typedef struct memory_block_descriptor {
 } mmu_blockdesc_t;
 
 typedef struct memory_table {
-    char bitVector[MMU_NUM_BLOCKS / 8];
+    char bitVector[(MMU_MAX_MEMORY_SIZE / MMU_BLOCK_SIZE) / 8];
     mmu_blockdesc_t *block;
 } mmu_memtable_t;
 
