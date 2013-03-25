@@ -137,16 +137,21 @@ void ucmd_set_time(const char *data)
     clock_s = (data[6] - '0') * 10 + (data[7] - '0');
 }
 
-char time_str[10];
+char time_str[] = 
+    {   0x1B, '[', 's', 
+        0x1B, '[', '8', ';', '0', 'H',
+        '0', '0', ':', '0', '0', ':', '0', '0',
+        0x1B, '[', 'u', 0
+    };
 
 void ucmd_format_time()
 {
-    time_str[0] = '0' + clock_h / 10;
-    time_str[1] = '0' + clock_h % 10;
-    time_str[3] = '0' + clock_m / 10;
-    time_str[4] = '0' + clock_m % 10;
-    time_str[6] = '0' + clock_s / 10;
-    time_str[7] = '0' + clock_s % 10;
+    time_str[9]  = '0' + clock_h / 10;
+    time_str[10] = '0' + clock_h % 10;
+    time_str[12] = '0' + clock_m / 10;
+    time_str[13] = '0' + clock_m % 10;
+    time_str[15] = '0' + clock_s / 10;
+    time_str[16] = '0' + clock_s % 10;
 }
 
 void uproc_clock(void)
@@ -157,11 +162,6 @@ void uproc_clock(void)
     
     cmd_register("%WR");
     cmd_register("%WT");
-	
-    time_str[2] = time_str[5] = ':';
-    time_str[8] = '\r';
-    time_str[9] = 0;
-    enabled = 1;
 	
     msg = (msg_envelope_t *)s_request_memory_block();
     
