@@ -29,6 +29,9 @@
 #define UART_IPROC_PID  14
 #define TIMER_IPROC_PID 15
 
+#define PROCA_PID 7
+#define PROCB_PID 8
+#define PROCC_PID 9
 
 /* process states, note we only assume three states in this example */
 typedef enum {NEW = 0, ZOMBIE, RDY, RUN, BLOCKED, MSG_BLOCKED} proc_state_t;

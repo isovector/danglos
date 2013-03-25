@@ -54,7 +54,7 @@ void processA(void) {
         p->header.type = USER_MSG;
         p->header.ctrl = COUNT_REPORT;
         p->data[0] = num;
-        send_message(8, p);
+        send_message(PROCB_PID, p);
         num++;
         release_processor();
     } 
@@ -64,14 +64,15 @@ void processB(void) {
 	msg_envelope_t *p;
 	while(1) {
 		p = receive_message(NULL);
-		send_message(9, p);
+		send_message(PROCC_PID, p);
 	}		
 }
 
 void processC(void) {
-	msg_envelope_t *head = 0;
-	msg_envelope_t *tail = 0;
-	msg_envelope_t *p, *q;
+	msg_envelope_t *head = NULL;
+	msg_envelope_t *tail = NULL;
+	msg_envelope_t *p = NULL;
+	msg_envelope_t *q = NULL;
     
 	while (1) {
 		if (!head) {
@@ -91,7 +92,7 @@ void processC(void) {
                 
                 q->header.type = USER_MSG;
                 q->header.ctrl = WAKEUP;
-				delayed_send(proc_get_pid(), q, 1000);
+				delayed_send(proc_get_pid(), q, 10000);
 				while(1) {
 					p = receive_message(NULL);
 					if (p->header.ctrl == WAKEUP)

@@ -22,11 +22,9 @@ void wait_enqueue_msg(msg_envelope_t *msg, int delay)
 {
     msg->header.tick = delay + g_clock;
 		
-    if (!delay_msg_list) {
-        delay_msg_list = msg;
-    } else if(delay_msg_list->header.tick > msg->header.tick){
-			msg->header.next = delay_msg_list;
-			delay_msg_list = msg;
+    if (!delay_msg_list || delay_msg_list->header.tick > msg->header.tick) {
+				msg->header.next = delay_msg_list;
+				delay_msg_list = msg;
 		}else{
         msg_envelope_t *prev = delay_msg_list;
         while (prev->header.next != NULL && prev->header.next->header.tick <= msg->header.tick) {
@@ -130,7 +128,7 @@ void msg_tick(uint32_t tick)
     int ret = 0;
 
     while (!ret && delay_msg_list && delay_msg_list->header.tick <= tick) {
-        ret = msg_send_message(delay_msg_list, 0);
+        ret = msg_send_message(delay_msg_list, true);
         delay_msg_list = delay_msg_list->header.next;
     }
 }
