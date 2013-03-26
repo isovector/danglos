@@ -222,3 +222,40 @@ void uproc_clock(void)
         }
     }
 }
+
+void uproc_pong1(void) {
+	msg_envelope_t *msg;
+	msg = (msg_envelope_t *)s_request_memory_block();
+	msg->header.type = USER_MSG;
+	msg->header.ctrl = 0;
+	delayed_send(UPROC_PONG2_PID, msg, 10);
+	
+	while (true) {
+		msg = receive_message(NULL);
+		if (msg->header.ctrl < 10) {
+			++msg->header.ctrl;
+			delayed_send(UPROC_PONG2_PID, msg, 10);
+		} else {
+			break;
+		}
+	}
+	
+	strcpy(msg->data, "passed pong test successfully\r\n");
+	send_message(CRT_DISPLAY_PID, msg);
+	
+	while (true) {
+		release_processor();
+	}
+}
+
+
+void uproc_pong2(void) {
+	msg_envelope_t *msg;
+
+	while (true) {
+		msg = receive_message(NULL);
+		++msg->header.ctrl;
+		delayed_send(UPROC_PONG1_PID, msg, 10);
+	}
+}
+
