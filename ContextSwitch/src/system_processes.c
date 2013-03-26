@@ -78,7 +78,7 @@ void sysproc_hotkeys(void)
 					pid = atoi(newPid);
 					prio = atoi(newPrio);
 					if (proc_is_valid_pid(pid) && prio >= HIGH && prio <= LOWEST) {
-						set_priority(pid, prio);
+						set_priority(prio, pid);
 					}
 				} else {
 					switch (msg->header.ctrl) {
