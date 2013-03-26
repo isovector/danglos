@@ -22,16 +22,21 @@
 #include "msg.h"
 
 /* System processes need fixed pids so that they can be referenced consistently */
-#define CRT_DISPLAY_PID 10
-#define CMD_DECODER_PID 11
-#define HOTKEY_PROC     12
-#define KBD_IPROC_PID   13
-#define UART_IPROC_PID  14
-#define TIMER_IPROC_PID 15
+#define PROC_NULL_PID 0
+
+#define UPROC_PONG1 1
+#define UPROC_PONG2 2
 
 #define PROCA_PID 7
 #define PROCB_PID 8
 #define PROCC_PID 9
+
+#define PROC_CLOCK_PID 10
+
+#define CRT_DISPLAY_PID 11
+#define CMD_DECODER_PID 12
+#define HOTKEY_PROC     13
+
 
 /* process states, note we only assume three states in this example */
 typedef enum {NEW = 0, ZOMBIE, RDY, RUN, BLOCKED, MSG_BLOCKED} proc_state_t;

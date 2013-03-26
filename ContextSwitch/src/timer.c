@@ -34,11 +34,9 @@ __asm void TIMER0_IRQHandler(void)
 
 void c_TIMER0_IRQHandler(void)
 {
-	proc_set_iproc(TIMER_IPROC_PID);
 	/* ack inttrupt, see section  21.6.1 on pg 493 of LPC17XX_UM */
 	LPC_TIM0->IR = 1;  
 	
 	++g_clock;
 	msg_tick(g_clock);
-	proc_reset_iproc();
 }
