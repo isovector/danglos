@@ -20,8 +20,16 @@ void msg_enqueue_msg(msg_envelope_t *msg, pcb_t *pcb)
 
 void wait_enqueue_msg(msg_envelope_t *msg, int delay)
 {
+		//Search through for duplicates
+		//because pointers are retarded
+		msg_envelope_t * cur = delay_msg_list;
     msg->header.tick = delay + g_clock;
-		
+		while(cur)
+		{
+			if(cur == msg)
+				return;
+			cur = cur->header.next;
+		}
     if (!delay_msg_list || delay_msg_list->header.tick > msg->header.tick) {
 				msg->header.next = delay_msg_list;
 				delay_msg_list = msg;
@@ -67,7 +75,7 @@ int msg_send_message(void *pmsg, int kernelMode)
     }
 
     recipient = &processes[msg->header.dest];
-
+		msg->header.next = NULL;
     msg_enqueue_msg(msg, recipient);
 
     if (recipient->state == MSG_BLOCKED) {
@@ -88,6 +96,8 @@ void msg_init_envelope(void *pmsg, int src, int dest)
     msg->header.dest = dest;
     msg->header.src = src;
     msg->header.next = NULL;
+		if(msg->header.memory_type != MEMORY_MANAGED)
+			msg->header.memory_type = MEMORY_UNMANAGED;
 }
 
 int send_kernel_message(int dest, int src, void *pmsg)
@@ -139,4 +149,22 @@ int delayed_send(int pid, void *pmsg, uint32_t delay)
     wait_enqueue_msg((msg_envelope_t *)pmsg, delay);
 
     return 0;
+}
+
+void free_message(void *pmsg)
+{
+	msg_envelope_t * msg;
+	volatile int what = 0;
+	if(!pmsg)
+		return;
+	msg = (msg_envelope_t *)pmsg;
+	if(msg->header.memory_type != MEMORY_MANAGED)
+		s_release_memory_block(pmsg);
+}
+
+msg_envelope_t * alloc_message(bool managed)
+{
+	msg_envelope_t * msg = (msg_envelope_t *)s_request_memory_block();
+	msg->header.memory_type = managed ? MEMORY_MANAGED : MEMORY_UNMANAGED;
+	return msg;
 }

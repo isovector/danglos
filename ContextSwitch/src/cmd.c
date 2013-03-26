@@ -81,7 +81,7 @@ char* cmd_parse(char* c) {
 void cmd_register(const char* tag)
 {
 	msg_envelope_t *msg;
-	msg = (msg_envelope_t *)s_request_memory_block();
+	msg = alloc_message(false);
     msg->header.type = CMD_REGISTER_MSG;
 	strcpy(msg->data, tag);
 	send_message(CMD_DECODER_PID, msg);
