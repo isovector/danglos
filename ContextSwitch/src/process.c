@@ -174,9 +174,9 @@ void proc_init(void)
 	start_proc(UPROC_PONG1_PID, uproc_pong1, LOW);
 	start_proc(UPROC_PONG2_PID, uproc_pong2, LOW);
 	
-	start_proc(PROCA_PID, processA, HIGH);
-	start_proc(PROCB_PID, processB, HIGH);
-	start_proc(PROCC_PID, processC, HIGH);
+	start_proc(PROCA_PID, processA, MED);
+	start_proc(PROCB_PID, processB, MED);
+	start_proc(PROCC_PID, processC, MED);
 }
 
 void proc_set_iproc(int pid) {
