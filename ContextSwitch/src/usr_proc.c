@@ -156,19 +156,20 @@ void ucmd_format_time()
 
 void uproc_clock(void)
 {
-    int enabled;
+    int enabled = 1;
     msg_envelope_t *msg;
     msg_envelope_t *result;
     
     cmd_register("%WR");
     cmd_register("%WT");
+		cmd_register("%WS");
 	
     msg = (msg_envelope_t *)s_request_memory_block();
     
 	
     for (;;) {
         msg->header.type = USER_MSG;
-        delayed_send(proc_get_pid(), msg, 1000);
+        delayed_send(proc_get_pid(), msg, 100);
         ucmd_format_time();
         msg_print(time_str);
 
@@ -178,25 +179,29 @@ void uproc_clock(void)
                 result->data[3] = '\0';
                 
                 if (strcmp(result->data, "%WR") == 0) {
-                    enabled = 1;
                     clock_s = 0;
                     clock_m = 0;
                     clock_h = 0;
                     ucmd_format_time();
                     msg_print(time_str);
+                    if (enabled == 0) {
+											enabled = 1;
+											break;
+										}
                     
-                    break;
                 } else if (strcmp(result->data, "%WT") == 0) {
                     s_release_memory_block(result);
                     msg_print("\r          \r");
                     enabled = 0;
                 } else if(strcmp(result->data, "%WS") == 0) {
-                    enabled = 1;
                     ucmd_set_time(&result->data[4]);
                     ucmd_format_time();
                     msg_print(time_str);
                     
-                    break;
+                    if (enabled == 0) {
+											enabled = 1;
+											break;
+										}
                 }
             } else if (result->header.type == USER_MSG && enabled) {
                 break;
