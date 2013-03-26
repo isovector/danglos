@@ -6,7 +6,7 @@
 struct message_envelope;
 
 typedef enum { USER_MSG, SYSTEM_MSG, CMD_REGISTER_MSG, CMD_NOTIFY_MSG, CMD_HOTKEY_MSG } msg_type_t;
-typedef enum {MEMORY_MANAGED, MEMORY_UNMANAGED} mem_type_t;
+typedef enum {SYSTEM_MANAGED, USER_MANAGED} mem_type_t;
 typedef struct {
     msg_type_t type;
     char ctrl;

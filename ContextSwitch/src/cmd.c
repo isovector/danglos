@@ -6,6 +6,7 @@
 #include <string.h>
 
 static msg_envelope_t* reserved_hotkey_envelope;
+static msg_envelope_t* reserved_send_envelope;
 
 typedef struct {
     char tag[6];
@@ -40,7 +41,8 @@ cmd_t *lookup(const char *tag, bool insert) {
 void cmd_init(void)
 {
     int i;
-    reserved_hotkey_envelope = (msg_envelope_t*)s_request_memory_block();
+    reserved_hotkey_envelope = alloc_message(true);
+		reserved_send_envelope = alloc_message(true);
     for (i = 0; i < NUM_COMMANDS; ++i) {
         COMMANDS[i].tag[0] = 0;
         COMMANDS[i].pid = -1;
@@ -77,24 +79,21 @@ char* cmd_parse(char* c) {
     return c + (wasSpace ? 1 : 0);
 }
 
-
 void cmd_register(const char* tag)
 {
-	msg_envelope_t *msg;
-	msg = alloc_message(false);
-    msg->header.type = CMD_REGISTER_MSG;
+	msg_envelope_t * msg = alloc_message(false);
+  msg->header.type = CMD_REGISTER_MSG;
 	strcpy(msg->data, tag);
 	send_message(CMD_DECODER_PID, msg);
 }
 
+
 void k_cmd_send(char *buffer)
 {
-	msg_envelope_t* msg;
-	msg = (msg_envelope_t*)s_request_memory_block();
-  msg->header.type = CMD_NOTIFY_MSG;
-	strcpy(msg->data, buffer);
+  reserved_send_envelope->header.type = CMD_NOTIFY_MSG;
+	strcpy(reserved_send_envelope->data, buffer);
     
-	send_kernel_message(CMD_DECODER_PID, -1, msg);
+	send_kernel_message(CMD_DECODER_PID, -1, reserved_send_envelope);
 }
 
 void k_cmd_hotkey(char hotkey)
@@ -103,5 +102,4 @@ void k_cmd_hotkey(char hotkey)
 	reserved_hotkey_envelope->header.ctrl = hotkey;
 	send_kernel_message(HOTKEY_PROC, -1, reserved_hotkey_envelope);
     
-	reserved_hotkey_envelope = (msg_envelope_t *)s_request_memory_block();
 }

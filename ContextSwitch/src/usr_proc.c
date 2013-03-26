@@ -52,7 +52,7 @@ void processA(void) {
     
     num = 0;
     while(1) {
-        p = (msg_envelope_t *)s_request_memory_block();
+        p = alloc_message(false);
         p->header.type = USER_MSG;
         p->header.ctrl = COUNT_REPORT;
         p->data[0] = num;
@@ -90,7 +90,7 @@ void processC(void) {
 		if (p->header.ctrl == COUNT_REPORT) {
 			if (p->data[0] % 20 == 0) {
 				msg_print("Process C");
-				q = (msg_envelope_t *)s_request_memory_block();
+				q = alloc_message(false);
                 
                 q->header.type = USER_MSG;
                 q->header.ctrl = WAKEUP;
@@ -166,12 +166,12 @@ void uproc_clock(void)
     cmd_register("%WT");
 		cmd_register("%WS");
 	
-    msg = alloc_message(false);
+    msg = alloc_message(true);
     
 	
     for (;;) {
         msg->header.type = USER_MSG;
-        delayed_send(proc_get_pid(), msg, 100);
+        delayed_send(proc_get_pid(), msg, 1000);
         ucmd_format_time();
         msg_print(time_str);
 
@@ -192,7 +192,6 @@ void uproc_clock(void)
 										}
                     
                 } else if (strcmp(result->data, "%WT") == 0) {
-                    free_message(result);
                     msg_print("\r          \r");
                     enabled = 0;
                 } else if(strcmp(result->data, "%WS") == 0) {
@@ -227,7 +226,7 @@ void uproc_clock(void)
 
 void uproc_pong1(void) {
 	msg_envelope_t *msg;
-	msg = (msg_envelope_t *)s_request_memory_block();
+	msg = alloc_message(true);
 	msg->header.type = USER_MSG;
 	msg->header.ctrl = 0;
 	delayed_send(UPROC_PONG2_PID, msg, 10);

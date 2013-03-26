@@ -171,8 +171,8 @@ void proc_init(void)
 	start_proc(PROC_NULL_PID, uproc_null, LOWEST);
 	start_proc(PROC_CLOCK_PID, uproc_clock, MED);
 	
-	//start_proc(UPROC_PONG1_PID, uproc_pong1, MED);
-	//start_proc(UPROC_PONG2_PID, uproc_pong2, MED);
+	start_proc(UPROC_PONG1_PID, uproc_pong1, LOW);
+	start_proc(UPROC_PONG2_PID, uproc_pong2, LOW);
 	
 	start_proc(PROCA_PID, processA, HIGH);
 	start_proc(PROCB_PID, processB, HIGH);
