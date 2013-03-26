@@ -17,7 +17,7 @@
 	{
 		msg = receive_message(NULL);
 		uart0_send_string((uint8_t*)msg->data);
-		s_release_memory_block(msg);	
+		free_message(msg);	
 	}
 }
 
@@ -35,7 +35,7 @@ void sysproc_command_decoder(void)
         switch (msg->header.type) {
             case CMD_REGISTER_MSG: {
                 cmd_put(msg->data, source);
-                s_release_memory_block(msg);
+                free_message(msg);
             } break;
             
             case CMD_NOTIFY_MSG: {
@@ -89,12 +89,12 @@ void sysproc_hotkeys(void)
 							case 'x': {
 									proc_print(msg, BLOCKED);
 							} break;
-
+							
 							case 'c': {
 									proc_print(msg, MSG_BLOCKED);
 							} break;
 					}
 				}
-        s_release_memory_block(msg);
+        free_message(msg);
     }
 }

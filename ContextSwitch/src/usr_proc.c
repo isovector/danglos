@@ -23,11 +23,13 @@ enum { WAKEUP = 1, COUNT_REPORT };
 
 extern void debugPrint(unsigned char* c);
 
+static msg_envelope_t * print_msg = NULL;
+
 void msg_print(const char* s) {
-	  msg_envelope_t *output;
-		output = (msg_envelope_t*)s_request_memory_block();
-		strcpy(output->data, s);
-		send_message(CRT_DISPLAY_PID, output);	/* Send the output to the CRT_DISPLAY */
+	  if(print_msg == NULL)
+			print_msg = alloc_message(true);
+		strcpy(print_msg->data, s);
+		send_message(CRT_DISPLAY_PID, print_msg);	/* Send the output to the CRT_DISPLAY */
 }
 
 void processA(void) {
@@ -36,21 +38,21 @@ void processA(void) {
     
     cmd_register("%Z");
     
-    p = (msg_envelope_t *)s_request_memory_block();
+    p = alloc_message(false);
     
     while (1) {
         p = receive_message(NULL);
         if (strcmp(p->data, "%Z") == 0) {
-            s_release_memory_block(p);
+            free_message(p);
             break;
         } else {
-            s_release_memory_block(p);
+            free_message(p);
         }
     }
     
     num = 0;
     while(1) {
-        p = (msg_envelope_t *)s_request_memory_block();
+        p = alloc_message(false);
         p->header.type = USER_MSG;
         p->header.ctrl = COUNT_REPORT;
         p->data[0] = num;
@@ -88,7 +90,7 @@ void processC(void) {
 		if (p->header.ctrl == COUNT_REPORT) {
 			if (p->data[0] % 20 == 0) {
 				msg_print("Process C");
-				q = (msg_envelope_t *)s_request_memory_block();
+				q = alloc_message(false);
                 
                 q->header.type = USER_MSG;
                 q->header.ctrl = WAKEUP;
@@ -109,7 +111,7 @@ void processC(void) {
 			}
 		}
 	  
-        s_release_memory_block(p);
+        free_message(p);
 		release_processor();
 	}
 }
@@ -139,19 +141,19 @@ void ucmd_set_time(const char *data)
 
 char time_str[] = 
     {   0x1B, '[', 's', 
-        0x1B, '[', '8', ';', '0', 'H',
+        0x1B, '[', '0', ';', '7', '0', 'H',
         '0', '0', ':', '0', '0', ':', '0', '0',
         0x1B, '[', 'u', 0
     };
 
 void ucmd_format_time()
 {
-    time_str[9]  = '0' + clock_h / 10;
-    time_str[10] = '0' + clock_h % 10;
-    time_str[12] = '0' + clock_m / 10;
-    time_str[13] = '0' + clock_m % 10;
-    time_str[15] = '0' + clock_s / 10;
-    time_str[16] = '0' + clock_s % 10;
+    time_str[10]  = '0' + clock_h / 10;
+    time_str[11] = '0' + clock_h % 10;
+    time_str[13] = '0' + clock_m / 10;
+    time_str[14] = '0' + clock_m % 10;
+    time_str[16] = '0' + clock_s / 10;
+    time_str[17] = '0' + clock_s % 10;
 }
 
 void uproc_clock(void)
@@ -164,12 +166,12 @@ void uproc_clock(void)
     cmd_register("%WT");
 		cmd_register("%WS");
 	
-    msg = (msg_envelope_t *)s_request_memory_block();
+    msg = alloc_message(true);
     
 	
     for (;;) {
         msg->header.type = USER_MSG;
-        delayed_send(proc_get_pid(), msg, 100);
+        delayed_send(proc_get_pid(), msg, 1000);
         ucmd_format_time();
         msg_print(time_str);
 
@@ -190,7 +192,6 @@ void uproc_clock(void)
 										}
                     
                 } else if (strcmp(result->data, "%WT") == 0) {
-                    s_release_memory_block(result);
                     msg_print("\r          \r");
                     enabled = 0;
                 } else if(strcmp(result->data, "%WS") == 0) {
@@ -206,7 +207,7 @@ void uproc_clock(void)
             } else if (result->header.type == USER_MSG && enabled) {
                 break;
             }
-            s_release_memory_block(result);
+            free_message(result);
         }
 
         if (++clock_s >= 60) {
@@ -225,7 +226,7 @@ void uproc_clock(void)
 
 void uproc_pong1(void) {
 	msg_envelope_t *msg;
-	msg = (msg_envelope_t *)s_request_memory_block();
+	msg = alloc_message(false);
 	msg->header.type = USER_MSG;
 	msg->header.ctrl = 0;
 	delayed_send(UPROC_PONG2_PID, msg, 10);
