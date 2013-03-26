@@ -22,16 +22,16 @@
 #include "msg.h"
 
 /* System processes need fixed pids so that they can be referenced consistently */
-#define PROC_NULL_PID 0
+#define PROC_NULL_PID 	0
 
-#define UPROC_PONG1 1
-#define UPROC_PONG2 2
+#define UPROC_PONG1_PID 1
+#define UPROC_PONG2_PID 2
 
-#define PROCA_PID 7
-#define PROCB_PID 8
-#define PROCC_PID 9
+#define PROCA_PID 			7
+#define PROCB_PID 			8
+#define PROCC_PID 			9
 
-#define PROC_CLOCK_PID 10
+#define PROC_CLOCK_PID 	10
 
 #define CRT_DISPLAY_PID 11
 #define CMD_DECODER_PID 12
@@ -91,6 +91,9 @@ void proc_print(msg_envelope_t *, proc_state_t);
 extern void uproc_print(void);           /*user process 1 */
 extern void uproc_clock(void);
 extern void uproc_null(void);
+
+extern void uproc_pong1(void);
+extern void uproc_pong2(void);
 
 extern void processA(void);
 extern void processB(void);

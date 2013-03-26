@@ -96,8 +96,9 @@ int scheduler(void)
     next_process = pq_front(&priority_queue);
     pq_dequeue(&priority_queue);
 		
-		if (next_process == -1)
+		if (next_process == -1) {
 			next_process = PROC_NULL_PID;
+		}
 		
     return next_process;
 }
@@ -168,24 +169,19 @@ void proc_init(void)
 {
 	start_proc(PROC_NULL_PID, uproc_null, LOWEST);
 	start_proc(PROC_CLOCK_PID, uproc_clock, MED);
+	
+	//start_proc(UPROC_PONG1_PID, uproc_pong1, MED);
+	//start_proc(UPROC_PONG2_PID, uproc_pong2, MED);
+	
 	start_proc(PROCA_PID, processA, HIGH);
 	start_proc(PROCB_PID, processB, HIGH);
 	start_proc(PROCC_PID, processC, HIGH);
 }
 
 void proc_set_iproc(int pid) {
-	/*__disable_irq();
-	old_pid = current_process->pid;
-	current_process->state = RDY;
-	current_process = &processes[pid];
-	current_process->state = RUN;*/
 }
 
 void proc_reset_iproc(void){
-	/*current_process->state = RDY;
-	current_process = &processes[old_pid];
-	current_process->state = RUN;
-	__enable_irq();*/
 }
 
 void system_proc_init(void) {
