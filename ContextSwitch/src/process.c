@@ -3,6 +3,7 @@
 #include "process.h"
 #include "p_queue/p_queue.h"
 #include "error.h"
+#include "rtx.h"
 #define MEMORY_BLOCKS_TEST
 
 #ifdef DEBUG_0
@@ -95,6 +96,11 @@ int scheduler(void)
 
     next_process = pq_front(&priority_queue);
     pq_dequeue(&priority_queue);
+		
+		if (next_process == -1) {
+			next_process = PROC_NULL_PID;
+		}
+		
     return next_process;
 }
 
@@ -133,7 +139,9 @@ int k_release_processor(void)
             p_pcb_old->state = RDY;
         }
         p_pcb_old->stackptr = (uint32_t *) __get_MSP();
-    }
+    } else if (state != NEW) {
+			return 0;
+		}
     
     current_process->state = RUN;
     if (state == NEW) {
@@ -152,74 +160,38 @@ int k_block_and_release_processor(void)
     return k_release_processor();
 }
 
+void start_proc(int pid, uproc_func proc, priority_t priority)
+{
+	process_init(&processes[pid], proc, priority, pid);
+	pq_enqueue(&priority_queue, pid, processes[pid].priority);
+}
 
 void proc_init(void)
 {
-    int j = 0;
-
-    process_init(&processes[j], uproc_null, LOWEST, j);
-    pq_enqueue(&priority_queue, j, processes[j].priority);
-    j++;
+	start_proc(PROC_NULL_PID, uproc_null, LOWEST);
+	start_proc(PROC_CLOCK_PID, uproc_clock, MED);
 	
-    process_init(&processes[j], uproc_clock, MED, j);
-    pq_enqueue(&priority_queue, j, processes[j].priority);
-    j++;
-		for (; j < 7; ++j) {
-        process_init(&processes[j], uproc_null, LOWEST, j);
-        pq_enqueue(&priority_queue, j, processes[j].priority);
-    }
-		
-		process_init(&processes[j], processA, HIGH, j);
-		pq_enqueue(&priority_queue, j, processes[j].priority);
+	//start_proc(UPROC_PONG1_PID, uproc_pong1, MED);
+	//start_proc(UPROC_PONG2_PID, uproc_pong2, MED);
 	
-		j++;
-		process_init(&processes[j], processB, HIGH, j);
-		pq_enqueue(&priority_queue, j, processes[j].priority);
-		
-		j++;
-		process_init(&processes[j], processC, HIGH, j);
-		pq_enqueue(&priority_queue, j, processes[j].priority);
-		
-		j++;
-
-    for (; j < NUM_USER_PROCESSES; ++j) {
-        process_init(&processes[j], uproc_null, LOWEST, j);
-        pq_enqueue(&priority_queue, j, processes[j].priority);
-    }
+	start_proc(PROCA_PID, processA, HIGH);
+	start_proc(PROCB_PID, processB, HIGH);
+	start_proc(PROCC_PID, processC, HIGH);
 }
 
 void proc_set_iproc(int pid) {
-	/*__disable_irq();
-	old_pid = current_process->pid;
-	current_process->state = RDY;
-	current_process = &processes[pid];
-	current_process->state = RUN;*/
 }
 
 void proc_reset_iproc(void){
-	/*current_process->state = RDY;
-	current_process = &processes[old_pid];
-	current_process->state = RUN;
-	__enable_irq();*/
 }
 
 void system_proc_init(void) {
 	pq_init(&priority_queue);
   pq_init(&blocked_queue);
 	
-  process_init(&processes[CRT_DISPLAY_PID], sysproc_crt_display, HIGH, CRT_DISPLAY_PID);
-  pq_enqueue(&priority_queue, CRT_DISPLAY_PID, processes[CRT_DISPLAY_PID].priority);
-	
-	process_init(&processes[CMD_DECODER_PID], sysproc_command_decoder, HIGH, CMD_DECODER_PID);
-  pq_enqueue(&priority_queue, CMD_DECODER_PID, processes[CMD_DECODER_PID].priority);
-	
-  process_init(&processes[HOTKEY_PROC], sysproc_hotkeys, HIGH, HOTKEY_PROC);
-  pq_enqueue(&priority_queue, HOTKEY_PROC, processes[HOTKEY_PROC].priority);
-	
-	process_init(&processes[KBD_IPROC_PID], proc_init, LOW, KBD_IPROC_PID);
-	process_init(&processes[TIMER_IPROC_PID], proc_init, LOW, TIMER_IPROC_PID);
-	process_init(&processes[UART_IPROC_PID], proc_init, LOW, UART_IPROC_PID);
-
+	start_proc(CRT_DISPLAY_PID, sysproc_crt_display, HIGH);
+	start_proc(CMD_DECODER_PID, sysproc_command_decoder, HIGH);
+	start_proc(HOTKEY_PROC, sysproc_hotkeys, HIGH);
 }
 
 int proc_set_msg_blocked(int target, int block)
@@ -242,7 +214,7 @@ int proc_set_msg_blocked(int target, int block)
     return 0;
 }
 
-int k_set_priority(int p, int target)
+int set_priority(int p, int target)
 {
     priority_t prio = processes[target].priority;
     int ret = 0;
@@ -256,19 +228,19 @@ int k_set_priority(int p, int target)
     processes[target].priority = (priority_t)p;
 
     if ((prio < p || (p < current_process->priority && target != current_process->pid)) && !ret) {
-        return k_release_processor();
+        release_processor();
     }
 
     return ret;
 }
 
-int k_set_my_priority(int p)
+int set_my_priority(int p)
 {
-    k_set_priority(p, current_process->pid);
+    set_priority(p, current_process->pid);
     return 0;
 }
 
-int k_get_priority(int target)
+int get_priority(int target)
 {
     if (target < 0 || target >= NUM_PROCESSES) {
         return -1;

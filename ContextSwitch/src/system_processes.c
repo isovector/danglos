@@ -47,25 +47,54 @@ void sysproc_command_decoder(void)
 	}
 }
 
+int atoi(char *buf) {
+	int result = 0;
+	while (buf && *buf) {
+		if (*buf < '0' || *buf > '9') {
+			return -1;
+		}
+		
+		result *= 10;
+		result += *buf - '0';
+		++buf;
+	}
+	
+	return result;
+}
+
 void sysproc_hotkeys(void)
 {
+	char *newPid, *newPrio;
+	int pid, prio;
+	
     msg_envelope_t *msg;
+	cmd_register("%C");
 
     while (1) {
         msg = receive_message(NULL);
-        switch (msg->header.ctrl) {
-            case 'v': {
-                proc_print(msg, RDY);
-            } break;
+				if (msg->header.type == CMD_NOTIFY_MSG) {
+					newPid = &msg->data[3];
+					newPrio = cmd_parse(newPid);
+					pid = atoi(newPid);
+					prio = atoi(newPrio);
+					if (proc_is_valid_pid(pid) && prio >= HIGH && prio <= LOWEST) {
+						set_priority(prio, pid);
+					}
+				} else {
+					switch (msg->header.ctrl) {
+							case 'v': {
+									proc_print(msg, RDY);
+							} break;
 
-            case 'x': {
-                proc_print(msg, BLOCKED);
-            } break;
-
-            case 'c': {
-                proc_print(msg, MSG_BLOCKED);
-            } break;
-        }
+							case 'x': {
+									proc_print(msg, BLOCKED);
+							} break;
+							
+							case 'c': {
+									proc_print(msg, MSG_BLOCKED);
+							} break;
+					}
+				}
         free_message(msg);
     }
 }

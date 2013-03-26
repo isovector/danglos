@@ -158,19 +158,20 @@ void ucmd_format_time()
 
 void uproc_clock(void)
 {
-    int enabled;
+    int enabled = 1;
     msg_envelope_t *msg;
     msg_envelope_t *result;
     
     cmd_register("%WR");
     cmd_register("%WT");
+		cmd_register("%WS");
 	
     msg = alloc_message(false);
     
 	
     for (;;) {
         msg->header.type = USER_MSG;
-        delayed_send(proc_get_pid(), msg, 1000);
+        delayed_send(proc_get_pid(), msg, 100);
         ucmd_format_time();
         msg_print(time_str);
 
@@ -180,25 +181,29 @@ void uproc_clock(void)
                 result->data[3] = '\0';
                 
                 if (strcmp(result->data, "%WR") == 0) {
-                    enabled = 1;
                     clock_s = 0;
                     clock_m = 0;
                     clock_h = 0;
                     ucmd_format_time();
                     msg_print(time_str);
+                    if (enabled == 0) {
+											enabled = 1;
+											break;
+										}
                     
-                    break;
                 } else if (strcmp(result->data, "%WT") == 0) {
                     free_message(result);
                     msg_print("\r          \r");
                     enabled = 0;
                 } else if(strcmp(result->data, "%WS") == 0) {
-                    enabled = 1;
                     ucmd_set_time(&result->data[4]);
                     ucmd_format_time();
                     msg_print(time_str);
                     
-                    break;
+                    if (enabled == 0) {
+											enabled = 1;
+											break;
+										}
                 }
             } else if (result->header.type == USER_MSG && enabled) {
                 break;
@@ -219,3 +224,40 @@ void uproc_clock(void)
         }
     }
 }
+
+void uproc_pong1(void) {
+	msg_envelope_t *msg;
+	msg = (msg_envelope_t *)s_request_memory_block();
+	msg->header.type = USER_MSG;
+	msg->header.ctrl = 0;
+	delayed_send(UPROC_PONG2_PID, msg, 10);
+	
+	while (true) {
+		msg = receive_message(NULL);
+		if (msg->header.ctrl < 10) {
+			++msg->header.ctrl;
+			delayed_send(UPROC_PONG2_PID, msg, 10);
+		} else {
+			break;
+		}
+	}
+	
+	strcpy(msg->data, "passed pong test successfully\r\n");
+	send_message(CRT_DISPLAY_PID, msg);
+	
+	while (true) {
+		release_processor();
+	}
+}
+
+
+void uproc_pong2(void) {
+	msg_envelope_t *msg;
+
+	while (true) {
+		msg = receive_message(NULL);
+		++msg->header.ctrl;
+		delayed_send(UPROC_PONG1_PID, msg, 10);
+	}
+}
+
