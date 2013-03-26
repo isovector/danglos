@@ -3,6 +3,7 @@
 #include "process.h"
 #include "p_queue/p_queue.h"
 #include "error.h"
+#include "rtx.h"
 #define MEMORY_BLOCKS_TEST
 
 #ifdef DEBUG_0
@@ -213,7 +214,7 @@ int proc_set_msg_blocked(int target, int block)
     return 0;
 }
 
-int k_set_priority(int p, int target)
+int set_priority(int p, int target)
 {
     priority_t prio = processes[target].priority;
     int ret = 0;
@@ -227,19 +228,19 @@ int k_set_priority(int p, int target)
     processes[target].priority = (priority_t)p;
 
     if ((prio < p || (p < current_process->priority && target != current_process->pid)) && !ret) {
-        return k_release_processor();
+        release_processor();
     }
 
     return ret;
 }
 
-int k_set_my_priority(int p)
+int set_my_priority(int p)
 {
-    k_set_priority(p, current_process->pid);
+    set_priority(p, current_process->pid);
     return 0;
 }
 
-int k_get_priority(int target)
+int get_priority(int target)
 {
     if (target < 0 || target >= NUM_PROCESSES) {
         return -1;

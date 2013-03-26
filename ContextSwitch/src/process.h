@@ -76,9 +76,9 @@ int scheduler(void);               /* pick the pid of the next to run process */
 
 int k_release_processor(void);       /* kernel release_process function */
 int proc_set_msg_blocked(int pid, int block);
-int k_set_priority(int, int);
-int k_set_my_priority(int);
-int k_get_priority(int);
+int set_priority(int, int);
+int set_my_priority(int);
+int get_priority(int);
 
 void proc_set_iproc(int);
 void proc_reset_iproc(void);
