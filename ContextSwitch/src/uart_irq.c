@@ -245,12 +245,9 @@ void uart_send_string( uint32_t n_uart, uint8_t *p_buffer)
 {
 	LPC_UART_TypeDef *pUart;
 	
-	proc_set_iproc(UART_IPROC_PID);
-
 	if(n_uart == 0 ) { /* UART0 is implemented */
 		pUart = (LPC_UART_TypeDef *)LPC_UART0;
 	} else { /* other UARTs are not implemented */
-		proc_reset_iproc();
 		return;
 	}
 
@@ -261,7 +258,6 @@ void uart_send_string( uint32_t n_uart, uint8_t *p_buffer)
 		g_UART0_TX_empty = 0;  // not empty in the THR until it shifts out
 		p_buffer++;
 	}
-	proc_reset_iproc();
 	return;
 }
 
