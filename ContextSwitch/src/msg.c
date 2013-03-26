@@ -136,8 +136,9 @@ void msg_tick(uint32_t tick)
     int ret = 0;
 
     while (!ret && delay_msg_list && delay_msg_list->header.tick <= tick) {
-        ret = msg_send_message(delay_msg_list, true);
+				msg_envelope_t * msg = delay_msg_list;
         delay_msg_list = delay_msg_list->header.next;
+        ret = msg_send_message(msg, true);
     }
 }
 

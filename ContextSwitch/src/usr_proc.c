@@ -226,7 +226,7 @@ void uproc_clock(void)
 
 void uproc_pong1(void) {
 	msg_envelope_t *msg;
-	msg = alloc_message(true);
+	msg = alloc_message(false);
 	msg->header.type = USER_MSG;
 	msg->header.ctrl = 0;
 	delayed_send(UPROC_PONG2_PID, msg, 10);
