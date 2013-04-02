@@ -116,6 +116,63 @@ void processC(void) {
 	}
 }
 
+void print_val(int val)
+{
+	char digit[] = {'0', 0};
+	digit[0] += val % 10;
+	if(val > 0)
+		print_val(val / 10);
+	msg_print(digit);
+}
+
+void uproc_time_everything(void)
+{
+	msg_envelope_t * msg;
+	uint32_t trials = 0;
+	uint32_t memory_time = 0, send_time = 0, receive_time = 0;
+	
+	
+	cmd_register("%S");
+	while(1)
+	{
+		msg = receive_message(NULL);
+		if(strcmp(msg->data, "%S") == 0)
+		{
+			if(trials != 0)
+			{
+				trials = 0;
+				free_message(msg);
+				msg_print("\r\nREQUEST_MEMORY: ");
+				print_val(memory_time / trials);
+				msg_print("\r\nSEND_MESSAGE: ");
+				print_val(send_time / trials);
+				msg_print("\r\nRECEIVE_MESSAGE: ");
+				print_val(receive_time / trials);
+				memory_time = send_time = receive_time = 0;
+			}
+		}
+		else
+		{
+			stop_timer();
+			receive_time += get_elapsed_time();
+		}
+		free_message(msg);
+		++trials;
+		start_timer();
+		msg = alloc_message(false);
+		stop_timer();
+		memory_time += get_elapsed_time();
+		
+		start_timer();
+		send_message(proc_get_pid(), msg);
+		stop_timer();
+		send_time += get_elapsed_time();
+		
+		start_timer();
+	}
+	
+}
+
 void uproc_null(void)
 {
     while (1) {

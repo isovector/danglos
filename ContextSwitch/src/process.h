@@ -27,6 +27,8 @@
 #define UPROC_PONG1_PID 1
 #define UPROC_PONG2_PID 2
 
+#define UPROC_TIME_TEST 6
+
 #define PROCA_PID 			7
 #define PROCB_PID 			8
 #define PROCC_PID 			9
@@ -94,6 +96,8 @@ extern void uproc_null(void);
 
 extern void uproc_pong1(void);
 extern void uproc_pong2(void);
+
+extern void uproc_time_everything(void);
 
 extern void processA(void);
 extern void processB(void);

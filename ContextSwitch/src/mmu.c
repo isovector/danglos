@@ -27,12 +27,10 @@ void *s_request_memory_block()
 {
     void *allocMem;
     mmu_blockdesc_t *b;
-
     if (!mmu_can_alloc_mem()) {
 			current_process->state = BLOCKED;
 			release_processor();
     }
-
     if (table.block->next) {
         allocMem = table.block->start;
         b = table.block;
@@ -46,9 +44,7 @@ void *s_request_memory_block()
             table.block = NULL;
         }
     }
-
     set_bit(table.bitVector, getBitFromAddress(allocMem), 1);
-
     return allocMem;
 }
 

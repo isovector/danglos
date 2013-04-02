@@ -2,8 +2,9 @@
 #define _MMU_H_
 
 #include "config.h"
-
 #include <string.h>
+#include <stdint.h>
+#include "timer.h"
 
 #define MMU_MAX_MEMORY_ADDR 0x10008000
 #if EMULATION_MODE

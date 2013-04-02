@@ -160,6 +160,7 @@ void free_message(void *pmsg)
 		s_release_memory_block(pmsg);
 }
 
+
 msg_envelope_t * alloc_message(bool managed)
 {
 	msg_envelope_t * msg = (msg_envelope_t *)s_request_memory_block();

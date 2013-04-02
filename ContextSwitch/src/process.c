@@ -177,6 +177,7 @@ void proc_init(void)
 	start_proc(PROCA_PID, processA, MED);
 	start_proc(PROCB_PID, processB, MED);
 	start_proc(PROCC_PID, processC, MED);
+	start_proc(UPROC_TIME_TEST, uproc_time_everything, HIGH);
 }
 
 void proc_set_iproc(int pid) {
