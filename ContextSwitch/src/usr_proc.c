@@ -75,6 +75,7 @@ void processC(void) {
 	msg_envelope_t *tail = NULL;
 	msg_envelope_t *p = NULL;
 	msg_envelope_t *q = NULL;
+	msg_envelope_t **tailaddr = &tail;
     
 	while (1) {
 		if (!head) {
