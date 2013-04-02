@@ -132,15 +132,15 @@ void uproc_time_everything(void)
 	uint32_t memory_time = 0, send_time = 0, receive_time = 0;
 	
 	
-	cmd_register("%S");
+	cmd_register("%TS");
+	cmd_register("%TT");
 	while(1)
 	{
 		msg = receive_message(NULL);
-		if(strcmp(msg->data, "%S") == 0)
+		if(strcmp(msg->data, "%TT") == 0)
 		{
 			if(trials != 0)
 			{
-				trials = 0;
 				free_message(msg);
 				msg_print("\r\nREQUEST_MEMORY: ");
 				print_val(memory_time / trials);
@@ -148,10 +148,13 @@ void uproc_time_everything(void)
 				print_val(send_time / trials);
 				msg_print("\r\nRECEIVE_MESSAGE: ");
 				print_val(receive_time / trials);
-				memory_time = send_time = receive_time = 0;
 			}
+				memory_time = 0;
+				send_time = 0;
+				receive_time = 0;
+				trials = 0;
 		}
-		else
+		else if(strcmp(msg->data, "%TS") != 0)
 		{
 			stop_timer();
 			receive_time += get_elapsed_time();

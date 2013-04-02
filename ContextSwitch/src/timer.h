@@ -1,6 +1,5 @@
 #ifndef _TIMER_H_
 #define _TIMER_H_
-#define TIME_EVERYTHING
 
 extern void timer_init(void);
 

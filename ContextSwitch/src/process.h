@@ -8,7 +8,6 @@
 #endif /* DEBUG_0 */
 
 #define NUM_PROCESSES 20
-#define NUM_USER_PROCESSES 7
 
 #ifndef NULL
 #define NULL 0
